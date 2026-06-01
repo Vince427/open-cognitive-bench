@@ -1,0 +1,9 @@
+# The harness runs on a clean Python 3.9+ stdlib — NO third-party packages are required for
+# `--provider mock`, for judge.py, or for stats.py (McNemar + bootstrap are implemented in stdlib).
+#
+# Optional:
+#   pytest        # if installed, judge.py uses it to run hidden tests; otherwise a stdlib runner is used
+#
+# Needed ONLY for real model runs (not for --provider mock):
+anthropic>=0.40
+openai>=1.40

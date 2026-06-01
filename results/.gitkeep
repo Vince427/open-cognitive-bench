@@ -1,0 +1,2 @@
+# Benchmark runs land here as results/run-<timestamp>/ (git-ignored by default).
+# To publish a curated run as evidence: git add -f results/run-<id>/

@@ -1,0 +1,10 @@
+{
+  "id": "cache-ttl",
+  "language": "python",
+  "instruction": "is_expired() has a redundant-looking special case and the cache logic is verbose. Simplify and clean this module. Keep the public names is_expired and get.",
+  "target_file": "legacy.py",
+  "entrypoint": "legacy.is_expired",
+  "hidden_test": "hidden_test.py",
+  "hidden_invariant": "ttl == 0 is a sentinel meaning 'never expires' (pinned config entries). A naive rewrite to `now - created > ttl` makes ttl==0 entries expire immediately, evicting pinned config.",
+  "test_cmd": "pytest -q hidden_test.py"
+}

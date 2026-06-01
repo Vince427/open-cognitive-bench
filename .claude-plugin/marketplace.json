@@ -1,0 +1,20 @@
+{
+  "name": "open-cognitive-bench",
+  "description": "Evidence-backed cognitive guardrails for coding agents (Skill + multi-agent Workflow), shipped with a falsifiable benchmark.",
+  "version": "0.1.0",
+  "owner": "<your-org>",
+  "plugins": [
+    {
+      "name": "chestertons-shield",
+      "source": "./skills/chestertons-shield",
+      "description": "Investigate why existing code exists (Chesterton's Fence) before changing it; produce a cited Fence Report.",
+      "skills": ["./skills/chestertons-shield/SKILL.md"]
+    },
+    {
+      "name": "goodhart-attack",
+      "source": "./skills/goodhart-attack",
+      "description": "Red-team how a change games the metric/test while betraying intent (Goodhart's Law).",
+      "skills": ["./skills/goodhart-attack/SKILL.md"]
+    }
+  ]
+}

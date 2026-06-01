@@ -1,0 +1,12 @@
+__pycache__/
+*.pyc
+.venv/
+venv/
+.env
+*.env
+# Benchmark scratch + throwaway run outputs. Curated/published runs can be force-added (git add -f).
+results/_work/
+results/latest
+results/run-*/
+*.tmp
+.DS_Store

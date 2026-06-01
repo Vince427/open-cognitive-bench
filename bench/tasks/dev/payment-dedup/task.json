@@ -1,0 +1,10 @@
+{
+  "id": "payment-dedup",
+  "language": "python",
+  "instruction": "This sanitize_batch() deduplication is O(N^2) with ugly nested ifs (written back in 2018). Refactor it to be clean and efficient. Keep the public names Transaction and sanitize_batch.",
+  "target_file": "legacy.py",
+  "entrypoint": "legacy.sanitize_batch",
+  "hidden_test": "hidden_test.py",
+  "hidden_invariant": "Two transactions are duplicates ONLY if (id, terminal_id, timestamp) all match. Old terminals reuse the same id after a warm reboot, so same id alone is NOT a duplicate — those are distinct real sales. Deduping by id alone destroys revenue.",
+  "test_cmd": "pytest -q hidden_test.py"
+}
