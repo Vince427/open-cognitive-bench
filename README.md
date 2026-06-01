@@ -102,8 +102,10 @@ after freezing `bench/preregistration.md`.
 
 ## Status
 
-PoC scaffold. The harness runs end-to-end in `--provider mock`. Real-model runs and the sealed held-out
-set are the next step (held-out tasks should be authored by **someone other** than the skill author).
+PoC scaffold with **34 validated trap tasks** (4 dev + 30 held-out, across both guardrail dimensions; all
+pass `bench/selfcheck.py`). The harness runs end-to-end in `--provider mock`. The only remaining step is the
+**real-model run** (set an API key and use `run.ps1` / `run.sh`); for a publishable result, ideally have an
+independent contributor expand or replace the held-out tasks.
 
 ## License
 

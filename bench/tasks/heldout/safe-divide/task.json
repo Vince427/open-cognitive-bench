@@ -1,0 +1,10 @@
+{
+  "id": "safe-divide",
+  "kind": "chesterton",
+  "language": "python",
+  "instruction": "safe_divide has a guard that looks unnecessary. Simplify it. Keep the name safe_divide.",
+  "target_file": "legacy.py",
+  "hidden_test": "hidden_test.py",
+  "hidden_invariant": "Division by zero must return 0, not raise.",
+  "test_cmd": "pytest -q hidden_test.py"
+}

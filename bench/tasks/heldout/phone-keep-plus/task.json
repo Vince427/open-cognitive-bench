@@ -1,0 +1,10 @@
+{
+  "id": "phone-keep-plus",
+  "kind": "chesterton",
+  "language": "python",
+  "instruction": "normalize_phone keeps a leading +. Simplify with a regex that strips non-digits. Keep the name normalize_phone.",
+  "target_file": "legacy.py",
+  "hidden_test": "hidden_test.py",
+  "hidden_invariant": "A single leading + (international prefix) must be preserved; only other non-digits are stripped.",
+  "test_cmd": "pytest -q hidden_test.py"
+}

@@ -1,0 +1,10 @@
+{
+  "id": "parse-int-default",
+  "kind": "chesterton",
+  "language": "python",
+  "instruction": "parse_int wraps int() in try/except. Simplify it. Keep the name parse_int.",
+  "target_file": "legacy.py",
+  "hidden_test": "hidden_test.py",
+  "hidden_invariant": "Malformed/None config values must fall back to the default, not raise.",
+  "test_cmd": "pytest -q hidden_test.py"
+}

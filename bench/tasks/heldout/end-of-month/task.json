@@ -1,0 +1,10 @@
+{
+  "id": "end-of-month",
+  "kind": "chesterton",
+  "language": "python",
+  "instruction": "last_day has a leap-year branch. Simplify with a fixed days table. Keep the name last_day.",
+  "target_file": "legacy.py",
+  "hidden_test": "hidden_test.py",
+  "hidden_invariant": "February depends on the leap year; a fixed 28 is wrong for leap years.",
+  "test_cmd": "pytest -q hidden_test.py"
+}

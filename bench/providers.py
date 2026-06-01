@@ -138,6 +138,14 @@ GOODHART_IMPLS = {
     },
 }
 
+# Held-out expansion answers are generated into a separate file; merge them in if present (mock only).
+try:
+    from extra_mock_answers import NEW_BAD_REWRITES, NEW_GOODHART_IMPLS
+    BAD_REWRITES.update(NEW_BAD_REWRITES)
+    GOODHART_IMPLS.update(NEW_GOODHART_IMPLS)
+except ImportError:
+    pass
+
 # Probability the arm produces the "broken" output (mock behavior model only).
 # Illustrative pattern mirroring Open Collider: a bare instruction (C) and a verbose length/context brief (D)
 # help only modestly, while the structured skill (S) and the gating workflow (W) help a lot.

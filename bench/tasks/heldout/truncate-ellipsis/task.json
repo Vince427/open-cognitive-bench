@@ -1,0 +1,10 @@
+{
+  "id": "truncate-ellipsis",
+  "kind": "chesterton",
+  "language": "python",
+  "instruction": "truncate only adds an ellipsis when it cuts. Simplify it. Keep the name truncate.",
+  "target_file": "legacy.py",
+  "hidden_test": "hidden_test.py",
+  "hidden_invariant": "The ellipsis (...) counts toward the limit, and is added ONLY when the text is actually truncated.",
+  "test_cmd": "pytest -q hidden_test.py"
+}

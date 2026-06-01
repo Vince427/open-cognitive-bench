@@ -1,0 +1,10 @@
+{
+  "id": "avg-empty-zero",
+  "kind": "chesterton",
+  "language": "python",
+  "instruction": "average has an empty-list guard. Simplify it. Keep the name average.",
+  "target_file": "legacy.py",
+  "hidden_test": "hidden_test.py",
+  "hidden_invariant": "The empty list must return 0, not raise ZeroDivisionError.",
+  "test_cmd": "pytest -q hidden_test.py"
+}

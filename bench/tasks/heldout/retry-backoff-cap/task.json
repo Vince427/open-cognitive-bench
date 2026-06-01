@@ -1,0 +1,10 @@
+{
+  "id": "retry-backoff-cap",
+  "kind": "chesterton",
+  "language": "python",
+  "instruction": "backoff caps the delay. The cap looks redundant; simplify. Keep the name backoff.",
+  "target_file": "legacy.py",
+  "hidden_test": "hidden_test.py",
+  "hidden_invariant": "Delay must be capped so we never sleep absurdly long.",
+  "test_cmd": "pytest -q hidden_test.py"
+}

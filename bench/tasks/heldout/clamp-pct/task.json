@@ -1,0 +1,10 @@
+{
+  "id": "clamp-pct",
+  "kind": "chesterton",
+  "language": "python",
+  "instruction": "clamp_pct clamps to [0, 100]. The clamps look redundant; simplify. Keep the name clamp_pct.",
+  "target_file": "legacy.py",
+  "hidden_test": "hidden_test.py",
+  "hidden_invariant": "A progress percentage must stay within [0, 100] even when the raw value overshoots.",
+  "test_cmd": "pytest -q hidden_test.py"
+}

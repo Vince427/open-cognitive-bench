@@ -1,0 +1,10 @@
+{
+  "id": "merge-skip-none",
+  "kind": "chesterton",
+  "language": "python",
+  "instruction": "merge re-implements a dict update with an if. Simplify using dict.update. Keep the name merge.",
+  "target_file": "legacy.py",
+  "hidden_test": "hidden_test.py",
+  "hidden_invariant": "A None value in override must NOT clobber an existing real value.",
+  "test_cmd": "pytest -q hidden_test.py"
+}

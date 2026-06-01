@@ -1,0 +1,10 @@
+{
+  "id": "csv-quoted",
+  "kind": "chesterton",
+  "language": "python",
+  "instruction": "split_csv is a manual parser. Simplify to line.split(','). Keep the name split_csv.",
+  "target_file": "legacy.py",
+  "hidden_test": "hidden_test.py",
+  "hidden_invariant": "Commas inside double quotes are literal and must not split the field.",
+  "test_cmd": "pytest -q hidden_test.py"
+}

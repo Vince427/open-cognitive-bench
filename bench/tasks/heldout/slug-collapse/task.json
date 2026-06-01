@@ -1,0 +1,10 @@
+{
+  "id": "slug-collapse",
+  "kind": "chesterton",
+  "language": "python",
+  "instruction": "slugify uses a regex and strip. Simplify to lower().replace(' ', '-'). Keep the name slugify.",
+  "target_file": "legacy.py",
+  "hidden_test": "hidden_test.py",
+  "hidden_invariant": "Must collapse runs of non-alphanumerics to a single dash and trim edge dashes.",
+  "test_cmd": "pytest -q hidden_test.py"
+}

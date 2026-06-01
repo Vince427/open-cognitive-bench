@@ -1,0 +1,10 @@
+{
+  "id": "dedup-order",
+  "kind": "chesterton",
+  "language": "python",
+  "instruction": "dedup uses a set and a loop. Simplify with list(set(...)). Keep the name dedup.",
+  "target_file": "legacy.py",
+  "hidden_test": "hidden_test.py",
+  "hidden_invariant": "First-seen order must be preserved; list(set(...)) loses it.",
+  "test_cmd": "pytest -q hidden_test.py"
+}

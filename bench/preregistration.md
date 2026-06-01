@@ -31,7 +31,7 @@ B (bare) · C (caution instruction) · D (length/context-matched brief, no rule)
 - Decision rule: claim an effect only if its bootstrap CI excludes 0 AND McNemar p < 0.01.
 
 ## Sample size — PROPOSED defaults (confirm & FREEZE before the held-out run)
-- Held-out tasks N = **≥ 30** (currently 5 seed tasks in repo — expand before the real run) ;
+- Held-out tasks N = **30** (in repo now: 18 chesterton + 12 goodhart, all selfcheck-validated) ;
   seeds per arm = **5** ; models = **two** (one frontier + one mid-tier, reported separately).
 - That yields ≥ 30 × 5 = 150 datapoints per arm per model. Justification: CLT CIs are unreliable below
   ~100 datapoints; if tasks stay scarce, lean on the bootstrap CIs above rather than normal-approx CIs.
