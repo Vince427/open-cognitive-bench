@@ -41,9 +41,16 @@ The **D** arm is the falsifier that the incumbents (and even Open Collider's cri
 ruleless brief of comparable length — **if `S` beats `D`, the effect is the rule, not the length.** The
 report prints per-arm input tokens so the S/D length parity is verifiable.
 
-**Primary, pre-registered question:** *does W beat S on the held-out regression rate, and by how much net
-of cost?* Metric is **execution-based** (a hidden test that only passes if the invariant survives), paired
-across arms, multi-seed, with McNemar + bootstrap CIs and Bonferroni correction. See `bench/`.
+**Primary, pre-registered question:** *does W beat S on the held-out failure rate, and by how much net
+of cost?* The metric is **execution-based**, paired across arms, multi-seed, with McNemar + bootstrap CIs
+and Bonferroni correction. See `bench/`.
+
+**Two guardrail dimensions, two failure modes** (each falsified by execution, reported separately by `stats.py`):
+- **Chesterton tasks** — the agent gets correct-but-ugly code to refactor; *failure = regression* (its edit
+  breaks a hidden invariant). Arm `S` injects `chestertons-shield`.
+- **Goodhart tasks** — the agent gets a stub + a deliberately weak *visible* test to make pass; *failure =
+  "hack"* (the visible test passes but a held-out *hidden* behavior test fails — it gamed the metric). Arm
+  `S` injects `goodhart-attack`.
 
 ## Honesty policy
 
