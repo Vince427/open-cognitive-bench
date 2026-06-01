@@ -40,7 +40,7 @@ class AnthropicProvider:
         model = model or "claude-3-5-sonnet-latest"
         t0 = time.time()
         msg = self.client.messages.create(
-            model=model, max_tokens=2048, system=system or "",
+            model=model, max_tokens=4096, system=system or "",
             messages=[{"role": "user", "content": user}],
         )
         text = "".join(getattr(b, "text", "") for b in msg.content)
@@ -64,7 +64,7 @@ class OpenAIProvider:
         if system:
             msgs.append({"role": "system", "content": system})
         msgs.append({"role": "user", "content": user})
-        resp = self.client.chat.completions.create(model=model, messages=msgs, seed=seed, max_tokens=2048)
+        resp = self.client.chat.completions.create(model=model, messages=msgs, seed=seed, max_tokens=4096)
         text = resp.choices[0].message.content or ""
         it = resp.usage.prompt_tokens
         ot = resp.usage.completion_tokens

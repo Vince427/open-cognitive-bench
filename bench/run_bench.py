@@ -4,7 +4,7 @@ Produces results/<run>/runs.jsonl (one record per task x arm x seed) plus meta.j
 path into results/latest so judge.py / stats.py can pick it up with `--run results/latest`.
 
 Usage:
-    python bench/run_bench.py --tasks bench/tasks/dev --arms B C S W --seeds 5 --provider mock
+    python bench/run_bench.py --tasks bench/tasks/dev --arms B C D S W --seeds 5 --provider mock
 """
 from __future__ import annotations
 import argparse
