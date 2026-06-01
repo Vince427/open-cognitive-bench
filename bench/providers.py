@@ -93,6 +93,25 @@ BAD_REWRITES = {
     "money-rounding": (
         "def split_installments(total_cents, n):\n    return [round(total_cents / n)] * n\n"
     ),
+    "config-bool": (
+        "def parse_bool(s):\n    return bool(s)\n"
+    ),
+    "retry-idempotency": (
+        "def process_payment(key, amount, processed, ledger):\n"
+        '    charge_id = "chg_%d" % (len(ledger) + 1)\n'
+        "    ledger[key] = charge_id\n    return charge_id\n"
+    ),
+    "business-days": (
+        "from datetime import timedelta\n\n\n"
+        "def add_business_days(start, n):\n    return start + timedelta(days=n)\n"
+    ),
+    "pagination-clamp": (
+        "def page(items, page_num, size):\n    start = (page_num - 1) * size\n"
+        "    return items[start:start + size]\n"
+    ),
+    "version-compare": (
+        "def version_ge(a, b):\n    return a >= b\n"
+    ),
 }
 
 # Probability the arm ships the invariant-breaking rewrite (mock behavior model only).

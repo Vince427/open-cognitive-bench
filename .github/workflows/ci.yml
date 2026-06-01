@@ -1,0 +1,35 @@
+name: ci
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  bench-smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      # The harness is pure stdlib — no `pip install` needed for the mock pipeline.
+      - name: Validate every task is a real trap (original passes, naive rewrite breaks it)
+        run: python bench/selfcheck.py
+
+      - name: Run the 4-arm benchmark (deterministic mock provider, no API key, no spend)
+        run: python bench/run_bench.py --tasks bench/tasks/dev --arms B C S W --seeds 5 --provider mock
+
+      - name: Score regressions (execution-based)
+        run: python bench/judge.py --run results/latest
+
+      - name: Compute stats and print the report
+        run: python bench/stats.py --run results/latest
+
+      - name: Upload run artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: bench-run
+          path: results/run-*/

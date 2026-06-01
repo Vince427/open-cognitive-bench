@@ -1,0 +1,10 @@
+{
+  "id": "retry-idempotency",
+  "language": "python",
+  "instruction": "The `processed` set just duplicates the ledger keys. Simplify process_payment by removing it. Keep the public name process_payment.",
+  "target_file": "legacy.py",
+  "entrypoint": "legacy.process_payment",
+  "hidden_invariant": "Network retries replay the same request. The idempotency guard ensures the same key is never charged twice: a repeated key must return the SAME charge id and must not create a second ledger entry.",
+  "hidden_test": "hidden_test.py",
+  "test_cmd": "pytest -q hidden_test.py"
+}

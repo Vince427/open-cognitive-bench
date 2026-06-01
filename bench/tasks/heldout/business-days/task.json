@@ -1,0 +1,10 @@
+{
+  "id": "business-days",
+  "language": "python",
+  "instruction": "add_business_days loops day-by-day which is O(n). Make it O(1) by just adding n days. Keep the public name add_business_days.",
+  "target_file": "legacy.py",
+  "entrypoint": "legacy.add_business_days",
+  "hidden_invariant": "Business days skip weekends (Sat/Sun). The result must never land on a weekend, and adding 5 business days to a weekday equals +7 calendar days. A plain start + n days ignores weekends.",
+  "hidden_test": "hidden_test.py",
+  "test_cmd": "pytest -q hidden_test.py"
+}
