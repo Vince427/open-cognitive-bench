@@ -20,7 +20,8 @@ from collections import defaultdict
 from math import comb
 from pathlib import Path
 
-COMPARISONS = [("W", "S"), ("S", "B"), ("C", "B")]
+# Primary: W vs S. Key isolation: S vs D (rule vs mere prompt length). Falsifiers: S/D/C vs B.
+COMPARISONS = [("W", "S"), ("S", "D"), ("S", "B"), ("D", "B"), ("C", "B")]
 N_BOOT = 1000
 ALPHA = 0.05
 

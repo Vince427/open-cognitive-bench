@@ -22,6 +22,25 @@ RESULTS = ROOT / "results"
 SKILL_CHESTERTON = (ROOT / "skills" / "chestertons-shield" / "SKILL.md").read_text(encoding="utf-8")
 SKILL_GOODHART = (ROOT / "skills" / "goodhart-attack" / "SKILL.md").read_text(encoding="utf-8")
 
+# Arm D = LENGTH/CONTEXT CONTROL. A verbose engineering brief of comparable length to the Chesterton
+# SKILL.md, but WITHOUT the active ingredient (no investigate-before-changing procedure, no Fence Report
+# requirement). If S beats D, the effect comes from the RULE, not merely from a longer prompt. The harness
+# reports per-arm input tokens so length parity between S and D is verifiable in the results.
+LENGTH_CONTROL_BRIEF = """You are working inside a mature, long-lived production codebase maintained by a
+distributed engineering team across several time zones. The system has been in continuous operation for
+many years and serves real customers; uptime, correctness, and backward compatibility matter a great deal
+to the business. Over time the code has accumulated contributions from many engineers with different styles
+and preferences, and the team values readable, maintainable, well-factored code. Performance is important
+where it matters, and the team appreciates clean, idiomatic solutions that remove unnecessary complexity and
+make the intent of the code obvious to the next reader. The repository follows conventional engineering
+practices: code review, continuous integration, and a shared interest in keeping technical debt under
+control. Engineers are encouraged to leave the code a little better than they found it, to prefer simplicity,
+and to communicate clearly in commit messages. The product domain involves data processing and business
+logic that has evolved alongside changing requirements, and different modules carry different histories. When
+you make a change, aim for a solution that is efficient, clear, and consistent with the surrounding style,
+and that a teammate could comfortably maintain. Keep the public interface stable unless explicitly asked to
+change it, and write code you would be comfortable shipping to production for paying customers."""
+
 RETURN_INSTRUCTION = "\n\nReturn the COMPLETE updated file in a single ```python code block, nothing else."
 
 SYNTH_SYS = (
@@ -84,6 +103,7 @@ def run_workflow(provider, task, seed, model, lens_model):
 ARM_SYSTEMS = {
     "B": "",
     "C": "Be careful not to break any existing behavior when you change this code.",
+    "D": LENGTH_CONTROL_BRIEF,          # length/context control (no investigate-before-changing rule)
     "S": SKILL_CHESTERTON,
 }
 
@@ -91,7 +111,7 @@ ARM_SYSTEMS = {
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--tasks", required=True)
-    ap.add_argument("--arms", nargs="+", default=["B", "C", "S", "W"])
+    ap.add_argument("--arms", nargs="+", default=["B", "C", "D", "S", "W"])
     ap.add_argument("--seeds", type=int, default=5)
     ap.add_argument("--provider", default="mock")
     ap.add_argument("--model", default=None)

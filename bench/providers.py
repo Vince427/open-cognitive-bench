@@ -115,7 +115,9 @@ BAD_REWRITES = {
 }
 
 # Probability the arm ships the invariant-breaking rewrite (mock behavior model only).
-BREAK_PROB = {"B": 0.85, "C": 0.60, "S": 0.20, "W": 0.08}
+# Illustrative pattern mirroring Open Collider's finding: a bare instruction (C) and a verbose length/context
+# brief (D) help only modestly, while the structured skill (S) and the gating workflow (W) help a lot.
+BREAK_PROB = {"B": 0.85, "C": 0.65, "D": 0.55, "S": 0.20, "W": 0.10}
 
 _FENCE = (
     "# Fence Report\n"

@@ -19,7 +19,7 @@ jobs:
         run: python bench/selfcheck.py
 
       - name: Run the 4-arm benchmark (deterministic mock provider, no API key, no spend)
-        run: python bench/run_bench.py --tasks bench/tasks/dev --arms B C S W --seeds 5 --provider mock
+        run: python bench/run_bench.py --tasks bench/tasks/dev --arms B C D S W --seeds 5 --provider mock
 
       - name: Score regressions (execution-based)
         run: python bench/judge.py --run results/latest

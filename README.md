@@ -32,8 +32,14 @@ execution-based, paired benchmark.
 |---|---|---|
 | **B** | Solo agent, bare: "refactor/optimize this" | floor |
 | **C** | Solo + "be careful, don't break anything" | isolates *skill* vs *mere instruction* |
+| **D** | Solo + a length/context-matched brief (no investigate-before-changing rule) | isolates *the rule* vs *mere prompt length* |
 | **S** | Solo + **Skill** (`chestertons-shield`) | the **strong baseline** (hard to beat) |
 | **W** | **Workflow** multi-agent gating panel | the active mode under test |
+
+The **D** arm is the falsifier that the incumbents (and even Open Collider's critics) demand: because the
+`S` system prompt is longer than `B`, a naive `S > B` win could just be "more tokens." `D` is a verbose,
+ruleless brief of comparable length — **if `S` beats `D`, the effect is the rule, not the length.** The
+report prints per-arm input tokens so the S/D length parity is verifiable.
 
 **Primary, pre-registered question:** *does W beat S on the held-out regression rate, and by how much net
 of cost?* Metric is **execution-based** (a hidden test that only passes if the invariant survives), paired
@@ -55,10 +61,26 @@ requirements.txt` only adds the optional model SDKs (for real runs) and `pytest`
 # 0) Sanity: every task is a valid trap (original passes, naive rewrite breaks the invariant)
 python bench/selfcheck.py
 # 1) Smoke-test the whole harness with NO API key and NO spend (deterministic mock provider):
-python bench/run_bench.py --tasks bench/tasks/dev --arms B C S W --seeds 5 --provider mock
+python bench/run_bench.py --tasks bench/tasks/dev --arms B C D S W --seeds 5 --provider mock
 python bench/judge.py     --run results/latest
 python bench/stats.py     --run results/latest
 ```
+
+### Run with a real model (when you have a standard Python install)
+
+`python`/`py` is not bundled with Windows — install Python 3.11+ from python.org (tick "Add to PATH"),
+then:
+
+```powershell
+pip install anthropic openai          # only needed for real runs; pytest is optional
+setx ANTHROPIC_API_KEY "sk-ant-..."   # or OPENAI_API_KEY; reopen the terminal afterwards
+# Iterate on the DEV set first:
+.\run.ps1 -Provider anthropic -Model claude-sonnet-4-5 -Tasks bench\tasks\dev -Seeds 5
+# Linux/macOS: ./run.sh anthropic claude-sonnet-4-5 bench/tasks/dev 5
+```
+
+`run.ps1` / `run.sh` just chain `run_bench → judge → stats`. **Before** touching the held-out set, freeze
+`bench/preregistration.md` (commit it), then run **once** with `-Tasks bench\tasks\heldout`.
 
 Then set `ANTHROPIC_API_KEY` / `OPENAI_API_KEY` and swap `--provider anthropic` (or `openai`).
 **Iterate only on `bench/tasks/dev/`.** Keep `bench/tasks/heldout/` sealed; score it **once** at the end,

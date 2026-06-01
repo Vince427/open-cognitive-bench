@@ -11,9 +11,15 @@ stats.py       # McNemar + bootstrap CIs + Bonferroni; writes results/<run>/repo
 
 ## Arms
 - **B** — solo, bare prompt: "refactor/optimize this."
-- **C** — solo + "be careful, don't break anything."
-- **S** — solo + the `chestertons-shield` SKILL.md injected (strong baseline).
+- **C** — solo + "be careful, don't break anything." (isolates skill vs mere instruction)
+- **D** — solo + a length/context-matched brief with NO investigate-before-changing rule. The length
+  control: if **S beats D**, the effect is the *rule*, not just a longer prompt. Per-arm input tokens are
+  reported so S/D length parity is auditable.
+- **S** — solo + the `chestertons-shield` SKILL.md injected (the strong baseline).
 - **W** — the multi-agent gating workflow (lenses → synthesizer gate → implementer → verify).
+
+Comparisons computed by `stats.py`: **W vs S** (primary), **S vs D** (rule vs length), and the falsifiers
+S vs B, D vs B, C vs B — with Bonferroni correction across all five.
 
 ## Task format
 Each task is a directory under `tasks/{dev,heldout}/<id>/`:
@@ -38,7 +44,7 @@ hidden_test.py   # NOT shown to the agent; run by judge.py; passes ONLY if the i
 
 ## Reproduce without an API key (mock provider)
 ```bash
-python bench/run_bench.py --tasks bench/tasks/dev --arms B C S W --seeds 5 --provider mock
+python bench/run_bench.py --tasks bench/tasks/dev --arms B C D S W --seeds 5 --provider mock
 python bench/judge.py     --run results/latest
 python bench/stats.py     --run results/latest
 ```
@@ -49,7 +55,7 @@ preserve it (with a Fence Report). It exists to validate the plumbing and the st
 ## Real runs
 ```bash
 export ANTHROPIC_API_KEY=...        # or OPENAI_API_KEY
-python bench/run_bench.py --tasks bench/tasks/dev --arms B C S W --seeds 5 \
+python bench/run_bench.py --tasks bench/tasks/dev --arms B C D S W --seeds 5 \
        --provider anthropic --model claude-... --lens-model claude-...
 ```
 Iterate on `tasks/dev/` only. Freeze `preregistration.md`, then run `--tasks bench/tasks/heldout` exactly once.
