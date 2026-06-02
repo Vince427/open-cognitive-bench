@@ -10,6 +10,12 @@
 - Pre-registration frozen at commit: `<hash>`
 - Reproduce: `./run.sh <provider> <model> bench/tasks/heldout <seeds>` (or `run.ps1`)
 
+## Design power (assessed pre-run, LLM-free)
+From `bench/power.py` / `bench/power_analysis.md` (reuses the exact decision rule): at 30×5 the **S vs D**
+comparison and the vs-B falsifiers are well powered (~90–100%), but the **primary W vs S is under-powered
+for a small ~0.10 absolute gap (~40%)**. So report a non-significant **W vs S** as a difference + CI, not as
+"no effect." The rule's false-positive rate is calibrated (≤ ~0.01 even under task heterogeneity).
+
 ## Headline
 `<one honest sentence: did W beat S on the held-out failure rate, and was it worth the cost? If not, say so.>`
 
@@ -42,6 +48,9 @@
 - `<S vs D: is the effect the rule or just prompt length?>`
 - Limitations: `<held-out authored by skill author? single language? models tested? judge calibration?>` —
   see `KNOWN_ISSUES.md`.
+- Construct: this is a **single-shot, no-tools** measurement (one prompt → one edit; the invariant is
+  discoverable from the injected `usage.py`, not via real `git blame`/grep/test-running). It speaks to a
+  prompt/skill effect, not a tool-using investigative loop — see `README.md` → "What is actually measured."
 
 ## Honesty
 Per the project policy, this file is published **regardless of outcome**, including W not beating S or the

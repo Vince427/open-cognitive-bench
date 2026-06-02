@@ -140,6 +140,7 @@ independent contributor expand or replace the held-out tasks.
 - [`CONCEPTUAL_FOUNDATION.md`](CONCEPTUAL_FOUNDATION.md) — why these guardrails should work (evidence-grounded).
 - [`CONTRIBUTING.md`](CONTRIBUTING.md) — how to author trap tasks (and the held-out independence rule).
 - [`bench/preregistration.md`](bench/preregistration.md) — freeze before the held-out run.
+- [`bench/power_analysis.md`](bench/power_analysis.md) — is the design powered? (LLM-free Monte-Carlo).
 - [`RESULTS.md`](RESULTS.md) — results template (fill after the real run).
 - [`KNOWN_ISSUES.md`](KNOWN_ISSUES.md) — QA findings & their status.
 - [`BLOG_POST.md`](BLOG_POST.md) — the rationale post (why benchmark guardrails at all).
