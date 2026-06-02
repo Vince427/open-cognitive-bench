@@ -90,6 +90,15 @@ def test_bootstrap_extremes_pin_to_minus_one():
     assert lo == -1.0 and hi == -1.0  # X always 0, Y always 1 -> diff is always -1
 
 
+def test_forest_row_places_markers():
+    line = stats.forest_row("W vs S", -0.10, -0.20, -0.05, True, width=41, label_w=12)
+    assert line.startswith("W vs S")
+    bar = line.split(None, 2)[2].split(" -0.100")[0]  # the ASCII bar between label and value
+    assert "[" in bar and "]" in bar and "o" in bar and "|" in bar
+    assert line.endswith("-0.100 *")                  # significance marker present
+    assert stats.forest_row("D vs B", 0.0, -0.1, 0.1, False).endswith("+0.000")  # no marker when n.s.
+
+
 def test_bootstrap_identical_contains_zero():
     keys = [("t%d" % i, 0) for i in range(10)]
     x = {k: (i % 2) for i, k in enumerate(keys)}

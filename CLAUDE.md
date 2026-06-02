@@ -11,7 +11,7 @@ exists before changing it) and **Goodhart Attack** (don't game the metric). Benc
 
 ## Status (2026-06-02)
 - 14+ commits, branch `main`, **local only**, author identity = `Vince427` (repo-local git config).
-- **34 trap tasks** (4 dev + 30 held-out = 18 chesterton + 12 goodhart). `selfcheck` 34/34. 19 harness unit tests. CI = pure stdlib.
+- **34 trap tasks** (4 dev + 30 held-out = 18 chesterton + 12 goodhart). `selfcheck` 34/34. 20 harness unit tests. CI = pure stdlib.
 - QA M1–M4, L1–L4, N1–N4 resolved/documented; **V1 RESOLVED (de-spoiled + usage.py), V2 DOCUMENTED (scope limit), PA DONE (power.py)** — see `KNOWN_ISSUES.md`.
 - **Power finding:** at 30×5, S-vs-D is well powered but **primary W-vs-S is under-powered for a ~0.10 gap (~40%)** — report it as a CI, not a verdict (`bench/power_analysis.md`).
 - **No real-model results yet.** `--provider mock` is a deterministic simulator (tautological). The empirical run is the missing piece.
@@ -26,7 +26,7 @@ exists before changing it) and **Goodhart Attack** (don't game the metric). Benc
 ## Run it
 ```
 $py = "C:\Program Files\LibreOffice\program\python.exe"
-& $py tests/test_harness.py                                                   # 19 harness unit tests
+& $py tests/test_harness.py                                                   # 20 harness unit tests
 & $py bench/selfcheck.py                                                      # every task is a VALID trap
 & $py bench/run_bench.py --tasks bench/tasks/dev --arms B C D S W --seeds 5 --provider mock
 & $py bench/judge.py --run results/latest
@@ -39,7 +39,7 @@ Real run (needs a standard Python + key): `pip install ".[providers]"`, set `ANT
 ## Map
 - `skills/{chestertons-shield,goodhart-attack}/SKILL.md` — the guardrails (cross-tool).
 - `workflows/{antigravity,claude-code}/` — the multi-agent gating workflow (arm W).
-- `bench/`: `run_bench.py` (arms B/C/D/S/W, kind-aware, injects `context_files`), `judge.py` (execution metric: chesterton=regression, goodhart=hack), `stats.py` (McNemar+bootstrap+Bonferroni, per-kind), `power.py` (Monte-Carlo power, reuses stats' rule) + `power_analysis.md`, `selfcheck.py`, `providers.py` (anthropic/openai/mock), `extra_mock_answers.py`, `preregistration.md`.
+- `bench/`: `run_bench.py` (arms B/C/D/S/W, kind-aware, injects `context_files`), `judge.py` (execution metric: chesterton=regression, goodhart=hack), `stats.py` (McNemar+bootstrap+Bonferroni, per-kind, ASCII forest plot), `power.py` (Monte-Carlo power, reuses stats' rule) + `power_analysis.md`, `selfcheck.py`, `providers.py` (anthropic/openai/mock), `extra_mock_answers.py`, `preregistration.md`.
 - `bench/tasks/{dev,heldout}/<id>/`: chesterton = `legacy.py`+`hidden_test.py`(+`usage.py` discoverable context); goodhart = stub+`visible_test.py`+`hidden_test.py`.
 - `tests/test_harness.py`; docs: `CONCEPTUAL_FOUNDATION.md`, `CONTRIBUTING.md`, `KNOWN_ISSUES.md`, `RESULTS.md` (template), `BLOG_POST.md`, `MULTILANG.md`.
 

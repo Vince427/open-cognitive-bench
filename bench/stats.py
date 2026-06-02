@@ -59,6 +59,39 @@ def percentile(vals, q):
     return vals[max(0, min(len(vals) - 1, idx))]
 
 
+def forest_row(label, diff, lo, hi, sig, width=41, label_w=12):
+    """One monospace forest-plot line: a [lo .. hi] CI bar with the point estimate `o`, over an axis
+    mapping the failure-rate difference [-1, +1] to `width` cols (0 at center). Pure-stdlib, no deps."""
+    def col(v):
+        v = max(-1.0, min(1.0, v))
+        return int(round((v + 1) / 2 * (width - 1)))
+    cells = [" "] * width
+    cells[col(0.0)] = "|"                       # zero line
+    a, b = sorted((col(lo), col(hi)))
+    for i in range(a, b + 1):
+        if cells[i] == " ":
+            cells[i] = "-"
+    cells[a], cells[b] = "[", "]"
+    cells[col(diff)] = "o"                       # point estimate (may overwrite a bracket/zero)
+    return f"{label:<{label_w}.{label_w}} {''.join(cells)} {diff:+.3f}{' *' if sig else ''}"
+
+
+def forest_block(rows, width=41):
+    """Render a list of (label, diff, lo, hi, sig) as a fenced ASCII forest plot."""
+    if not rows:
+        return []
+    center = int(round(0.5 * (width - 1)))
+    ruler = [" "] * width
+    for c, ch in ((0, "-"), (center, "0"), (width - 1, "+")):
+        ruler[c] = ch
+    scale = f"{'':12} {''.join(ruler)}"
+    head = f"{'-1.0':<12} {'(X−Y failure-rate difference)':<{width}} +1.0"
+    body = [forest_row(*r, width=width) for r in rows]
+    return ["", "## Forest plot (negative ⇒ X failed less ⇒ X better; `*` = significant)", "",
+            "```", head, scale] + body + ["```",
+            "_CI bar = bootstrap 95% CI; `o` = point estimate; `|`/`0` = no difference._", ""]
+
+
 def bootstrap_diff_ci(x, y, keys, rng):
     by_task = defaultdict(list)
     for (task, seed) in keys:
@@ -146,6 +179,7 @@ def main():
             "| X vs Y | Δ failure (X−Y) | bootstrap 95% CI | McNemar p (n10/n01) | cost X/Y | verdict |",
             "|---|---|---|---|---|---|"]
     rng = random.Random(0)
+    forest = []
     for x, y in COMPARISONS:
         if x not in reg or y not in reg:
             continue
@@ -159,8 +193,10 @@ def main():
         sig = (hi < 0 or lo > 0) and p < bonf
         verdict = ("X better" if diff < 0 else "Y better") if sig else "no sig. effect"
         out.append(f"| {x} vs {y} | {diff:+.3f} | [{lo:+.3f}, {hi:+.3f}] | {p:.4f} ({n10}/{n01}) | {ratio:.1f}× | {verdict} |")
+        forest.append((f"{x} vs {y}", diff, lo, hi, sig))
 
-    out += ["", "_Lower failure rate is better; negative Δ means X failed less than Y._",
+    out += forest_block(forest)
+    out += ["_Lower failure rate is better; negative Δ means X failed less than Y._",
             "_Primary comparison is **W vs S**, interpreted net of the cost ratio. **S vs D** isolates the rule from prompt length._", ""]
     report = "\n".join(out)
     (run_dir / "report.md").write_text(report + "\n", encoding="utf-8")
