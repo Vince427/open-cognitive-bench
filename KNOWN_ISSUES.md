@@ -68,6 +68,39 @@ the highest-value remaining offline work; all three are now resolved/documented.
 
 ---
 
+## Offline-completeness certification — 2026-06-02
+QA pass to certify that **no remaining work that advances the project's thesis is doable without an LLM.**
+Benchmarked the methodology against **Open Collider** (`github.com/CL-ML/open-collider`), our spiritual
+baseline, item by item.
+
+Verified green at certification time: harness tests **20/20**, `selfcheck` **34/34**, full mock pipeline
+(`run_bench → judge → stats`+forest) OK, `power.py` runs.
+
+Open Collider parity (offline-comparable methodology):
+- Falsifier controls (their C "be original" + D "longer brief") → we have arms **C and D**. ✓ (parity)
+- Paired stats → we use **McNemar exact + task-clustered bootstrap** (stronger than their sign test). ✓ (exceeds)
+- Pre-registration, reproducible no-key run, machine-readable exports (JSONL), cost reporting → ✓.
+- **Forest plot** (their headline visual) → was the one offline gap; **now shipped** as a pure-stdlib ASCII
+  forest plot in `stats.py`. ✓ (closed this pass)
+- Multi-judge LLM voting, judge heatmap, semantic-embedding analysis → **need an LLM/embeddings.** ✗ offline.
+
+Remaining work, by blocker:
+| Item | Blocker | Offline? |
+|---|---|---|
+| Real-model run → `RESULTS.md` | LLM API key (+ standard Python) | ✗ needs AI |
+| LLM-as-judge (secondary metric) | LLM (different family) | ✗ needs AI |
+| Multi-judge consensus / embedding analysis | LLM / embedding model | ✗ needs AI |
+| Agentic tool-using harness (true V2 fix) | scaffolding is writable, but pointless/unvalidatable without a model | ✗ needs AI |
+| Multi-lang runner + non-Python traps (N3) | `dotnet`/`node` runtimes not on this machine | ✗ needs runtimes (not AI) |
+| Publish under `Vince427` / push remote | network + a human go/no-go decision | ✗ needs decision/network |
+| `src/` packaging layout | none | ✓ but deferred: churn (rewire imports/CI) > value at PoC, adds risk |
+| CSV export of judgments | none | ✓ but skipped: JSONL is already machine-readable; ~zero added value |
+
+**Conclusion:** every item with *evidential or methodological* value is blocked on an LLM (or absent
+runtimes / a publish decision). The only purely-offline items left are low-value structural/cosmetic ones
+that don't advance the thesis and carry churn/risk, so they are deliberately deferred. The offline validity
++ methodology work is **complete**; the project is blocked on the empirical run, which requires AI.
+
 ## 🟠 Medium
 
 ### M1 — Temperature is never applied
