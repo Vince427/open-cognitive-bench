@@ -15,6 +15,9 @@ jobs:
           python-version: "3.11"
 
       # The harness is pure stdlib — no `pip install` needed for the mock pipeline.
+      - name: Unit-test the harness (pure stdlib)
+        run: python tests/test_harness.py
+
       - name: Validate every task is a real trap (original passes, naive rewrite breaks it)
         run: python bench/selfcheck.py
 

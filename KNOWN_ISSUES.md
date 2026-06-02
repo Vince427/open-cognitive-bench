@@ -29,8 +29,9 @@ The detailed findings below are kept as the historical record; the "by design" a
 - **bench/README arm count — FIXED.** Said "four arms (B/C/S/W)"; now "five arms (B/C/D/S/W)".
 - **N1 (LLM judge doc≠code) — FIXED (doc).** `bench/README.md` now states the metric is execution-only plus
   an advisory `artifact_ok` regex; a full LLM-as-judge is marked explicit future work (not implemented).
-- **N2 — OPEN.** No unit tests for the harness logic (stats McNemar/bootstrap, `extract_code`, judge
-  classification). `selfcheck` validates *tasks*, not the harness. Add a `tests/`.
+- **N2 — FIXED.** `tests/test_harness.py` unit-tests the harness (McNemar exact, bootstrap, percentile/mean,
+  `extract_code` incl. the M2 fix, and the judge execution runner) — 16 tests, dual-mode (pytest or
+  `python tests/test_harness.py`), run by CI.
 - **N3 — OPEN.** Tasks are Python-only; real-world breadth (e.g. C#/JS) and the original motivating domain
   are uncovered. Add a multi-language runner + ≥1 non-Python trap, or document the scope.
 - **N4 — OPEN (cosmetic).** `<your-org>` placeholders in `README.md` / `.claude-plugin/marketplace.json` —

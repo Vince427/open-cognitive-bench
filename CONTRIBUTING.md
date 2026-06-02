@@ -5,6 +5,7 @@ The most valuable contribution is **new trap tasks** — especially **independen
 
 ## Quick loop
 ```bash
+python tests/test_harness.py                                # unit-test the harness (stdlib; also in CI)
 python bench/selfcheck.py                                   # every task must be a VALID trap
 python bench/run_bench.py --tasks bench/tasks/dev --arms B C D S W --seeds 5 --provider mock
 python bench/judge.py --run results/latest && python bench/stats.py --run results/latest
