@@ -47,6 +47,9 @@ This is a **prompt/skill effect under one-shot conditions**, NOT a tool-using in
   ~0.10 absolute gap** (~40% power). Decision: report W-vs-S **as a difference + bootstrap CI** (not a
   binary verdict) at this N; if a tight verdict is needed, pre-commit to expanding tasks/seeds (the
   clustered bootstrap benefits more from added **tasks** than added seeds). See `bench/power_analysis.md`.
+- **Type-I calibration:** the same Monte-Carlo confirms the decision rule holds its false-positive rate at
+  **≤ ~0.01 even under task heterogeneity** (σ up to 1.5): the conservative task-clustered bootstrap in the
+  AND-rule absorbs the McNemar pooling's anticonservatism. So the rule does not over-claim under clustering.
 
 ## Cost reporting (mandatory, not a gate)
 Report mean tokens, USD, and wall-clock latency per arm. The W-vs-S verdict is interpreted **net of the

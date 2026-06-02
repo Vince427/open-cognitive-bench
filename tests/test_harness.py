@@ -138,6 +138,14 @@ def test_power_realized_rates_track_inputs():
     assert abs(rmX - 0.20) < 0.06 and abs(rmY - 0.60) < 0.06   # i.i.d. case recovers the input rates
 
 
+def test_power_null_controls_type_one_error():
+    # Under no true effect the exact decision rule must rarely fire, even with task heterogeneity.
+    stats.N_BOOT = 120
+    fpr0 = power.false_positive_rate(0.40, n_tasks=30, n_seeds=5, sigma=0.0, sims=120, rng=random.Random(2))
+    fpr1 = power.false_positive_rate(0.40, n_tasks=30, n_seeds=5, sigma=1.0, sims=120, rng=random.Random(3))
+    assert fpr0 <= 0.05 and fpr1 <= 0.05   # generous bound for small-sims MC; target is ~0.01
+
+
 if __name__ == "__main__":
     g = dict(globals())
     tests = sorted((k, v) for k, v in g.items() if k.startswith("test_") and callable(v))

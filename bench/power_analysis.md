@@ -27,6 +27,17 @@ Smallest absolute failure-rate reduction from each baseline that this design det
 | 0.50 | 0.20 | 0.25 |
 | 0.60 | 0.25 | 0.25 |
 
+## Null calibration (type-I error)
+
+With NO true effect (mX = mY), the rule should declare a significant difference at most ~0.01 of the time. Empirical false-positive rate (any direction):
+
+| Baseline rate | FPR σ=0 | FPR σ=1 |
+|---|---|---|
+| 0.30 |  0.7% |  0.3% |
+| 0.50 |  0.8% |  0.8% |
+
+Stays at/below the 0.01 target across heterogeneity levels (±MC noise) — the conservative task-clustered bootstrap in the AND-rule absorbs the McNemar pooling's anticonservatism, so the pre-registered procedure does not inflate false positives under clustering.
+
 ## How to read this
 
 - A power below ~80% for a scenario means: *if* the true gap were that size, we'd often FAIL to call it significant -- the run would be underpowered for that effect.
