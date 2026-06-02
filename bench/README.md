@@ -6,7 +6,7 @@ chesterton "regression" traps and goodhart "metric-gaming" traps.
 ## Pipeline
 ```
 run_bench.py   # produces edits per (task, arm, seed); records tokens/$/latency  -> results/<run>/runs.jsonl
-judge.py       # runs each edit's HIDDEN test (goodhart: visible+hidden) => failed yes/no + a regex artifact check
+judge.py       # runs each edit's HIDDEN test (goodhart: visible+hidden) => failed yes/no + artifact check; writes judgments.jsonl + judgments.csv
 stats.py       # McNemar + bootstrap CIs + Bonferroni + ASCII forest plot; writes results/<run>/report.md
 power.py       # Monte-Carlo power analysis (no LLM): reuses stats' exact decision rule  -> power_analysis.md
 ```

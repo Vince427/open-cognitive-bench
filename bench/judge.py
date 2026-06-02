@@ -13,6 +13,7 @@ Usage:
 """
 from __future__ import annotations
 import argparse
+import csv
 import importlib.util
 import json
 import re
@@ -122,8 +123,14 @@ def main():
 
     (run_dir / "judgments.jsonl").write_text(
         "\n".join(json.dumps(j, ensure_ascii=False) for j in judgments) + "\n", encoding="utf-8")
+    # Also emit a flat CSV (same fields) for spreadsheet/pandas analysis of a real run; stdlib only.
+    if judgments:
+        with (run_dir / "judgments.csv").open("w", newline="", encoding="utf-8") as f:
+            w = csv.DictWriter(f, fieldnames=list(judgments[0].keys()))
+            w.writeheader()
+            w.writerows(judgments)
     n_fail = sum(j["failed"] for j in judgments)
-    print(f"\nJudged {len(judgments)} runs; {n_fail} failures -> {run_dir / 'judgments.jsonl'}")
+    print(f"\nJudged {len(judgments)} runs; {n_fail} failures -> {run_dir / 'judgments.jsonl'} (+ judgments.csv)")
 
 
 if __name__ == "__main__":

@@ -93,13 +93,14 @@ Remaining work, by blocker:
 | Agentic tool-using harness (true V2 fix) | scaffolding is writable, but pointless/unvalidatable without a model | ✗ needs AI |
 | Multi-lang runner + non-Python traps (N3) | `dotnet`/`node` runtimes not on this machine | ✗ needs runtimes (not AI) |
 | Publish under `Vince427` / push remote | network + a human go/no-go decision | ✗ needs decision/network |
-| `src/` packaging layout | none | ✓ but deferred: churn (rewire imports/CI) > value at PoC, adds risk |
-| CSV export of judgments | none | ✓ but skipped: JSONL is already machine-readable; ~zero added value |
+| CSV export of judgments | none | ✓ **DONE** — `judge.py` now writes `judgments.csv` beside the JSONL |
+| `src/` packaging layout | none | ✓ but deferred: it's a structural refactor, not cosmetic — would rewire flat `sys.path` imports, CI commands, run scripts, 6 docs, pyproject, and marketplace skill paths; high regression risk, zero thesis value |
 
 **Conclusion:** every item with *evidential or methodological* value is blocked on an LLM (or absent
-runtimes / a publish decision). The only purely-offline items left are low-value structural/cosmetic ones
-that don't advance the thesis and carry churn/risk, so they are deliberately deferred. The offline validity
-+ methodology work is **complete**; the project is blocked on the empirical run, which requires AI.
+runtimes / a publish decision). The one cheap zero-risk offline item (CSV export) is now done; the only
+purely-offline item left is the `src/` layout, which is a risky repo-wide refactor with no thesis value and
+is deliberately deferred. The offline validity + methodology work is **complete**; the project is blocked on
+the empirical run, which requires AI.
 
 ## 🟠 Medium
 
