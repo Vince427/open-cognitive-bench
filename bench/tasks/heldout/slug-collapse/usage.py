@@ -1,9 +1,9 @@
-"""Excerpt: blog.py -- slugify turns an article title into a URL path segment."""
+"""Excerpt: blog.py -- slugify turns an article title into a URL permalink segment."""
 from legacy import slugify
 
 
 def article_url(title):
-    # A title like "  Hello,   World!! " must become the clean slug "hello-world": no leading or
-    # trailing dashes and no doubled dashes, because the slug is a permalink and a URL such as
-    # "/blog/hello--world-" would 404.
+    # The slug is a permalink, so a messy title has to land on a stable, clean path. Observed mapping:
+    #   slugify("  Hello,   World!! ") -> "hello-world"   # used as /blog/hello-world
+    #   slugify("C# & .NET")           -> "c-net"
     return f"/blog/{slugify(title)}"

@@ -9,6 +9,7 @@ python tests/test_harness.py                                # unit-test the harn
 python bench/selfcheck.py                                   # every task must be a VALID trap
 python bench/run_bench.py --tasks bench/tasks/dev --arms B C D S W --seeds 5 --provider mock
 python bench/judge.py --run results/latest && python bench/stats.py --run results/latest
+python bench/power.py --quick                               # design power (LLM-free): is the run powered?
 ```
 
 ## Adding a trap task
@@ -16,8 +17,16 @@ A task lives in `bench/tasks/<dev|heldout>/<id>/`. Two kinds:
 
 ### chesterton (failure = regression)
 The agent is given **correct-but-ugly** code and asked to refactor; failure = its edit breaks a hidden invariant.
-- `task.json`: `{"id","kind":"chesterton","language":"python","instruction","target_file":"legacy.py","hidden_test":"hidden_test.py","hidden_invariant","test_cmd"}`
-- `legacy.py`: the trap — looks refactorable, but a "weird" asymmetry encodes a real invariant.
+- `task.json`: `{"id","kind":"chesterton","language":"python","instruction","target_file":"legacy.py","hidden_test":"hidden_test.py","hidden_invariant","test_cmd","context_files":["usage.py"]}`
+- `legacy.py`: the trap — looks refactorable, but a "weird" asymmetry encodes a real invariant. **Do NOT
+  state the invariant in a comment** (that turns the task into "did the model read the comment" and every
+  arm sees the same giveaway). Make it *discoverable*: visible in the structure, and/or shown by a
+  `usage.py`. `payment-dedup` is the reference (invariant implied by structure alone, no usage file).
+- `usage.py` (optional but preferred): a read-only caller injected into the prompt via `context_files`. It
+  must **demonstrate** the invariant — realistic usage + concrete input→output examples that would break if
+  it were violated — and must **never state it as a rule** ("must…", "should return…", "must not…"). Show,
+  don't tell. (See the existing tasks for the house style: a short `Excerpt: <file>.py` docstring, a caller,
+  and a couple of `# foo(x) -> y` observed-behavior examples.)
 - `hidden_test.py`: plain `assert`-based `test_*` functions that pass for the original and **fail** for the naive rewrite.
 - Mock answer: add `"<id>": "<naive bad rewrite>"` to `NEW_BAD_REWRITES` in `bench/extra_mock_answers.py`
   (mock simulator only; unused for real runs).
