@@ -1,11 +1,12 @@
 # bench/ — the falsification harness
 
-Execution-based, paired, multi-seed benchmark comparing four arms (B/C/S/W) on "Chesterton-trap" tasks.
+Execution-based, paired, multi-seed benchmark comparing five arms (B/C/D/S/W) across two task kinds:
+chesterton "regression" traps and goodhart "metric-gaming" traps.
 
 ## Pipeline
 ```
 run_bench.py   # produces edits per (task, arm, seed); records tokens/$/latency  -> results/<run>/runs.jsonl
-judge.py       # runs each edit's HIDDEN test => regression yes/no; optional debiased LLM judge (secondary)
+judge.py       # runs each edit's HIDDEN test (goodhart: visible+hidden) => failed yes/no + a regex artifact check
 stats.py       # McNemar + bootstrap CIs + Bonferroni; writes results/<run>/report.md
 ```
 
@@ -69,5 +70,7 @@ Iterate on `tasks/dev/` only. Freeze `preregistration.md`, then run `--tasks ben
 ## Important
 - "Tests pass" is a leaky proxy: ~20% of "solved" SWE-bench patches are wrong under stronger tests. Keep
   hidden tests behavior-covering and spot-check diffs by hand.
-- Calibrate any LLM judge against ~20 human labels (target ~85% agreement) before trusting it; it is a
-  secondary signal only. The primary metric is execution.
+- The metric is **execution only.** `judge.py` also records a cheap regex `artifact_ok` (did the response
+  cite a Fence/Goodhart report) as an advisory signal. A full **LLM-as-judge is NOT implemented** (future
+  work): if added, it must use a model family different from the generator, be debiased (order-swap +
+  length-control) and calibrated against ~20 human labels (~85% agreement) — and stay secondary to execution.

@@ -107,6 +107,13 @@ pass `bench/selfcheck.py`). The harness runs end-to-end in `--provider mock`. Th
 **real-model run** (set an API key and use `run.ps1` / `run.sh`); for a publishable result, ideally have an
 independent contributor expand or replace the held-out tasks.
 
+## Docs
+- [`CONCEPTUAL_FOUNDATION.md`](CONCEPTUAL_FOUNDATION.md) — why these guardrails should work (evidence-grounded).
+- [`CONTRIBUTING.md`](CONTRIBUTING.md) — how to author trap tasks (and the held-out independence rule).
+- [`bench/preregistration.md`](bench/preregistration.md) — freeze before the held-out run.
+- [`RESULTS.md`](RESULTS.md) — results template (fill after the real run).
+- [`KNOWN_ISSUES.md`](KNOWN_ISSUES.md) — QA findings & their status.
+
 ## License
 
 MIT (code) — see `LICENSE`. Benchmark data CC BY 4.0.
