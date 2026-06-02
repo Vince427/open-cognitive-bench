@@ -2,7 +2,7 @@
   "name": "open-cognitive-bench",
   "description": "Evidence-backed cognitive guardrails for coding agents (Skill + multi-agent Workflow), shipped with a falsifiable benchmark.",
   "version": "0.1.0",
-  "owner": "<your-org>",
+  "owner": "Vince427",
   "plugins": [
     {
       "name": "chestertons-shield",

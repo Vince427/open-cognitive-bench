@@ -52,6 +52,11 @@ and Bonferroni correction. See `bench/`.
   "hack"* (the visible test passes but a held-out *hidden* behavior test fails — it gamed the metric). Arm
   `S` injects `goodhart-attack`.
 
+## Scope
+The benchmark currently targets **Python** tasks (the harness executes Python hidden tests). The design is
+language-agnostic, but a multi-language runner (C#/JS via `dotnet`/`node`) is **future work** (see
+`KNOWN_ISSUES.md` N3). The skills and workflows themselves are language-agnostic.
+
 ## Honesty policy
 
 - The "parallel lenses + critic that gates" pattern is **not novel** (Claude Code Ultra Plan, DeepMind
@@ -96,7 +101,7 @@ after freezing `bench/preregistration.md`.
 ## Install as a skill (cross-tool)
 
 ```
-/plugin marketplace add <your-org>/open-cognitive-bench
+/plugin marketplace add Vince427/open-cognitive-bench
 /plugin install chestertons-shield@open-cognitive-bench
 ```
 

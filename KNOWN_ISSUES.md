@@ -32,10 +32,9 @@ The detailed findings below are kept as the historical record; the "by design" a
 - **N2 — FIXED.** `tests/test_harness.py` unit-tests the harness (McNemar exact, bootstrap, percentile/mean,
   `extract_code` incl. the M2 fix, and the judge execution runner) — 16 tests, dual-mode (pytest or
   `python tests/test_harness.py`), run by CI.
-- **N3 — OPEN.** Tasks are Python-only; real-world breadth (e.g. C#/JS) and the original motivating domain
-  are uncovered. Add a multi-language runner + ≥1 non-Python trap, or document the scope.
-- **N4 — OPEN (cosmetic).** `<your-org>` placeholders in `README.md` / `.claude-plugin/marketplace.json` —
-  fix before publishing.
+- **N3 — DOCUMENTED.** Scope stated as Python-first in `README.md` (## Scope). A multi-language runner
+  (C#/JS via `dotnet`/`node`) + non-Python traps remain future work (needs those runtimes to validate).
+- **N4 — FIXED.** Placeholders set to `Vince427` in `README.md` and `.claude-plugin/marketplace.json`.
 - **Added this pass:** `CONCEPTUAL_FOUNDATION.md`, `CONTRIBUTING.md`, `RESULTS.md` (template), `.env.example`.
 
 ---
