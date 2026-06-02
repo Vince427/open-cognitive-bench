@@ -34,8 +34,11 @@ The detailed findings below are kept as the historical record; the "by design" a
   `python tests/test_harness.py`), run by CI.
 - **N3 — DOCUMENTED.** Scope stated as Python-first in `README.md` (## Scope). A multi-language runner
   (C#/JS via `dotnet`/`node`) + non-Python traps remain future work (needs those runtimes to validate).
+  Runner design + the canonical C# trap are written up in `MULTILANG.md`.
 - **N4 — FIXED.** Placeholders set to `Vince427` in `README.md` and `.claude-plugin/marketplace.json`.
 - **Added this pass:** `CONCEPTUAL_FOUNDATION.md`, `CONTRIBUTING.md`, `RESULTS.md` (template), `.env.example`.
+- **Polish (later pass):** `tests/test_harness.py`, `pyproject.toml` (metadata + extras + ruff/pytest config),
+  `BLOG_POST.md` (rationale post), `MULTILANG.md` (multi-language design + C# trap).
 
 ---
 

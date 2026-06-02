@@ -1,0 +1,35 @@
+# Project metadata + tool config. The benchmark harness itself runs as pure-stdlib scripts (see README and
+# bench/README.md) — this project ships no importable modules by design; installing it only pulls the
+# optional extras below (handy for real-model runs / linting).
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "open-cognitive-bench"
+version = "0.1.0"
+description = "Evidence-backed cognitive guardrails for coding agents (Skill + multi-agent Workflow), proven by a falsifiable, execution-based benchmark"
+readme = "README.md"
+license = { text = "MIT" }
+requires-python = ">=3.9"
+authors = [{ name = "Vince427" }]
+keywords = ["llm", "coding-agent", "guardrails", "benchmark", "chesterton", "goodhart", "reliability"]
+
+[project.optional-dependencies]
+# pip install ".[providers]" for real-model runs; ".[dev]" for linting/pytest. (Mock runs need nothing.)
+providers = ["anthropic>=0.40", "openai>=1.40"]
+dev = ["pytest>=8.0", "ruff>=0.5"]
+
+[project.urls]
+Repository = "https://github.com/Vince427/open-cognitive-bench"
+
+[tool.setuptools]
+py-modules = []   # no distributable modules; the harness is run as scripts
+
+[tool.ruff]
+target-version = "py39"
+line-length = 110
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]   # only the harness unit tests; task hidden_tests run via the harness, not pytest discovery

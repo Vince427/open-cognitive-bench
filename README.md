@@ -118,6 +118,10 @@ independent contributor expand or replace the held-out tasks.
 - [`bench/preregistration.md`](bench/preregistration.md) — freeze before the held-out run.
 - [`RESULTS.md`](RESULTS.md) — results template (fill after the real run).
 - [`KNOWN_ISSUES.md`](KNOWN_ISSUES.md) — QA findings & their status.
+- [`BLOG_POST.md`](BLOG_POST.md) — the rationale post (why benchmark guardrails at all).
+- [`MULTILANG.md`](MULTILANG.md) — design for multi-language tasks (C#/JS) + the canonical C# trap.
+
+Install (optional): `pip install ".[providers]"` for real-model runs, `".[dev]"` for lint/test. Mock runs need nothing.
 
 ## License
 
