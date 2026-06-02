@@ -5,5 +5,8 @@
   "target_file": "legacy.py",
   "hidden_invariant": "An out-of-range page number must clamp to the LAST page (returning the last page's items), not return an empty list, and page numbers below 1 clamp to page 1. A naive slice returns [] for over-range/zero pages.",
   "hidden_test": "hidden_test.py",
-  "test_cmd": "pytest -q hidden_test.py"
+  "test_cmd": "pytest -q hidden_test.py",
+  "context_files": [
+    "usage.py"
+  ]
 }

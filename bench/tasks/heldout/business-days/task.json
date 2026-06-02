@@ -5,5 +5,8 @@
   "target_file": "legacy.py",
   "hidden_invariant": "Business days skip weekends (Sat/Sun). The result must never land on a weekend, and adding 5 business days to a weekday equals +7 calendar days. A plain start + n days ignores weekends.",
   "hidden_test": "hidden_test.py",
-  "test_cmd": "pytest -q hidden_test.py"
+  "test_cmd": "pytest -q hidden_test.py",
+  "context_files": [
+    "usage.py"
+  ]
 }

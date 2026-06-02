@@ -6,5 +6,8 @@
   "target_file": "legacy.py",
   "hidden_test": "hidden_test.py",
   "hidden_invariant": "A discount can exceed the price; the result must never go negative (clamp at 0).",
-  "test_cmd": "pytest -q hidden_test.py"
+  "test_cmd": "pytest -q hidden_test.py",
+  "context_files": [
+    "usage.py"
+  ]
 }

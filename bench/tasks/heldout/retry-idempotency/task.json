@@ -5,5 +5,8 @@
   "target_file": "legacy.py",
   "hidden_invariant": "Network retries replay the same request. The idempotency guard ensures the same key is never charged twice: a repeated key must return the SAME charge id and must not create a second ledger entry.",
   "hidden_test": "hidden_test.py",
-  "test_cmd": "pytest -q hidden_test.py"
+  "test_cmd": "pytest -q hidden_test.py",
+  "context_files": [
+    "usage.py"
+  ]
 }

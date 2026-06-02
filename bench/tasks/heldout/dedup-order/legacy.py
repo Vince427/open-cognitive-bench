@@ -1,5 +1,4 @@
 def dedup(items):
-    # preserve first-seen order (set() would lose it)
     seen = set()
     out = []
     for x in items:

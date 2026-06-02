@@ -30,11 +30,23 @@ B (bare) · C (caution instruction) · D (length/context-matched brief, no rule)
 - **Bonferroni** correction across the **5** reported comparisons (α = 0.05 / 5 = **0.01**).
 - Decision rule: claim an effect only if its bootstrap CI excludes 0 AND McNemar p < 0.01.
 
+## Construct (what this measures — read with the limits)
+Single-shot, no-tools: one prompt in, one edited file out. For chesterton tasks the prompt also carries a
+read-only `usage.py` (a caller) so the invariant is **discoverable from usage, not stated in a comment**.
+This is a **prompt/skill effect under one-shot conditions**, NOT a tool-using investigative loop (no
+`git blame`, no repo grep, no command execution). An agentic harness is out of scope here. See
+`README.md` → "What is actually measured" and `KNOWN_ISSUES.md` V1/V2.
+
 ## Sample size — PROPOSED defaults (confirm & FREEZE before the held-out run)
 - Held-out tasks N = **30** (in repo now: 18 chesterton + 12 goodhart, all selfcheck-validated) ;
   seeds per arm = **5** ; models = **two** (one frontier + one mid-tier, reported separately).
 - That yields ≥ 30 × 5 = 150 datapoints per arm per model. Justification: CLT CIs are unreliable below
   ~100 datapoints; if tasks stay scarce, lean on the bootstrap CIs above rather than normal-approx CIs.
+- **Power (from `bench/power.py`, mirroring the exact decision rule):** at 30×5, **S vs D** and the
+  vs-B falsifiers are well powered (≈90–100%), but the **primary W vs S** is **under-powered for a small
+  ~0.10 absolute gap** (~40% power). Decision: report W-vs-S **as a difference + bootstrap CI** (not a
+  binary verdict) at this N; if a tight verdict is needed, pre-commit to expanding tasks/seeds (the
+  clustered bootstrap benefits more from added **tasks** than added seeds). See `bench/power_analysis.md`.
 
 ## Cost reporting (mandatory, not a gate)
 Report mean tokens, USD, and wall-clock latency per arm. The W-vs-S verdict is interpreted **net of the

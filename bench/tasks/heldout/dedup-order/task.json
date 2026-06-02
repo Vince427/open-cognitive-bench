@@ -6,5 +6,8 @@
   "target_file": "legacy.py",
   "hidden_test": "hidden_test.py",
   "hidden_invariant": "First-seen order must be preserved; list(set(...)) loses it.",
-  "test_cmd": "pytest -q hidden_test.py"
+  "test_cmd": "pytest -q hidden_test.py",
+  "context_files": [
+    "usage.py"
+  ]
 }

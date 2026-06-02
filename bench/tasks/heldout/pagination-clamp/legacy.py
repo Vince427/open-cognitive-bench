@@ -1,6 +1,5 @@
 def page(items, page_num, size):
-    # page_num is 1-based. Over-range pages clamp to the LAST page (UI contract: never show a blank
-    # page when the user pages past the end); page_num < 1 clamps to the first page.
+    # page_num is 1-based.
     if size <= 0:
         return []
     total_pages = (len(items) + size - 1) // size

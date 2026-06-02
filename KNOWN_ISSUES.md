@@ -42,25 +42,29 @@ The detailed findings below are kept as the historical record; the "by design" a
 
 ---
 
-## Validity findings (OPEN) — 2026-06-02
-Construct-validity issues. They do NOT need an LLM to FIX (only to measure the resulting effect). Highest-value
-remaining work that is doable offline.
-- **V1 — OPEN. Traps spoon-feed the invariant.** 14 `legacy.py` files state the invariant in an inline comment
-  (cache-ttl, config-bool, retry-idempotency, safe-divide, merge-skip-none, avg-empty-zero, clamp-pct,
-  discount-cap, dedup-order, end-of-month, retry-backoff-cap, pagination-clamp, version-compare). An agent can
-  "preserve" the invariant by reading the comment rather than investigating — and arms B/C/D see the same
-  comment, muddying the skill's marginal effect. FIX (LLM-free): remove giveaway comments; make the invariant
-  *discoverable* via provided context (a sibling callers/usage file, or an existing passing test in the prompt)
-  or via structure alone. `payment-dedup` is the fair model (invariant implied by structure, not stated).
-- **V2 — OPEN (scope). Single-shot, no-tools harness.** `run_bench` sends the file in one prompt and takes one
-  completion; there is no git history, no callers, and the model has no tools. So the Chesterton skill's
-  "run git blame / find callers / read tests" steps are inert — investigation only happens over what is already
-  in the prompt. The benchmark therefore measures a *prompt/skill effect in a one-shot setting*, NOT a
-  tool-using investigative loop. FIX: document this as an explicit scope limit, and/or build an agentic
-  tool-using harness (bigger; needs an LLM to validate).
-- **PA — TODO (LLM-free). Power analysis.** Add a Monte-Carlo McNemar power calc: given 30 tasks × 5 seeds,
-  what S-vs-D / W-vs-S effect is detectable at Bonferroni α=0.01? Confirms the design is adequately powered
-  before spending on a real run.
+## Validity findings — 2026-06-02 (V1/V2/PA addressed this pass)
+Construct-validity issues. They did NOT need an LLM to FIX (only to measure the resulting effect). These were
+the highest-value remaining offline work; all three are now resolved/documented.
+- **V1 — RESOLVED. Traps no longer spoon-feed the invariant.** Removed the invariant-stating comment from all
+  **20** chesterton `legacy.py` files (3 dev + 17 held-out; `payment-dedup` already was the fair model). The
+  special case now lives in the *structure*, and the *reason* is made **discoverable** via a new read-only
+  `usage.py` caller injected into the prompt (new `context_files` field in `task.json`, rendered by
+  `run_bench.base_user`). Scope: 2 dev (cache-ttl, config-bool) + all 18 held-out chesterton tasks;
+  `payment-dedup` was left as-is (it was already the structural reference). `usage.py` demonstrates the invariant through realistic use (and would break if it
+  were dropped) without ever stating the rule. Behavior is unchanged, so `selfcheck` stays 34/34. Bonus: this
+  gives the Chesterton "read the callers" step real substrate, partially mitigating V2.
+- **V2 — DOCUMENTED (scope). Single-shot, no-tools harness.** `run_bench` sends the file (plus `usage.py`) in
+  one prompt and takes one completion; there is no git history and the model has no tools, so the skill's
+  "git blame / grep callers / run tests" steps are exercised only over the prompt. Now stated explicitly as a
+  scope limit in `README.md` ("What is actually measured") and `bench/preregistration.md` ("Construct"): the
+  benchmark measures a *prompt/skill effect in a one-shot setting*, NOT a tool-using investigative loop.
+  Building an agentic tool-using harness remains future work (bigger; needs an LLM to validate).
+- **PA — DONE (LLM-free). Power analysis.** `bench/power.py` is a Monte-Carlo power calc that **reuses the
+  exact** `stats.mcnemar_exact` + `stats.bootstrap_diff_ci` and the pre-registered decision rule (CI excludes
+  0 AND McNemar p < 0.01), with a task-clustered generative model. Finding at 30×5: **S vs D** and the vs-B
+  falsifiers are well powered (~90–100%); the **primary W vs S is under-powered for a ~0.10 gap (~40%)**.
+  Reflected in `preregistration.md` (report W-vs-S as a CI, not a verdict, at this N). Artifact:
+  `bench/power_analysis.md`; unit-tested in `tests/test_harness.py`.
 
 ---
 

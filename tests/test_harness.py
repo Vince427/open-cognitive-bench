@@ -15,6 +15,7 @@ sys.path.insert(0, str(ROOT / "bench"))
 import run_bench  # noqa: E402
 import stats       # noqa: E402
 import judge       # noqa: E402
+import power       # noqa: E402
 
 
 # ---- extract_code (incl. the M2 fix: language tag must not leak) -------------------------------------
@@ -118,6 +119,23 @@ def test_judge_runner_syntax_error_is_fail():
         (d / "hidden_test.py").write_text("from legacy import f\n\ndef test_f():\n    assert f() == 1\n", encoding="utf-8")
         (d / "legacy.py").write_text("def f(:\n  return 1\n", encoding="utf-8")  # malformed
         assert judge.test_passes(d, "hidden_test.py") is False
+
+
+# ---- power: the Monte-Carlo power calc reuses the real stats functions & decision rule ----------------
+def test_power_monotonic_in_effect_size():
+    # A large true gap must yield more power than no gap (a sanity check on the simulator + decision rule).
+    stats.N_BOOT = 120
+    rng = random.Random(0)
+    big, _, _ = power.power_for(0.10, 0.80, n_tasks=30, n_seeds=5, sigma=0.0, sims=60, rng=rng)
+    none, _, _ = power.power_for(0.50, 0.50, n_tasks=30, n_seeds=5, sigma=0.0, sims=60, rng=rng)
+    assert big > 0.8          # a 0.70 gap on 30x5 is trivially detectable
+    assert none < 0.2         # no real effect -> rejections only at ~the (Bonferroni) false-positive rate
+
+
+def test_power_realized_rates_track_inputs():
+    stats.N_BOOT = 60
+    _, rmX, rmY = power.power_for(0.20, 0.60, n_tasks=30, n_seeds=5, sigma=0.0, sims=40, rng=random.Random(1))
+    assert abs(rmX - 0.20) < 0.06 and abs(rmY - 0.60) < 0.06   # i.i.d. case recovers the input rates
 
 
 if __name__ == "__main__":

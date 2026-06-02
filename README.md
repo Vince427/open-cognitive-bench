@@ -57,6 +57,30 @@ The benchmark currently targets **Python** tasks (the harness executes Python hi
 language-agnostic, but a multi-language runner (C#/JS via `dotnet`/`node`) is **future work** (see
 `KNOWN_ISSUES.md` N3). The skills and workflows themselves are language-agnostic.
 
+### What is actually measured (construct & its limits)
+This benchmark measures a **single-shot, no-tools** effect: each arm is given the file (plus, for chesterton
+tasks, a read-only `usage.py` showing how the code is called) in **one prompt** and returns **one** edited
+file. There is no git history to `blame`, no filesystem to grep, and the model cannot run commands. So the
+Chesterton skill's literal "run `git blame`, find the callers, read the tests" steps are exercised **only
+over what is in the prompt** — the agent must *attend to the provided `usage.py`* rather than truly
+investigate a repo. The result therefore speaks to a **prompt/skill effect under one-shot conditions**, not
+to a tool-using investigative loop. Measuring the latter needs an agentic, tool-calling harness (and a live
+model); that is deliberately out of scope here (`KNOWN_ISSUES.md` V2).
+
+The invariant is **discoverable, not stated**: chesterton `legacy.py` files do **not** spell out the
+invariant in a comment (that would reduce the task to "did the model read the comment"). Instead the special
+case is visible in the *structure* and the *reason* is discoverable from the injected `usage.py` caller — so
+the skill's marginal value is "does it make the agent investigate before simplifying," not "did everyone see
+the same giveaway" (`KNOWN_ISSUES.md` V1). `payment-dedup` is the reference design (invariant implied by
+structure alone).
+
+### Is the design adequately powered?
+`python bench/power.py` is a pure-stdlib Monte-Carlo power analysis (no LLM) that reuses the **exact**
+McNemar + bootstrap decision rule the report uses. Headline finding at the proposed **30 tasks × 5 seeds**:
+the rule-isolation comparison **S vs D** is fully powered, but the **primary W vs S** comparison is
+**under-powered for a small (≈0.10) absolute gap** (~40% power) — so a null W-vs-S result there should be
+read as "underpowered," and detecting it would need more tasks/seeds. See `bench/power_analysis.md`.
+
 ## Honesty policy
 
 - The "parallel lenses + critic that gates" pattern is **not novel** (Claude Code Ultra Plan, DeepMind

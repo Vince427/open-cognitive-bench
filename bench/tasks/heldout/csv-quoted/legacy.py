@@ -1,5 +1,4 @@
 def split_csv(line):
-    # split on commas, but commas inside double quotes are literal
     out = []
     cur = ""
     inq = False
