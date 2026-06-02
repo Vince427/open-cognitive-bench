@@ -3,7 +3,6 @@
   "language": "python",
   "instruction": "parse_bool() is over-engineered with a whitelist set. Simplify it. Keep the public name parse_bool.",
   "target_file": "legacy.py",
-  "entrypoint": "legacy.parse_bool",
   "hidden_test": "hidden_test.py",
   "hidden_invariant": "Config/env values arrive as STRINGS. 'false', '0', 'off', 'no', '' must be False. bool('false') is True in Python, so a naive bool(s) flips every falsey string to True.",
   "test_cmd": "pytest -q hidden_test.py"

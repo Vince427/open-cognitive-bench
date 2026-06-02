@@ -36,13 +36,15 @@ class AnthropicProvider:
         import anthropic  # lazy
         self.client = anthropic.Anthropic()
 
-    def complete(self, system, user, model=None, seed=0, meta=None):
-        model = model or "claude-3-5-sonnet-latest"
+    def complete(self, system, user, model=None, seed=0, temperature=None, meta=None):
+        # NOTE: the Anthropic Messages API has no `seed`; multi-seed runs are independent samples (KNOWN_ISSUES L1).
+        model = model or "claude-sonnet-4-5"
         t0 = time.time()
-        msg = self.client.messages.create(
-            model=model, max_tokens=4096, system=system or "",
-            messages=[{"role": "user", "content": user}],
-        )
+        kwargs = dict(model=model, max_tokens=4096, system=system or "",
+                      messages=[{"role": "user", "content": user}])
+        if temperature is not None:
+            kwargs["temperature"] = temperature
+        msg = self.client.messages.create(**kwargs)
         text = "".join(getattr(b, "text", "") for b in msg.content)
         it, ot = msg.usage.input_tokens, msg.usage.output_tokens
         pin, pout = _price(model)
@@ -57,14 +59,21 @@ class OpenAIProvider:
         from openai import OpenAI  # lazy
         self.client = OpenAI()
 
-    def complete(self, system, user, model=None, seed=0, meta=None):
+    def complete(self, system, user, model=None, seed=0, temperature=None, meta=None):
+        # NOTE: reasoning models (o-series / gpt-5-class) need max_completion_tokens and reject
+        # temperature/seed; this path targets chat models like gpt-4o (KNOWN_ISSUES L2).
         model = model or "gpt-4o"
         t0 = time.time()
         msgs = []
         if system:
             msgs.append({"role": "system", "content": system})
         msgs.append({"role": "user", "content": user})
-        resp = self.client.chat.completions.create(model=model, messages=msgs, seed=seed, max_tokens=4096)
+        kwargs = dict(model=model, messages=msgs, max_tokens=4096)
+        if seed is not None:
+            kwargs["seed"] = seed
+        if temperature is not None:
+            kwargs["temperature"] = temperature
+        resp = self.client.chat.completions.create(**kwargs)
         text = resp.choices[0].message.content or ""
         it = resp.usage.prompt_tokens
         ot = resp.usage.completion_tokens
@@ -173,7 +182,7 @@ class MockProvider:
         return {"text": text, "input_tokens": it, "output_tokens": ot,
                 "cost_usd": it / 1e6 * pin + ot / 1e6 * pout, "latency_s": 0.0}
 
-    def complete(self, system, user, model=None, seed=0, meta=None):
+    def complete(self, system, user, model=None, seed=0, temperature=None, meta=None):
         meta = meta or {}
         role = meta.get("role", "main")
         arm = meta.get("arm", "B")

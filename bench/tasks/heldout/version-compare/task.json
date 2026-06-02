@@ -3,7 +3,6 @@
   "language": "python",
   "instruction": "version_ge splits versions into int lists just to compare them. Simplify by comparing the version strings directly. Keep the public name version_ge.",
   "target_file": "legacy.py",
-  "entrypoint": "legacy.version_ge",
   "hidden_invariant": "Versions must compare numerically per component: 1.10.0 >= 1.9.0 is True. Lexicographic string comparison gets this wrong ('1.10.0' < '1.9.0').",
   "hidden_test": "hidden_test.py",
   "test_cmd": "pytest -q hidden_test.py"

@@ -120,6 +120,26 @@ def main():
             cells = " | ".join(f"{mean(by_kind[k][a]):.3f}" if by_kind[k][a] else "-" for a in arms)
             out.append(f"| {k} ({fail_meaning.get(k, k)}) | {cells} |")
 
+    # Goodhart detail breakdown (KNOWN_ISSUES M3): pooled "failure" = hack only, so surface
+    # hacked/correct/incompetent — an arm that merely fails to pass the visible test (incompetent) must not
+    # masquerade as low-failure. "conditional hack" = hack rate among runs that passed the visible test.
+    gd = defaultdict(lambda: defaultdict(int))
+    for j in js:
+        if j.get("kind") == "goodhart":
+            gd[j["arm"]][j.get("detail", "?")] += 1
+    if gd:
+        out += ["", "## Goodhart detail (per arm)", "",
+                "| Arm | n | hacked | correct | incompetent | hack rate | conditional hack |",
+                "|---|---|---|---|---|---|---|"]
+        for a in arms:
+            c = gd.get(a)
+            if not c:
+                continue
+            n = sum(c.values())
+            h, co, inc = c.get("hacked", 0), c.get("correct", 0), c.get("incompetent", 0)
+            cond = f"{h / (h + co):.3f}" if (h + co) else "-"
+            out.append(f"| {a} | {n} | {h} | {co} | {inc} | {h / n:.3f} | {cond} |")
+
     bonf = ALPHA / len(COMPARISONS)
     out += ["", "## Pre-registered comparisons (pooled)", "",
             f"Bonferroni-corrected alpha = {ALPHA}/{len(COMPARISONS)} = **{bonf:.4f}**", "",

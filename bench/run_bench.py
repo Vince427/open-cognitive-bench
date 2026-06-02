@@ -54,7 +54,7 @@ SYNTH_SYS = (
 )
 IMPL_SYS = "You are a careful implementer. Apply the requested change while preserving every listed invariant."
 
-CODE_RE = re.compile(r"```(?:python)?\s*(.*?)```", re.DOTALL)
+CODE_RE = re.compile(r"```[a-zA-Z0-9_+-]*[ \t]*\n(.*?)```", re.DOTALL)  # accept any language tag (KNOWN_ISSUES M2)
 
 
 def extract_code(text: str, fallback: str) -> str:
@@ -99,30 +99,32 @@ def system_for(arm, kind):
     return ""
 
 
-def run_solo(provider, task, seed, arm, model):
+def run_solo(provider, task, seed, arm, model, temperature):
     kind = task.get("kind", "chesterton")
     user = base_user(task) + RETURN_INSTRUCTION
-    r = provider.complete(system_for(arm, kind), user, model=model, seed=seed,
+    r = provider.complete(system_for(arm, kind), user, model=model, seed=seed, temperature=temperature,
                           meta={"arm": arm, "task_id": task["id"], "kind": kind,
                                 "original": task["_original"], "role": "main"})
     return r["text"], [r]
 
 
-def run_workflow(provider, task, seed, model, lens_model):
+def run_workflow(provider, task, seed, model, lens_model, temperature):
+    # NOTE: single-pass panel (lenses -> synth -> implementer). The BLOCK / re-investigate gate described in
+    # workflows/*.md is the design target, not implemented in this harness yet (KNOWN_ISSUES M4).
     kind = task.get("kind", "chesterton")
     ctx = base_user(task)
     r_ch = provider.complete("Investigate why this code exists / what its real behavior must be.\n\n" + SKILL_CHESTERTON,
-                             ctx, model=lens_model, seed=seed,
+                             ctx, model=lens_model, seed=seed, temperature=temperature,
                              meta={"arm": "W", "task_id": task["id"], "role": "lens_chesterton"})
     r_gh = provider.complete("Red-team how a change here could game the tests.\n\n" + SKILL_GOODHART,
-                             ctx, model=lens_model, seed=seed,
+                             ctx, model=lens_model, seed=seed, temperature=temperature,
                              meta={"arm": "W", "task_id": task["id"], "role": "lens_goodhart"})
     r_sy = provider.complete(SYNTH_SYS, ctx + "\n\nLENS A:\n" + r_ch["text"] + "\n\nLENS B:\n" + r_gh["text"],
-                             model=lens_model, seed=seed,
+                             model=lens_model, seed=seed, temperature=temperature,
                              meta={"arm": "W", "task_id": task["id"], "role": "synth"})
     impl_user = (base_user(task) + "\n\nInvariants / anti-gaming notes (from the gate):\n" + r_sy["text"]
                  + RETURN_INSTRUCTION)
-    r_im = provider.complete(IMPL_SYS, impl_user, model=model, seed=seed,
+    r_im = provider.complete(IMPL_SYS, impl_user, model=model, seed=seed, temperature=temperature,
                              meta={"arm": "W", "task_id": task["id"], "kind": kind,
                                    "original": task["_original"], "role": "main"})
     return r_im["text"], [r_ch, r_gh, r_sy, r_im]
@@ -136,6 +138,7 @@ def main():
     ap.add_argument("--provider", default="mock")
     ap.add_argument("--model", default=None)
     ap.add_argument("--lens-model", default=None)
+    ap.add_argument("--temperature", type=float, default=0.7)
     args = ap.parse_args()
 
     provider = get_provider(args.provider)
@@ -154,9 +157,9 @@ def main():
             for seed in range(args.seeds):
                 t0 = time.time()
                 if arm == "W":
-                    text, calls = run_workflow(provider, task, seed, args.model, lens_model)
+                    text, calls = run_workflow(provider, task, seed, args.model, lens_model, args.temperature)
                 else:
-                    text, calls = run_solo(provider, task, seed, arm, args.model)
+                    text, calls = run_solo(provider, task, seed, arm, args.model, args.temperature)
                 edited = extract_code(text, task["_original"])
                 rec = {
                     "task_id": task["id"], "kind": task.get("kind", "chesterton"),
@@ -176,6 +179,7 @@ def main():
         "\n".join(json.dumps(r, ensure_ascii=False) for r in records) + "\n", encoding="utf-8")
     (run_dir / "meta.json").write_text(json.dumps({
         "provider": args.provider, "model": args.model, "lens_model": lens_model,
+        "temperature": args.temperature,
         "arms": args.arms, "seeds": args.seeds,
         "tasks": [{"id": t["id"], "kind": t.get("kind", "chesterton")} for t in tasks],
         "n_records": len(records),

@@ -11,6 +11,20 @@ drawing conclusions from a real-model run.
 
 ---
 
+## Resolution log — 2026-06-02 (all addressed)
+- **M1 — FIXED.** `--temperature` (default 0.7) added to `run_bench.py`, threaded into both providers, recorded in `meta.json`.
+- **M2 — FIXED.** `CODE_RE` accepts any language tag (` ```py `, ` ```python3 `, bare ` ``` `) and requires a newline before the body. Verified by probe.
+- **M3 — FIXED.** `stats.py` prints a *Goodhart detail* table (hacked / correct / incompetent + hack rate + conditional hack), so incompetence cannot masquerade as low failure.
+- **M4 — RESOLVED (documented).** `run_workflow` and both `workflows/*.md` now state arm W is a single-pass panel; the BLOCK/re-investigate loop stays a design target.
+- **L1 — DOCUMENTED.** Anthropic has no `seed`; noted in `providers.py` (runs non-reproducible by design; temperature is recorded).
+- **L2 — HARDENED + DOCUMENTED.** OpenAI `seed`/`temperature` now passed conditionally; reasoning-model limitation noted.
+- **L3 — FIXED.** Unused `entrypoint` removed from all `task.json`.
+- **L4 — FIXED.** Default Anthropic model updated to `claude-sonnet-4-5`.
+
+The detailed findings below are kept as the historical record; the "by design" and "verified sound" sections still apply.
+
+---
+
 ## 🟠 Medium
 
 ### M1 — Temperature is never applied

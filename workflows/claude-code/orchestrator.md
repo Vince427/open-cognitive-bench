@@ -25,3 +25,5 @@ document is the orchestrator's operating contract. The benchmark's arm **W** imp
 - Concurrency cap and cost: lenses run concurrently, so wall-clock ≈ the slowest lens, but **token cost ≈ Σ
   lenses + synthesizer + implementer** — this is the 5–10× multiplier the benchmark measures against arm S.
 - Keep the synthesizer's output short and structured; it is the only cross-lens state.
+- **Benchmark note:** arm `W` in `bench/run_bench.py` runs a **single pass** (lenses → synth → implementer);
+  the BLOCK / re-investigate loop in step 3 is the design target, not yet implemented (`KNOWN_ISSUES.md` M4).

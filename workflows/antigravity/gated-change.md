@@ -42,3 +42,7 @@ post-implementation pass (catch unforeseen interactions). Attach the test output
 Hard-gate only the lenses that are high-signal for the domain (decide this from the benchmark, not a priori).
 Let the implementer run speculatively while verification proceeds; roll back on failure. Target: pull the
 ~5–10× multi-agent overhead down toward ~2–3×.
+
+> **Benchmark note:** the harness (`bench/run_bench.py`, arm `W`) currently implements a **single-pass**
+> panel (lenses → synthesizer → implementer). The `// if BLOCK → re-investigate` gate above is the design
+> target, not yet implemented in the benchmark (see `KNOWN_ISSUES.md` M4).

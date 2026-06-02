@@ -3,7 +3,6 @@
   "language": "python",
   "instruction": "This integer remainder loop in split_installments is clumsy. Rewrite it cleanly (e.g. with round/division). Keep the public name split_installments.",
   "target_file": "legacy.py",
-  "entrypoint": "legacy.split_installments",
   "hidden_test": "hidden_test.py",
   "hidden_invariant": "Installments must sum EXACTLY to total_cents (no lost/created cents) and differ by at most 1 cent. Float rounding (round(total/n,2)) or integer floor without remainder distribution breaks the exact-sum invariant.",
   "test_cmd": "pytest -q hidden_test.py"
