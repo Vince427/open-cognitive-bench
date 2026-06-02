@@ -42,6 +42,28 @@ The detailed findings below are kept as the historical record; the "by design" a
 
 ---
 
+## Validity findings (OPEN) — 2026-06-02
+Construct-validity issues. They do NOT need an LLM to FIX (only to measure the resulting effect). Highest-value
+remaining work that is doable offline.
+- **V1 — OPEN. Traps spoon-feed the invariant.** 14 `legacy.py` files state the invariant in an inline comment
+  (cache-ttl, config-bool, retry-idempotency, safe-divide, merge-skip-none, avg-empty-zero, clamp-pct,
+  discount-cap, dedup-order, end-of-month, retry-backoff-cap, pagination-clamp, version-compare). An agent can
+  "preserve" the invariant by reading the comment rather than investigating — and arms B/C/D see the same
+  comment, muddying the skill's marginal effect. FIX (LLM-free): remove giveaway comments; make the invariant
+  *discoverable* via provided context (a sibling callers/usage file, or an existing passing test in the prompt)
+  or via structure alone. `payment-dedup` is the fair model (invariant implied by structure, not stated).
+- **V2 — OPEN (scope). Single-shot, no-tools harness.** `run_bench` sends the file in one prompt and takes one
+  completion; there is no git history, no callers, and the model has no tools. So the Chesterton skill's
+  "run git blame / find callers / read tests" steps are inert — investigation only happens over what is already
+  in the prompt. The benchmark therefore measures a *prompt/skill effect in a one-shot setting*, NOT a
+  tool-using investigative loop. FIX: document this as an explicit scope limit, and/or build an agentic
+  tool-using harness (bigger; needs an LLM to validate).
+- **PA — TODO (LLM-free). Power analysis.** Add a Monte-Carlo McNemar power calc: given 30 tasks × 5 seeds,
+  what S-vs-D / W-vs-S effect is detectable at Bonferroni α=0.01? Confirms the design is adequately powered
+  before spending on a real run.
+
+---
+
 ## 🟠 Medium
 
 ### M1 — Temperature is never applied
