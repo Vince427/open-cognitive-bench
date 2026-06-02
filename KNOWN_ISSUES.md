@@ -42,11 +42,13 @@ The detailed findings below are kept as the historical record; the "by design" a
 
 ---
 
-## Validity findings — 2026-06-02 (V1/V2/PA addressed this pass)
-Construct-validity issues. They did NOT need an LLM to FIX (only to measure the resulting effect). These were
-the highest-value remaining offline work; all three are now resolved/documented.
-- **V1 — RESOLVED. Traps no longer spoon-feed the invariant.** Removed the invariant-stating comment from all
-  **20** chesterton `legacy.py` files (3 dev + 17 held-out; `payment-dedup` already was the fair model). The
+## Validity findings — 2026-06-02 (V1/V2/PA addressed this pass; V3 opened by the V1 fix)
+Construct-validity issues. They did NOT need an LLM to FIX (only to measure the resulting effect). V1/V2/PA
+addressed; **V3 is a new risk that the V1 fix itself introduced** (and that the earlier QA pass, which only
+checked "does usage.py state the rule," missed).
+- **V1 — MITIGATED (not fully resolved — see V3). Traps no longer spoon-feed the invariant in `legacy.py`.**
+  Removed the invariant-stating comment from all **20** chesterton `legacy.py` files (2 dev + 18 held-out;
+  the 3rd dev chesterton, `payment-dedup`, already was the fair structural model). The
   special case now lives in the *structure*, and the *reason* is made **discoverable** via a new read-only
   `usage.py` caller injected into the prompt (new `context_files` field in `task.json`, rendered by
   `run_bench.base_user`). Scope: 2 dev (cache-ttl, config-bool) + all 18 held-out chesterton tasks;
@@ -65,6 +67,23 @@ the highest-value remaining offline work; all three are now resolved/documented.
   falsifiers are well powered (~90–100%); the **primary W vs S is under-powered for a ~0.10 gap (~40%)**.
   Reflected in `preregistration.md` (report W-vs-S as a CI, not a verdict, at this N). Artifact:
   `bench/power_analysis.md`; unit-tested in `tests/test_harness.py`.
+- **V3 — OPEN (introduced by the V1 fix; a creative-QA finding the first review missed). The de-spoil may
+  have over-corrected into an "answer key," and is inconsistent across tasks.** There are two ways a trap's
+  discoverability can be wrong: *under*-specified (even a careful agent can't infer the invariant → unfair,
+  floors every arm) and *over*-specified (any agent trivially preserves it → ceilings every arm, no signal).
+  The original comment was over-specified. The first QA pass optimized only against "does `usage.py` *state*
+  the rule" and pushed toward concrete `input -> output` examples — but those examples are a *different* form
+  of over-specification: a model can pass by **copying the shown behavior with zero Chesterton investigation**.
+  Audit of the 20 files: ~half are scenario-framed and require reasoning (safe-divide, avg-empty-zero,
+  clamp-pct, discount-cap, business-days, end-of-month, parse-int-default, phone-keep-plus, retry-backoff-cap,
+  csv-quoted, money-rounding); the other ~half now hand the exact mapping (config-bool, dedup-order,
+  merge-skip-none, truncate-ellipsis, version-compare, slug-collapse, pagination-clamp, retry-idempotency).
+  On the answer-key tasks the S-vs-baseline gap may **collapse** — a NULL result there would be an artifact of
+  task design, not evidence about the skill. There is a Goldilocks zone (discoverable-but-requires-reasoning)
+  we cannot locate without data. **GATE (added to `preregistration.md`): before the sealed held-out run, run
+  the DEV set for real and confirm the arms actually separate (S < C/D/B). If every arm passes, `usage.py`
+  over-specifies and must be loosened toward scenario-framing FIRST.** Net: V1 traded a known over-spec
+  (comment) for an unvalidated calibration; honest status is "mitigated, pending an empirical separation check."
 
 ---
 
@@ -168,7 +187,10 @@ the empirical run, which requires AI.
 
 ## ℹ️ By design / already documented (not bugs)
 - The **mock provider is tautological** — break probabilities are hard-coded; it validates plumbing/stats only,
-  not real-model behavior (see `bench/README.md`).
+  not real-model behavior (see `bench/README.md`). Note the mock's `BREAK_PROB` (B .85 / C .65 / D .55 / S .20 /
+  W .10) **encodes the hoped-for ordering**, and `power_analysis.md`'s "headline scenarios" inherit those
+  numbers as an illustrative what-if. Treat every mock-derived figure as plumbing, never as a result — the
+  apparatus is shaped to *confirm* the hypothesis, so only the real run can *falsify* it.
 - The **held-out set was authored by the skill author** — for a publishable result, have an independent
   contributor add/replace tasks (see `bench/tasks/heldout/README.md`, `bench/preregistration.md`).
 - **Workflows are not portable** across tools (only Skills are) — `W` targets Antigravity + Claude Code only.

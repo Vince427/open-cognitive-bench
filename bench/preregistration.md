@@ -58,6 +58,15 @@ measured cost multiplier** (expected ~5–10× for W before Sherlock-style selec
 ## Decoding / reproducibility
 - Temperature = **0.7** (proposed; confirm) ; seeds recorded ; provider + model versions recorded in `results/<run>/meta.json`.
 
+## Pre-run validity gate (MANDATORY before the sealed held-out run)
+The chesterton invariant is made discoverable via `usage.py`, not stated in `legacy.py` (KNOWN_ISSUES V1).
+But that calibration is unvalidated: if `usage.py` over-specifies (hands the exact behavior), every arm
+preserves it and the benchmark loses discriminating power (KNOWN_ISSUES **V3**). So, on the **DEV set, with a
+real model**, first confirm the arms **separate** — S should fail meaningfully less than B/C/D, and ideally
+S < D (the rule beats mere length). If all arms pass (no separation), the tasks over-specify: loosen
+`usage.py` toward scenario-framing (show the situation, not the input→output answer) and re-check **before**
+touching held-out. A flat dev result is a task-design failure to fix, not a finding to report.
+
 ## Anti-contamination
 - Held-out tasks authored by `<a person OTHER than the skill author>`.
 - Prefer tasks whose invariants/domains post-date model cutoffs.
