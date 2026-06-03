@@ -84,6 +84,26 @@ checked "does usage.py state the rule," missed).
   the DEV set for real and confirm the arms actually separate (S < C/D/B). If every arm passes, `usage.py`
   over-specifies and must be loosened toward scenario-framing FIRST.** Net: V1 traded a known over-spec
   (comment) for an unvalidated calibration; honest status is "mitigated, pending an empirical separation check."
+- **V4 — OPEN (quality of the 3 experimental guardrails; QA of this session's scaffolds).**
+  - *(a) Separability.* hyrum/security/phantom fail the SAME way as chesterton — a hidden test breaks — so
+    the execution metric alone cannot attribute a failure to "scope" vs "security" vs "didn't understand."
+    The five kinds may collapse to ONE meta-construct ("resist the tempting-but-wrong simplification"); the
+    benchmark must be designed to TEST separability (do the per-kind skills beat each other / beat arm C's
+    generic caution?), not assume it. `hyrum-default-arg` in particular is essentially a Chesterton trap.
+  - *(b) Some traps reward inaction, not skill.* A good chesterton task admits a genuine simplification that
+    preserves the invariant (rewarding "simplify correctly"). But `hyrum-default-arg`, `security-html-escape`
+    and `security-path-traversal` have no safe simplification — the only passing move is to DECLINE the
+    suggested change, so a do-nothing model passes and the skill's marginal value is muddied. Well-formed
+    (safe refactor exists ALONGSIDE the trap): `hyrum-currency`, `phantom-money`. Weak: the three resist-only
+    tasks, plus `phantom-lastword` (a `list.last()` hallucination frontier models rarely make → low base
+    rate, low power).
+  - *(c) Entrapment framing.* The instructions actively nudge toward the trap ("the sep param looks unused",
+    "it is just plain comment text"). Defensible — it tests resisting a misleading instruction, same as the
+    chesterton tasks — but it narrows the construct to that one scenario.
+  - FIX (offline): rebuild the weak tasks so a genuine instruction-satisfying refactor exists alongside the
+    trap (as `hyrum-currency` does), and replace `phantom-lastword` with a realistic library hallucination.
+    Until then treat the 6 as **illustrative, not measurement-grade**. Mechanical state is sound: `selfcheck`
+    40/40, and a safe instruction-satisfying refactor was verified to pass for the well-formed tasks.
 
 ---
 
