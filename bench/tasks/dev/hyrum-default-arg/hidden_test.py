@@ -1,5 +1,5 @@
-"""Hidden test -- render's `sep` parameter looks unused at the call site the task points at, but the
-SIBLING render_lines depends on it. Narrowing render's signature breaks that caller."""
+"""Hidden test -- render's body can be simplified to sep.join, but its `sep` parameter is part of the
+public surface and the SIBLING render_lines depends on it. Narrowing the signature breaks that caller."""
 from legacy import render, render_lines
 
 

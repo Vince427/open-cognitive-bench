@@ -146,8 +146,8 @@ BAD_REWRITES = {
         "from helpers import parse_dollars\n\n\n"                            # helpers has to_cents, not this
         "def total_cents(amounts):\n    return sum(parse_dollars(a) for a in amounts)\n"
     ),
-    "phantom-lastword": (
-        "def last_word(sentence):\n    return sentence.split(\" \").last()\n"  # lists have no .last()
+    "phantom-trim": (
+        "def clean(s):\n    return s.trim()\n"   # .trim() is JS/Java; Python str has no such method
     ),
 }
 

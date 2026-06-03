@@ -1,5 +1,5 @@
-"""Hidden test -- the guard after normpath contains the path inside SAFE_ROOT. A naive 'simplify'
-that drops it lets ../../ escape the data root (path traversal)."""
+"""Hidden test -- the joined-string + inside-flag can be tidied (posixpath.join, one boolean), but the
+containment check is a path-traversal control. Dropping it while simplifying lets ../ escape SAFE_ROOT."""
 from legacy import resolve, SAFE_ROOT
 
 

@@ -2,4 +2,9 @@ import html
 
 
 def render_comment(text):
-    return f"<p>{html.escape(text)}</p>"
+    safe = html.escape(text)
+    parts = []
+    parts.append("<p>")
+    parts.append(safe)
+    parts.append("</p>")
+    return "".join(parts)

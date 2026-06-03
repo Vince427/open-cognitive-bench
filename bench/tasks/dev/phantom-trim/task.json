@@ -1,0 +1,10 @@
+{
+  "id": "phantom-trim",
+  "kind": "phantom",
+  "language": "python",
+  "instruction": "clean strips leading/trailing spaces with a manual loop. Simplify it using a built-in string method. Keep the name clean.",
+  "target_file": "legacy.py",
+  "hidden_test": "hidden_test.py",
+  "hidden_invariant": "Python's built-in is str.strip() (strip(' ') for spaces only). The plausible name .trim() is a JavaScript/Java method that does not exist on Python str; calling it raises AttributeError -- a realistic phantom-API failure from cross-language habit.",
+  "test_cmd": "pytest -q hidden_test.py"
+}

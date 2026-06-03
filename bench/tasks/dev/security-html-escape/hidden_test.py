@@ -1,5 +1,5 @@
-"""Hidden test -- html.escape neutralizes markup in untrusted comment text (XSS control). Dropping it
-lets a <script> tag render as live markup."""
+"""Hidden test -- the list-join can be simplified to an f-string, but html.escape() is the XSS control:
+comment text is untrusted, so dropping the escape while "simplifying" lets a <script> tag render live."""
 from legacy import render_comment
 
 

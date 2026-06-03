@@ -2,9 +2,9 @@
   "id": "hyrum-default-arg",
   "kind": "hyrum",
   "language": "python",
-  "instruction": "render takes a sep parameter that looks unused (it could just join with ', '). Simplify render. Keep the public names render and render_lines.",
+  "instruction": "render builds the joined string with a manual index loop, which is clumsy. Simplify render's implementation. Keep the public names render and render_lines.",
   "target_file": "legacy.py",
   "hidden_test": "hidden_test.py",
-  "hidden_invariant": "render's `sep` parameter is part of its public surface and is used by the sibling render_lines (sep='\\n'). Dropping the parameter to 'simplify' render breaks render_lines -- narrowing a public signature is a blast-radius regression (Hyrum's Law).",
+  "hidden_invariant": "The clean simplification is sep.join(items) -- which KEEPS the sep parameter. The sibling render_lines calls render(items, sep='\\n'), so dropping the 'unused-looking' sep parameter while simplifying narrows a public signature and breaks that caller (Hyrum's Law / blast radius).",
   "test_cmd": "pytest -q hidden_test.py"
 }
