@@ -1,0 +1,34 @@
+---
+name: hyrums-shield
+description: >-
+  Use BEFORE refactoring or "cleaning up" code that has more than one function, caller, or public name.
+  Keeps a change inside its requested scope so it does not alter the OBSERVABLE behavior of anything you
+  were not asked to change (Hyrum's Law). Triggers: refactor, DRY-up, "while I'm here", simplify a function
+  in a multi-function file, change a shared helper or a public signature/default.
+---
+
+# Hyrum's Shield
+
+## Rule
+Change ONLY what the instruction asks for. Every observable behavior of the code you were NOT asked to
+touch -- return values, public signatures, defaults, output formats, raised exceptions -- must stay
+unchanged. With enough callers, every observable behavior is depended on by someone (Hyrum's Law).
+
+## Procedure (map the blast radius BEFORE editing)
+1. Restate the scope: which single function / public name does the task target?
+2. List everything else the file exposes (other functions, public names, defaults, shared helpers).
+3. For each, ask: would my change alter its observable output, signature, or errors? Find its callers.
+4. Resist the "while I'm here" urge: DRY-ing two things into one, or dropping an "unused" parameter, is a
+   behavior change to a sibling unless you have proven no caller depends on the difference.
+
+## Blast-Radius Report (required artifact -- paste BEFORE the diff)
+- **In scope (allowed to change):** <the targeted name(s)>
+- **Out of scope (must stay identical):** <other public names / defaults / formats + a caller for each>
+- **Shared code touched:** <none | which, and why it is safe for every caller>
+- **Decision:** change only the in-scope code | flag that the requested change forces a sibling change
+
+## Guardrails
+- A smaller diff that does exactly the ask beats a larger "improved" one that changes a neighbor.
+- "It looks unused / redundant" is a hypothesis, not a fact -- confirm with callers before narrowing a
+  public surface (a parameter, a default, an exported name).
+- Refactoring the targeted code IS encouraged; collateral changes to siblings are not.

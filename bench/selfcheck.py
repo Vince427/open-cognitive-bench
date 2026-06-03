@@ -63,6 +63,8 @@ def check_chesterton(meta, tdir):
             t = Path(t)
             _write(t, meta["target_file"], BAD_REWRITES[meta["id"]])
             _write(t, meta["hidden_test"], (tdir / meta["hidden_test"]).read_text(encoding="utf-8"))
+            for cf in meta.get("context_files", []):  # e.g. a phantom task's helpers.py must be present
+                _write(t, cf, (tdir / cf).read_text(encoding="utf-8"))
             trap_bites = len(run_test_file(t, meta["hidden_test"])) > 0
         c2 = "naive FAILS (good)" if trap_bites else "naive PASSES (!!)"
     return ("orig PASS" if original_ok else "orig FAIL"), c2, (original_ok and trap_bites)

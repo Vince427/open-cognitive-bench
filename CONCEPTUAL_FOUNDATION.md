@@ -56,17 +56,19 @@ rather than trust plausibility. Expect smaller effects on frontier reasoning mod
 - **Don't overfit the benchmark**: dev vs sealed held-out, pre-registration, paired stats with multiplicity
   correction. See `bench/preregistration.md`.
 
-## Candidate guardrails (roadmap — NOT implemented)
-We deliberately ship only the two best-supported rules. But the agent-failure literature suggests a small,
-clean **taxonomy of "respect failures" when editing existing code**, of which we currently cover two:
+## Candidate guardrails (3 scaffolded in dev — EXPERIMENTAL, not yet validated)
+The agent-failure literature suggests a small, clean **taxonomy of "respect failures" when editing existing
+code**. Two are validated-and-benchmarked; three more are now **scaffolded as experimental dev-only skills +
+trap tasks** (wired into the harness, `selfcheck`-valid) but **not benchmarked** — they are gated behind the
+dev-set separation check in `preregistration.md` and have no held-out tasks or real-model evidence yet.
 
 | Failure type | Guardrail | Status |
 |---|---|---|
-| breaks a hidden **functional invariant** | **Chesterton's Shield** | shipped |
-| satisfies a **metric** while betraying its intent | **Goodhart Attack** | shipped |
-| changes **observable behavior outside the requested scope** | *Hyrum's Shield* (candidate) | roadmap |
-| weakens a **security posture** while making a functional change | *Fail-Safe* / "Don't Disarm" (candidate) | roadmap |
-| references a **surface that doesn't exist** (invented API) | *Phantom Check* (candidate) | roadmap |
+| breaks a hidden **functional invariant** | **Chesterton's Shield** (`chestertons-shield`) | shipped + benchmarked-ready |
+| satisfies a **metric** while betraying its intent | **Goodhart Attack** (`goodhart-attack`) | shipped + benchmarked-ready |
+| changes **observable behavior outside the requested scope** | **Hyrum's Shield** (`hyrums-shield`, kind `hyrum`) | dev scaffold (2 traps) — experimental |
+| weakens a **security posture** while making a functional change | **Fail-Safe** / "Don't Disarm" (`fail-safe`, kind `security`) | dev scaffold (2 traps) — experimental |
+| references a **surface that doesn't exist** (invented API) | **Phantom Check** (`phantom-check`, kind `phantom`) | dev scaffold (2 traps) — experimental |
 
 Candidate details (each must keep the project's bar: a documented failure mode, a principle-level rule, and
 **execution-detectable** failure):
@@ -93,8 +95,11 @@ Not worth a separate rule (they collapse into the above):
 
 Discipline: proposing rules is cheap; **validating** one is not (trap tasks + a real run + ideally
 independent authorship). Per this repo's own policy a skill is not "done" until it ships with a benchmark
-result, so we **validate the existing two first** (the dev-set separation gate in `preregistration.md`)
-before expanding. If/when we add one, it is `Fail-Safe`.
+result. The three above are **scaffolded but explicitly NOT validated** — they have only 2 dev traps each
+(no held-out), single-author tasks, and zero real-model evidence; treat them as hypotheses to test, not
+guardrails to trust. The order of work is unchanged: **validate the existing two first** (dev-set separation
+gate), then promote each experimental kind only once it ships its own benchmark result. `Fail-Safe` is the
+highest-value of the three (security stakes + cleanest execution trap).
 
 ## References
 Gathered via literature search; **re-verify exact IDs/claims before any public or published use.**

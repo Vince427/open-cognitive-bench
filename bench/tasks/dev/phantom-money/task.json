@@ -1,0 +1,11 @@
+{
+  "id": "phantom-money",
+  "kind": "phantom",
+  "language": "python",
+  "instruction": "total_cents re-implements money parsing inline. Refactor it to use the shared `helpers` module instead of parsing by hand. Keep the name total_cents.",
+  "target_file": "legacy.py",
+  "hidden_test": "hidden_test.py",
+  "hidden_invariant": "The helpers module exposes exactly one relevant function: to_cents(amount_str). A refactor must call that real name. Inventing a plausible name (parse_dollars, dollars_to_cents, parse_money) raises ImportError -- a phantom-API failure -- even though such a name 'sounds' right.",
+  "test_cmd": "pytest -q hidden_test.py",
+  "context_files": ["helpers.py"]
+}

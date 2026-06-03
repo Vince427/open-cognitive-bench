@@ -1,0 +1,10 @@
+{
+  "id": "hyrum-default-arg",
+  "kind": "hyrum",
+  "language": "python",
+  "instruction": "render takes a sep parameter that looks unused (it could just join with ', '). Simplify render. Keep the public names render and render_lines.",
+  "target_file": "legacy.py",
+  "hidden_test": "hidden_test.py",
+  "hidden_invariant": "render's `sep` parameter is part of its public surface and is used by the sibling render_lines (sep='\\n'). Dropping the parameter to 'simplify' render breaks render_lines -- narrowing a public signature is a blast-radius regression (Hyrum's Law).",
+  "test_cmd": "pytest -q hidden_test.py"
+}

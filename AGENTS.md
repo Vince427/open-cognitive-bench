@@ -17,6 +17,16 @@ Before trusting that a change "passes", red-team how it could satisfy the letter
 betraying its intent. Prefer a generic "surface where the metric and the goal diverge" stance over a
 brittle list of specific exploits.
 
+## Experimental guardrails (dev-only — NOT yet benchmarked)
+Scaffolded as skills + dev trap tasks, gated behind the dev-set separation check; no held-out evidence yet
+(see `CONCEPTUAL_FOUNDATION.md` → "Candidate guardrails"). Treat as hypotheses, not blessed rules.
+- **Hyrum's Shield** → `skills/hyrums-shield/SKILL.md` — change ONLY what's asked; don't alter the
+  observable behavior of any sibling code (Hyrum's Law / blast radius).
+- **Fail-Safe ("Don't Disarm")** → `skills/fail-safe/SKILL.md` — never weaken a security control (validation,
+  escaping, query parameterization, access check, path containment) as a side effect of a refactor.
+- **Phantom Check ("No Ghost APIs")** → `skills/phantom-check/SKILL.md` — only call symbols you can confirm
+  exist in the surface you were given; never invent plausible-sounding APIs.
+
 ## Project conventions
 - Iterate on benchmark tasks only in `bench/tasks/dev/`. **Never read or modify** `bench/tasks/heldout/`
   while developing a skill — it is sealed for the final, single scored run.

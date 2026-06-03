@@ -90,6 +90,16 @@ def test_bootstrap_extremes_pin_to_minus_one():
     assert lo == -1.0 and hi == -1.0  # X always 0, Y always 1 -> diff is always -1
 
 
+def test_system_for_maps_kind_to_skill():
+    assert "Chesterton's Shield" in run_bench.system_for("S", "chesterton")
+    assert "Goodhart" in run_bench.system_for("S", "goodhart")
+    assert "Hyrum's Shield" in run_bench.system_for("S", "hyrum")
+    assert "Fail-Safe" in run_bench.system_for("S", "security")
+    assert "Phantom Check" in run_bench.system_for("S", "phantom")
+    assert run_bench.system_for("C", "security") != run_bench.system_for("C", "phantom")  # kind-specific caution
+    assert run_bench.system_for("B", "hyrum") == ""                                       # bare arm is empty
+
+
 def test_forest_row_places_markers():
     line = stats.forest_row("W vs S", -0.10, -0.20, -0.05, True, width=41, label_w=12)
     assert line.startswith("W vs S")

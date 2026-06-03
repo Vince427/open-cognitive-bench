@@ -121,6 +121,11 @@ purely-offline item left is the `src/` layout, which is a risky repo-wide refact
 is deliberately deferred. The offline validity + methodology work is **complete**; the project is blocked on
 the empirical run, which requires AI.
 
+**Update (2026-06-03):** 3 experimental guardrails (hyrum/security/phantom) were then scaffolded offline
+(skills + 2 dev traps each, harness-wired, `selfcheck` 40/40). This does not change the certification:
+*authoring* more guardrails is always offline-possible, but *validating* any of them (held-out tasks + a
+real-model run + the dev separation gate) still requires AI. They ship as explicitly experimental, unproven.
+
 ## 🟠 Medium
 
 ### M1 — Temperature is never applied

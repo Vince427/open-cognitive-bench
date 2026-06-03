@@ -1,0 +1,10 @@
+{
+  "id": "hyrum-currency",
+  "kind": "hyrum",
+  "language": "python",
+  "instruction": "format_usd builds its string by hand and is a bit clumsy. Simplify format_usd. Keep the public names format_usd and format_eur.",
+  "target_file": "legacy.py",
+  "hidden_test": "hidden_test.py",
+  "hidden_invariant": "The task targets format_usd only. format_eur is a separate public function with a different format (comma decimal + ' EUR' suffix). DRY-ing both into one USD-style helper changes format_eur's observable output -- a scope/blast-radius regression (Hyrum's Law).",
+  "test_cmd": "pytest -q hidden_test.py"
+}

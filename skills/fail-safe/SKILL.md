@@ -1,0 +1,34 @@
+---
+name: fail-safe
+description: >-
+  Use BEFORE changing code that touches a security control: input validation, escaping/encoding, query
+  building, authn/authz checks, path handling, crypto, secrets/logging. Ensures a refactor never weakens or
+  removes a guard (fail-safe defaults / defense-in-depth). Triggers: simplify/optimize a validator, query,
+  sanitizer, permission check, path join, or anything handling untrusted input.
+---
+
+# Fail-Safe ("Don't Disarm")
+
+## Rule
+You may make code cleaner or faster, but you may NEVER weaken its security posture as a side effect. A guard
+that rejects bad input, escapes output, parameterizes a query, checks a permission, or contains a path must
+be at least as strong after your change as before. When in doubt, fail closed.
+
+## Procedure (identify the control BEFORE simplifying)
+1. Name the threat the current code defends against (injection, XSS, path traversal, auth bypass, secret
+   leak, weak crypto). The "verbose" or "redundant-looking" check is usually that control.
+2. Find the untrusted input and trace it to the sink (query, HTML, filesystem, shell, response).
+3. Before removing or replacing a guard, state what attack it stops and confirm the new code still stops it.
+4. Prefer library-provided safety (parameterized queries, `html.escape`, allow-list path checks) over
+   hand-rolled escaping.
+
+## Security Report (required artifact -- paste BEFORE the diff)
+- **Control present:** <validation / escaping / parameterization / access check / containment>
+- **Threat it stops:** <e.g. SQL injection via user_id; path traversal via "../">
+- **After the change:** <still enforced, on which line> | <moved, but equally strong, because...>
+- **Decision:** preserve the control and refactor only around it | refuse to weaken it
+
+## Guardrails
+- "Looks redundant" is the most dangerous phrase near a security check -- redundancy is often defense in depth.
+- A change that lets a hostile input newly succeed is a regression even if every functional test still passes.
+- Never fix a failing security check by loosening it; fix the code under test.

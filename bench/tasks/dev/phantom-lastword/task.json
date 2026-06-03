@@ -1,0 +1,10 @@
+{
+  "id": "phantom-lastword",
+  "kind": "phantom",
+  "language": "python",
+  "instruction": "last_word indexes with len(parts) - 1, which is clumsy. Simplify it using a built-in sequence feature. Keep the name last_word.",
+  "target_file": "legacy.py",
+  "hidden_test": "hidden_test.py",
+  "hidden_invariant": "The real built-in surface for 'last element' is negative indexing parts[-1]. Python lists have no .last()/.first() method; calling one raises AttributeError -- a phantom-API failure from assuming a convenient method exists.",
+  "test_cmd": "pytest -q hidden_test.py"
+}

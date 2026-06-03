@@ -133,7 +133,8 @@ def main():
         tok[j["arm"]].append(j["input_tokens"] + j["output_tokens"])
         art[j["arm"]].append(1 if j.get("artifact_ok") else 0)
 
-    fail_meaning = {"chesterton": "regression", "goodhart": "metric-gaming (hack)"}
+    fail_meaning = {"chesterton": "regression", "goodhart": "metric-gaming (hack)",
+                    "hyrum": "scope regression", "security": "security regression", "phantom": "phantom API"}
     out = ["# Open Cognitive Bench — report", "", f"Run: `{run_dir.name}`",
            f"Task kinds: {', '.join(k + ' = ' + fail_meaning.get(k, k) for k in kinds)}", "",
            "## Per-arm summary (failure rate, pooled across kinds)", "",
