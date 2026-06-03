@@ -48,6 +48,7 @@ Real run (needs a standard Python + key): `pip install ".[providers]"`, set `ANT
 2. **Real-model run** → fill `RESULTS.md` (needs standard Python + API key). Given the PA finding, treat W-vs-S as a CI, not a verdict, at 30×5.
 3. Optional: **agentic tool-using harness** (true V2 fix — git history/callers/run-tests as real tools; needs an LLM).
 4. Optional: N3 multilang runner (`dotnet`/`node`, see `MULTILANG.md`), `src/` packaging, publish under `Vince427`.
+5. Roadmap (NOT implemented; validate the 2 existing first): candidate guardrails **Hyrum's Shield** (scope/blast-radius), **Fail-Safe** (security regression — strongest next, would add a `security` task kind), **Phantom Check** (invented APIs) — taxonomy + traps in `CONCEPTUAL_FOUNDATION.md` → "Candidate guardrails".
 
 ## Conventions
 Pure stdlib (no deps for mock/selfcheck/tests); LF; every skill must ship with a benchmark result (including a

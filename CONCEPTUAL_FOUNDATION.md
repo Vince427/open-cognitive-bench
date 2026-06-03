@@ -56,6 +56,46 @@ rather than trust plausibility. Expect smaller effects on frontier reasoning mod
 - **Don't overfit the benchmark**: dev vs sealed held-out, pre-registration, paired stats with multiplicity
   correction. See `bench/preregistration.md`.
 
+## Candidate guardrails (roadmap — NOT implemented)
+We deliberately ship only the two best-supported rules. But the agent-failure literature suggests a small,
+clean **taxonomy of "respect failures" when editing existing code**, of which we currently cover two:
+
+| Failure type | Guardrail | Status |
+|---|---|---|
+| breaks a hidden **functional invariant** | **Chesterton's Shield** | shipped |
+| satisfies a **metric** while betraying its intent | **Goodhart Attack** | shipped |
+| changes **observable behavior outside the requested scope** | *Hyrum's Shield* (candidate) | roadmap |
+| weakens a **security posture** while making a functional change | *Fail-Safe* / "Don't Disarm" (candidate) | roadmap |
+| references a **surface that doesn't exist** (invented API) | *Phantom Check* (candidate) | roadmap |
+
+Candidate details (each must keep the project's bar: a documented failure mode, a principle-level rule, and
+**execution-detectable** failure):
+- **Hyrum's Shield** — anchor: Hyrum's Law ("with enough users, every observable behavior will be depended
+  upon"). Targets blast-radius / drive-by over-editing. Trap: a hidden test on a *sibling* behavior (not the
+  one being changed) breaks ⇒ the agent touched what it wasn't asked to. Distinct from Chesterton, whose
+  hidden test guards the *same* function's weird invariant.
+- **Fail-Safe ("Don't Disarm")** — anchor: Saltzer & Schroeder fail-safe defaults / defense-in-depth.
+  Targets security regressions introduced during a refactor (parameterized query → string concat,
+  validation/escaping removed, a permission check weakened, a secret logged). Trap: a *security* hidden test
+  (an injection/traversal probe that must stay blocked) fails. Would add a third task `kind` = `security`.
+  **The strongest next addition** — highest real-world stakes, cleanest execution trap, fully orthogonal.
+- **Phantom Check ("No Ghost APIs")** — anchor: code/package hallucination ("slopsquatting"). Targets
+  invented functions/flags/signatures. Trap: a stub/library context where the tempting helper does not
+  exist; the naive edit calls it ⇒ NameError/AttributeError/ImportError at execution. (A *verification*-
+  discipline failure — "did you check the surface you were handed" — rather than a pure knowledge failure.)
+
+Not worth a separate rule (they collapse into the above):
+- *Refuse-the-false-premise* (sycophancy, 2310.13548) — already the **mechanism** Chesterton's traps exploit
+  ("this guard looks redundant, simplify").
+- *Test integrity* (don't weaken/skip tests) — already inside **Goodhart Attack**.
+- *Backward-compat / public-API stability* — overlaps Chesterton (callers) + Hyrum.
+- *No-silent-swallow* (`except: pass` to "pass") — a sub-case of Goodhart.
+
+Discipline: proposing rules is cheap; **validating** one is not (trap tasks + a real run + ideally
+independent authorship). Per this repo's own policy a skill is not "done" until it ships with a benchmark
+result, so we **validate the existing two first** (the dev-set separation gate in `preregistration.md`)
+before expanding. If/when we add one, it is `Fail-Safe`.
+
 ## References
 Gathered via literature search; **re-verify exact IDs/claims before any public or published use.**
 - Goodhart formalization (weak/strong): arXiv 2410.09638. Concrete Problems in AI Safety: 1606.06565.
