@@ -58,12 +58,17 @@ Single author (skills + all tasks + harness); toy/likely-memorized tasks; single
 held-out authorship + a tool-using harness + multi-model runs.
 
 ## 7. Next, in priority order
-1. **Build the agentic, tool-using harness (V2)** — the only setting where these guardrails can bite (real
-   repo, git history, callers, run-tests; skill gates whether the agent investigates). Needs a live model.
+1. **Scale the agentic, tool-using harness (V2) — PROTOTYPE BUILT and it discriminates.**
+   `bench/pilot/agentic_v2_fixture.sh` plants a real repo + git history where the invariant is discoverable
+   only by investigation. Tooled subagents (Haiku, 1 task, n=2/arm): **bare B failed 1/2, skill S 0/2** — the
+   first non-zero failure / first arm separation in the project. Now scale it (seeds/tasks/models + the real
+   McNemar/bootstrap stats) and add hyrum/security/phantom fixtures. This is where the guardrails get measured.
 2. Independent held-out authorship; then a multi-model API run → fill `RESULTS.md`.
 3. Validate (or retire) the 3 experimental kinds once a discriminating harness exists.
 4. Keep toy single-shot tasks as plumbing/regression checks only.
 
-> Bottom line: the apparatus is sound and now produces *real* evidence — and that evidence says the current
-> (single-shot, toy) design can't measure the thing we care about. That redirect is the most useful result so
-> far, and it is published here per the project's negative-results-too policy.
+> Bottom line: the apparatus is sound and now produces *real* evidence. That evidence says the single-shot
+> toy design can't measure the thing we care about — but a same-day **agentic V2 prototype** (real repo + git
+> history + tools) produced the project's **first arm separation** (bare 1/2 vs skill 0/2). So the redirect is
+> not just a critique; the replacement construct is sketched and working. Published per the negative-results-
+> too policy — including the part where the original design was the wrong one.

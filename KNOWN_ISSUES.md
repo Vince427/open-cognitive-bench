@@ -123,6 +123,11 @@ checked "does usage.py state the rule," missed).
   **agentic, tool-using harness is necessary, not optional**." FIX: build that harness (real repo + git
   history + callers + run-tests as tools; the skill gates whether the agent investigates). Keep toy
   single-shot tasks as plumbing/regression checks only. See `REPORT.md`.
+  **Prototype built (2026-06-04):** `bench/pilot/agentic_v2_fixture.sh` — a real repo + git history where the
+  invariant is discoverable only by investigation. Tooled subagents (Haiku, 1 task, n=2/arm): **B 1/2 failed,
+  S 0/2** — the first non-zero failure and first arm separation in the project (tool-use 12–18 vs ~2
+  single-shot). Illustrative, not significant, but it confirms V2 is the right construct. Next: scale it
+  (seeds/tasks/models + stats) and add hyrum/security/phantom fixtures.
 
 ---
 

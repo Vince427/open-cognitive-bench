@@ -7,6 +7,7 @@ venv/
 # Benchmark scratch + throwaway run outputs. Curated/published runs can be force-added (git add -f).
 results/_work/
 results/_pilot/
+results/_v2/
 results/latest
 results/run-*/
 results/pilot-*/

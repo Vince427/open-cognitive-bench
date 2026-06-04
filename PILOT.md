@@ -75,10 +75,24 @@ fact (→ trivial) or **withholds** it (→ unfair) — investigation is never b
 honest implication: **single-shot toy benchmarking cannot demonstrate these guardrails' value for capable
 models; an agentic, tool-using harness (`KNOWN_ISSUES.md` V2) is necessary, not optional.**
 
+## V2 prototype (built the same day) — the construct that DOES discriminate
+Built an **agentic, tool-using** fixture (`bench/pilot/agentic_v2_fixture.sh`): a real multi-file repo with
+**git history** where the `ttl==0` invariant is NOT in the edited file — discoverable only via `git blame`/
+`git log` (commit "ttl=0 must NEVER expire … INC-2231") or the caller. The in-repo test does NOT cover
+`ttl=0`, so "run the tests" doesn't save you. Subagents ran **with tools ON** (Haiku, 1 task, n=2/arm):
+
+| Arm | failures | |
+|---|---|---|
+| B (bare, tools available) | **1/2** | one agent removed the guard (`>= ttl`) → breaks pinned config |
+| S (+ Chesterton) | **0/2** | investigated (git blame/caller), kept the guard |
+
+**The first non-zero failure and first arm separation in the whole project** (single-shot was always 0).
+Tool-use rose from ~2 calls to 12–18 — the agents actually investigated. Illustrative, not significant
+(n=2), but it proves the construct can both *produce* the regression and *measure* the guardrail — exactly
+what the single-shot construct could not.
+
 ## Next
-- The decisive next build is the **agentic tool-using harness** (V2): a real (multi-file, git-historied)
-  repo, tools the agent must use to discover the invariant, and the skill gating whether it investigates.
-  That is where Chesterton/Hyrum/Fail-Safe can actually bite — and it needs a live model.
-- Toy single-shot tasks remain useful only as **plumbing/regression checks**, not as the guardrail measurement.
-- If still pursued single-shot: try an *older/smaller* model than Haiku, far more tasks/seeds, and arm W —
-  but expect the ceiling above to dominate.
+- **Scale the V2 prototype**: more seeds/tasks/models + the real stats (McNemar/bootstrap), and add Hyrum/
+  Fail-Safe/Phantom fixtures. This is where the guardrails can finally be measured.
+- Independent held-out authorship **for the agentic harness**, then a multi-model run → `RESULTS.md`.
+- Toy single-shot tasks: keep only as plumbing/regression checks, not as the guardrail measurement.
