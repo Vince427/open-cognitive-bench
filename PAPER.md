@@ -121,6 +121,14 @@ runs; n=12/arm (not significant); toy, likely-memorized tasks; the misleading-vs
 the headline; W arm never run on a real model. Pilots ran via Claude Code subagents (real behavior, no API
 key) — single-model, no seeds control.
 
+**Two caveats on this paper's own claims.** (i) *The "no investigation effect" conclusion is too strong.*
+The neutral round may have removed not just the sycophancy confound but the trap **pressure** itself: under
+"refactor for clarity," a careful model has no reason to touch the special case, so 0/0 can mean "the task
+became trivial," not "investigation never helps." A valid investigation trap must make a *neutral, genuine*
+refactor naturally drop the invariant unless you investigate — **we have not built one**, so the honest claim
+is "no *detectable* investigation effect in this setup," not "none exists." (ii) The Open Collider figures in
+§7 are taken from its public summary, **not an independent audit** of its data.
+
 ## 9. Should this be an arXiv paper? (honest)
 **Not as an empirical result.** A positive "guardrails work" claim is unsupported (and partly refuted). What
 *is* paper-worthy is the **methodology + negative result**: (a) single-shot toy benchmarks cannot measure
