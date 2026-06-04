@@ -3,13 +3,15 @@ print a fixture x arm failure matrix, and emit judgments.jsonl (+ meta) so bench
 Usage: python bench/agentic/score.py [label]   (reads results/_v2b/{manifest.json,work/,fixtures/})"""
 import importlib.util as u
 import json
+import os
 import sys
 import tempfile
 import time
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
-B = ROOT / "results" / "_v2b"
+# Must match build.sh: fixtures live OUTSIDE the repo so tooled agents can't grep the real answers.
+B = Path(os.environ.get("OCB_AGENTIC", str(Path.home() / "ocb_agentic")))
 man = json.loads((B / "manifest.json").read_text(encoding="utf-8"))
 label = sys.argv[1] if len(sys.argv) > 1 else "agentic"
 

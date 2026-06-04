@@ -22,29 +22,37 @@ edits the target in place. Arm **B** = task only; **C** = + "be careful not to b
   needed. If S "beats" B here, the bare arm is being sandbagged, not out-investigated.
 - Diverse discovery channels per fixture (git blame vs caller vs in-file).
 
-## First run (Haiku, 3 fixtures × B/C/S × 2 seeds = 18 tooled agents, 2026-06-04)
+## Round 2 — hardened fixtures, larger (Haiku, 4 fixtures × B/C/S × 3 seeds = 36 tooled agents, 2026-06-04)
 
-| fixture | B | C | S | discovery channel |
+Replaced `merge-none` (its invariant was visible in the edited function) with `retry-idem` (git blame +
+caller) and `money-split` (existing test); kept `cache-ttl` (git blame) and `safe-divide` (null control).
+
+| fixture | B | C | S | channel |
 |---|---|---|---|---|
-| cache-ttl | **0.50** | 0.00 | 0.00 | git blame (INC-2231 commit) — true investigation trap |
-| merge-none | 0.00 | 0.00 | 0.00 | (intended: caller) — see flaw below |
-| safe-divide | **0.50** | 0.00 | 0.00 | NULL CONTROL (obvious in-file comment) |
-| **pooled** | **2/6 = .33** | **0/6** | **0/6** | McNemar S-vs-B p=0.50 (n10/n01 0/2) — **not significant** |
+| cache-ttl | 0.33 | 0.00 | 0.00 | git blame |
+| retry-idem | 0.33 | 0.00 | 0.33 | git blame + caller |
+| money-split | 0.33 | 0.00 | 0.00 | existing test |
+| safe-divide | 0.33 | 0.00 | 0.00 | NULL CONTROL |
+| **pooled** | **4/12 = .33** | **0/12** | **1/12 = .08** | |
 
-## Honest reading (the controls did their job — no false positive)
-- **The construct works**: it produces real failures (single-shot never did). Tool-use rose to 6–20 calls.
-- **S did NOT beat C** (both 0/6): no evidence the Chesterton skill helps *beyond generic "be careful"* here.
-- **One bare failure is the null control** (`safe-divide B`: removed an obviously-commented guard) → that's
-  model *carelessness*, not lack of investigation. So B's failures are not cleanly an investigation story.
-- **`merge-none` didn't test investigation**: bare agents kept the `if v is not None` logic because it is
-  *visible in the edited function itself* — the invariant wasn't actually withheld. **Fixture-design flaw**:
-  a real investigation trap needs the invariant ABSENT from the edited file (like `cache-ttl`, where the WHY
-  lives only in git blame). `cache-ttl` is the only clean trap here, and there B failed 1/2 vs S 0/2 — suggestive, n=2.
-- **Not significant** (n=6/arm). This is a prototype, not a result.
+### 🔴 This round is CONTAMINATED — read before trusting any number
+The work copies were built **under the project tree** (`results/_v2b/`), so tooled agents **grepped up to the
+real benchmark** and read the answers: transcripts show them citing `bench/tasks/heldout/.../task.json`
+(the `hidden_invariant`!), `hidden_test.py`, even `CLAUDE.md` ("this is a Chesterton's Shield trap"). Both
+arms could read the answer key, so the numbers are not a clean test of investigation. **Fixed in tooling:**
+`build.sh`/`score.py` now build fixtures **outside the repo** (`$OCB_AGENTIC`, default `~/ocb_agentic`).
+A clean re-run is required before any of the numbers above are quoted.
+
+### What still survives the contamination (two robust signals)
+- **`C` (generic caution) ≥ `S` (skill)**: C 0/12, S 1/12. Across both rounds the skill shows **no advantage
+  over plain "be careful."** That is the central anti-self-deception result.
+- **`B` fails the NULL CONTROL as often as the real traps** (all four fixtures 0.33). So the bare arm's
+  failures are largely **baseline model carelessness**, not "didn't investigate" — the investigation story is
+  not supported. (`B` ~1/3 everywhere looks like a flat competence floor, not a trap-specific effect.)
 
 ## Next (to make this a real measurement)
-1. Rebuild fixtures so the invariant is **never visible in the edited file** (caller-only / git-only), like
-   `cache-ttl`. Drop or redesign `merge-none`.
-2. Many more fixtures + seeds + a 2nd model; report S-vs-C (skill vs caution) as the primary contrast.
-3. **Independent author** for the fixtures (the single-author bias is unaddressed).
-4. A bare-arm "rushed" control to bound trap fairness.
+1. **Isolation (done in tooling, needs a clean re-run):** fixtures out-of-tree so agents can't read the repo.
+2. Restrict agent tools to the fixture dir; add a bare-arm "rushed" control to bound trap fairness.
+3. Many more fixtures/seeds + a 2nd model; **report S-vs-C as the primary contrast** (it's the one that matters).
+4. **Independent author** for fixtures + skill (single-author bias unaddressed) — the load-bearing fix.
+5. Watch the null control every round: if a guardrail ever "helps" there, the setup is biased.
