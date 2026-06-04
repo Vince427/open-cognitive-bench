@@ -24,6 +24,22 @@ changing it) and **Goodhart Attack** (anticipate how a change games the metric) 
 (`skills/*/SKILL.md`, cross-tool) and an active multi-agent Workflow (`workflows/`, Claude Code/Antigravity).
 The benchmark below is how we (tried to) test them.
 
+**Inspired by [Open Collider](https://github.com/CL-ML/open-collider).** We borrow its ethos — ship the
+artifact *and* a falsifiable benchmark, publish negative results — and its presentation (forest plot +
+falsifier-control arms), but apply it to **reliability** (judged by **execution**: a test passes or fails)
+instead of **ideation** (judged by **LLM preference**). Open Collider reports a strong *positive* in its
+domain; we report a mostly-negative methodological result in ours. Honest head-to-head in [`PAPER.md` §7](PAPER.md).
+
+## How the pieces run: gate (guarantee) vs skill (nudge)
+Two **opposite** mechanisms — don't confuse them:
+- **A skill** (`*/SKILL.md`) is a **prompt** injected into an LLM agent. It *shapes* behavior ("preserve the
+  load-bearing facts"). No code runs → it **reduces** mistakes but **cannot guarantee** anything.
+- **A gate / CI** is **code that runs and rejects** a bad result. `drift-guard/gate.py` checks that the facts
+  you listed survive a rewrite (revert if not); the repo's **CI** (`.github/workflows/ci.yml`) runs the tests
+  + `selfcheck` on every push and goes red on any regression. **This is the part that guarantees.**
+- They compose: the skill lowers how often the gate must reject; the gate (and CI) provide the guarantee.
+  *A CI for code is a fact-gate for a document — the same idea at two levels.*
+
 ## The benchmark — what we set out to test (and what we found)
 
 We set out to ask: does a guardrail **Skill** (and a multi-agent **Workflow**) actually lower the rate at

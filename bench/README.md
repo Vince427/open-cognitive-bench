@@ -3,6 +3,12 @@
 Execution-based, paired, multi-seed benchmark comparing five arms (B/C/D/S/W) across two task kinds:
 chesterton "regression" traps and goodhart "metric-gaming" traps.
 
+> **Honest status:** real-model pilots showed this **single-shot** design *floors* (every arm 0) — it cannot
+> discriminate capable models (`../REPORT.md`, `../PILOT.md`, `../PAPER.md`). Treat it as a **methodology**,
+> not a delivered result. The usable deliverable is [`../drift-guard/`](../drift-guard/README.md) (an
+> executable fact-gate). Design + ethos **inspired by [Open Collider](https://github.com/CL-ML/open-collider)**
+> (forest plot + falsifier-control arms), applied to *execution-judged reliability* rather than ideation.
+
 ## Pipeline
 ```
 run_bench.py   # produces edits per (task, arm, seed); records tokens/$/latency  -> results/<run>/runs.jsonl

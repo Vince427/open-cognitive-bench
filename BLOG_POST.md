@@ -6,6 +6,14 @@ Results — whatever they turn out to be — will be published in RESULTS.md, re
 
 # Don't trust your coding agent's guardrails. Benchmark them.
 
+> **Update (2026-06-04) — the data is in, and it's humbling.** This rationale post predates the experiments.
+> Since then: a **single-shot** benchmark **can't** measure these guardrails on capable models (every arm
+> floors at 0), and the *measurable* "skill" effect is mostly **resisting a misleading instruction**, not
+> investigation ([`PAPER.md`](PAPER.md), [`REPORT.md`](REPORT.md)). The concrete thing that **does** work —
+> and actually *guarantees* — is the executable **fact-gate** in [`drift-guard/`](drift-guard/README.md)
+> (a skill *reduces* drift; only the gate *guarantees*). Read those first; the argument below is why we
+> bothered to test at all. Inspired by [Open Collider](https://github.com/CL-ML/open-collider).
+
 Ask a coding agent to "refactor this" and it will often make the code *look* better while quietly breaking
 a rule nobody wrote down: a composite key that only *looked* redundant, a `ttl == 0` that secretly meant
 "never expire," a leap-year branch that seemed like dead weight. Ask it to "make the tests pass" and it may
