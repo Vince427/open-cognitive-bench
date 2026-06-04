@@ -13,3 +13,5 @@ results/run-*/
 results/pilot-*/
 *.tmp
 .DS_Store
+results/_v2b/
+results/agentic-*/

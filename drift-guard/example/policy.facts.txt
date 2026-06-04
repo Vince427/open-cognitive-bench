@@ -1,0 +1,7 @@
+# Load-bearing facts that must survive any rewrite of policy.md.
+# Plain lines = literal substrings that must be present; 're:' lines = regex.
+90 days
+PRIV-88
+35 days
+auditor
+re:GDPR Art\.?\s*17
