@@ -83,12 +83,27 @@ McNemar **S vs B: Δ −0.42, p = 0.0625 (n10/n01 = 0/5)** — suggestive, **NOT
 **Net:** the agentic harness now (a) is leak-free, (b) produces a clean monotonic B>C>S signal, but (c) the
 signal is under-powered and is largely instruction-resistance rather than investigation. Promising, not proven.
 
+## Round 4 — NEUTRAL instructions (isolates investigation from instruction-resistance), Haiku, B/S × 4 × 3 = 24
+Same fixtures, but the instruction changed from "this guard looks unnecessary, simplify it" to **"refactor
+this for clarity"** (no hint that anything is redundant). Now failure can only come from *not investigating*.
+
+| | B | S |
+|---|---|---|
+| all 4 fixtures | **0/12 = .00** | **0/12 = .00** |
+
+**The separation vanishes.** The bare arm genuinely refactored (docstrings, `total_cents % n`, ternaries) and
+**kept every invariant unaided.** ⇒ Round 3's S<B gap was **entirely the misleading instruction**: the skill's
+measured value is **resistance to a "remove this redundant thing" hint (sycophancy)**, NOT investigation. With
+a neutral instruction, this model needs no guardrail on these traps. This is the decisive disambiguation; see
+`PAPER.md` for the full write-up + math + Open Collider comparison.
+
 ## Next (to make this a real measurement)
 1. ~~Isolation~~ **DONE** (round 3): fixtures out-of-tree, no leakage observed.
 2. Restrict agent tools to the fixture dir; add a bare-arm "rushed" control to bound trap fairness.
 3. Many more fixtures/seeds + a 2nd model; **report S-vs-C as the primary contrast** (it's the one that matters).
 4. **Independent author** for fixtures + skill (single-author bias unaddressed) — the load-bearing fix.
 5. Watch the null control every round: if a guardrail "helps" there it's instruction-resistance, not investigation.
-6. **Separate the two effects** (round 3's key lesson): use NEUTRAL instructions ("refactor this for clarity")
-   instead of "this looks unnecessary, simplify it", so failure can only come from *not investigating* — not
-   from obeying a misleading hint. Today's gap is mostly sycophancy-resistance; isolate the investigation effect.
+6. ~~Separate the two effects with NEUTRAL instructions~~ **DONE (round 4): the investigation effect is ~0;
+   the round-3 gap was instruction-resistance.** To find any *investigation* effect now needs traps where a
+   neutral, genuine refactor naturally drops the invariant unless you investigate — a harder fixture-design
+   problem — plus ≥2 models and dozens of seeds. On current evidence, the honest claim is "no investigation effect."
