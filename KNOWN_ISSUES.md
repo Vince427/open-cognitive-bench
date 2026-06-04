@@ -128,6 +128,11 @@ checked "does usage.py state the rule," missed).
   S 0/2** — the first non-zero failure and first arm separation in the project (tool-use 12–18 vs ~2
   single-shot). Illustrative, not significant, but it confirms V2 is the right construct. Next: scale it
   (seeds/tasks/models + stats) and add hyrum/security/phantom fixtures.
+  **Caveat (don't let V2 become the next self-deception):** the same single author wrote the skill, the
+  fixture, AND the judge — a fixture built so "investigation is necessary" while the skill says "investigate"
+  favors the skill by construction. And capable agents **investigate spontaneously** (the bare `B_h1`
+  preserved the guard with no skill), which can erase the effect at scale. Before any claim: independent
+  fixtures, bare agents that don't auto-investigate, dozens of seeds/tasks, and the real McNemar/bootstrap.
 
 ---
 
