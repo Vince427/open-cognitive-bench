@@ -162,6 +162,9 @@ where these guardrails can bite), plus independent held-out authorship and a mul
 - [`PILOT.md`](PILOT.md) — real-model pilots (DEV, via Claude Code subagents): a floor effect at every model tier.
 - [`REPORT.md`](REPORT.md) — global status report (what's built/tested, the construct-ceiling finding, next steps).
 - [`bench/pilot/`](bench/pilot/README.md) — run a real model with NO API key (subagents); provider choice + limits.
+- [`PAPER.md`](PAPER.md) — arXiv-style methods + negative-results note (the whole experimental arc + math).
+- [`DRIFT.md`](DRIFT.md) — iterative-rewrite drift: literature, the DPI/decay math, and the skill+gate that stop it.
+- [`bench/agentic/`](bench/agentic/README.md) — the agentic tool-using harness (rounds 1–4) + the drift demo.
 - [`KNOWN_ISSUES.md`](KNOWN_ISSUES.md) — QA findings & their status.
 - [`BLOG_POST.md`](BLOG_POST.md) — the rationale post (why benchmark guardrails at all).
 - [`MULTILANG.md`](MULTILANG.md) — design for multi-language tasks (C#/JS) + the canonical C# trap.

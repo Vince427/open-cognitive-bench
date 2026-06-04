@@ -128,6 +128,8 @@ the kinds the Shield enumerates (favorable; single author); bare's loss here was
 (comments) while code behavior mostly survived — a longer run / weaker model could break code too. So: a
 **clean, provable demonstration that the skill prevents rationale/erosion drift in this setup**, not a powered
 general result. Reproduce: `bench/agentic/drift_seed.py` + dispatch condensing subagents per pass + `drift_check.py`.
+Full treatment — literature (model collapse vs broken-telephone), the Data-Processing-Inequality / decay math,
+and why the skill only *delays* drift while the gate *guarantees* against it: **`../../DRIFT.md`**.
 
 ## Next (to make this a real measurement)
 1. ~~Isolation~~ **DONE** (round 3): fixtures out-of-tree, no leakage observed.
