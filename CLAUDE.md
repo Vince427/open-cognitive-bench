@@ -9,13 +9,14 @@ whether they actually help. Reliability angle (not ideation): **Chesterton's Shi
 exists before changing it) and **Goodhart Attack** (don't game the metric). Benchmarked in spirit against
 **Open Collider** (`github.com/CL-ML/open-collider`). See `README.md` + `CONCEPTUAL_FOUNDATION.md`.
 
-## Status (2026-06-02)
+## Status (2026-06-04)
 - 14+ commits, branch `main`, **local only**, author identity = `Vince427` (repo-local git config).
-- **40 trap tasks** (10 dev + 30 held-out). `selfcheck` 40/40. 21 harness unit tests. CI = pure stdlib.
+- **41 trap tasks** (11 dev + 30 held-out; added `split-name`). `selfcheck` 41/41. 21 harness unit tests. CI = pure stdlib.
 - **5 guardrails / kinds:** chesterton + goodhart (benchmarked-ready); **hyrum + security + phantom = experimental dev-only scaffolds** (2 dev traps each, NOT validated, no held-out — gated behind the dev-set separation check). See `CONCEPTUAL_FOUNDATION.md` → "Candidate guardrails".
 - QA M1–M4, L1–L4, N1–N4 resolved/documented; **V1 MITIGATED (de-spoiled + usage.py; V3 open — usage.py may over-specify), V2 DOCUMENTED (scope), PA DONE (power.py)** — see `KNOWN_ISSUES.md`.
 - **Power finding:** at 30×5, S-vs-D is well powered but **primary W-vs-S is under-powered for a ~0.10 gap (~40%)** — report it as a CI, not a verdict (`bench/power_analysis.md`).
-- **First real-model evidence (pilot, 2026-06-04, `PILOT.md`):** ran the DEV set via Claude Code **subagents** as the model under test (single-shot/no-tools, arms B/C/D/S, 1 seed). **0 failures in 40/40 cells — no separation (floor effect):** a frontier model preserves every trap even bare. Dev separation gate FAILS → make tasks harder (or use a weaker model) before held-out. Mock remains tautological; the publishable multi-model held-out run is still pending.
+- **Real-model pilots (2026-06-04, `PILOT.md` / `REPORT.md`):** ran DEV via Claude Code **subagents** (no API key; single-shot/no-tools; arms B/C/D/S). **Opus 0/40, Haiku 0/40, and a harder trap `split-name` passed on both** → no separation at any tier. **V5 construct ceiling:** toy single-shot tasks can't show guardrail value (the fact is either shown→trivial or withheld→unfair); the **agentic tool-using harness (V2) is necessary, not optional**. Mock is tautological; multi-model held-out run still pending.
+- Subagent pilot runner = `bench/pilot/` (tracked, reproducible); pilot run outputs git-ignored. Global status: `REPORT.md`.
 
 ## CRITICAL gotchas
 - **No standard Python on this machine** (`python`/`py` are Windows-Store stubs). Use the embedded CPython 3.12:

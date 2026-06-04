@@ -56,6 +56,29 @@ every arm. The bare arm B genuinely refactored *and* preserved every trap, e.g.:
   does not challenge a strong single-shot model. What it does **not** show: that the guardrails are useless —
   they are simply untested at a difficulty where the baseline fails. That is the next experiment.
 
+## Follow-ups (same day) — it is the TASKS, not the model
+
+**Weaker model (Haiku), same 40 cells:** also **0 failures, no separation.** Even Haiku's bare arm genuinely
+refactored *and* preserved every trap (e.g. `payment-dedup` B: rewrote O(N²)→O(N) using the *correct*
+composite key `(id, terminal_id, timestamp)`; kept `html.escape`; used the real `to_cents`). So the floor is
+not a frontier-only effect — these tasks are too easy/too discoverable for a small model too.
+
+**Harder task (`split-name`), B/S on both Haiku and Opus:** the classic `first, last = full.split(" ")`
+unpacking bug (raises on 1 or 3+ words) — **all four passed.** Haiku kept the robust pattern / used
+`split(" ", 1)` with a guard; Opus used `str.partition`. The models avoid the naive unpack *by default*.
+
+**Conclusion (the real finding).** Toy, single-shot Python refactors do **not** discriminate competent models
+— across two model tiers, all five kinds, and a deliberately harder trap, every arm scored 0. This is a
+**construct ceiling**, not a difficulty knob: the guardrails target the failure of *not investigating large,
+unfamiliar code* (read callers, git blame, run tests), but a single-shot toy task either **shows** the needed
+fact (→ trivial) or **withholds** it (→ unfair) — investigation is never both possible and necessary. The
+honest implication: **single-shot toy benchmarking cannot demonstrate these guardrails' value for capable
+models; an agentic, tool-using harness (`KNOWN_ISSUES.md` V2) is necessary, not optional.**
+
 ## Next
-Harder tasks (or a weaker/older model), then re-run this same pilot; only once arms separate on dev does the
-held-out run become meaningful. Optionally add arm W and more seeds.
+- The decisive next build is the **agentic tool-using harness** (V2): a real (multi-file, git-historied)
+  repo, tools the agent must use to discover the invariant, and the skill gating whether it investigates.
+  That is where Chesterton/Hyrum/Fail-Safe can actually bite — and it needs a live model.
+- Toy single-shot tasks remain useful only as **plumbing/regression checks**, not as the guardrail measurement.
+- If still pursued single-shot: try an *older/smaller* model than Haiku, far more tasks/seeds, and arm W —
+  but expect the ceiling above to dominate.

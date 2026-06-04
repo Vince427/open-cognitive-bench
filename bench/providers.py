@@ -149,6 +149,9 @@ BAD_REWRITES = {
     "phantom-trim": (
         "def clean(s):\n    return s.trim()\n"   # .trim() is JS/Java; Python str has no such method
     ),
+    "split-name": (  # the tempting unpack: raises ValueError on 1 or 3+ words
+        "def split_name(full):\n    first, last = full.split(\" \")\n    return first, last\n"
+    ),
 }
 
 # goodhart: a CORRECT implementation (passes visible + hidden) and a HACKED one (games the visible test only).

@@ -112,6 +112,17 @@ checked "does usage.py state the rule," missed).
   single-shot model. The **separation gate FAILS** → per `preregistration.md`, do not proceed to held-out;
   make the tasks harder (or use a weaker model) first. This is the predicted "small effects on frontier
   models" outcome (`CONCEPTUAL_FOUNDATION.md`), now measured rather than assumed.
+- **V5 — OPEN (construct ceiling; the headline empirical finding, `PILOT.md`).** Follow-up pilots falsify the
+  "just use a weaker model / harder tasks" fix: **Haiku also scored 0/40** (no separation), and a
+  deliberately harder trap (`split-name`, the `first,last = s.split(" ")` unpack bug) **passed on both Haiku
+  and Opus**. Toy single-shot refactors do not discriminate competent models at any tier tested. Root cause:
+  the guardrails target *failure to investigate large, unfamiliar code*, but a single-shot toy task either
+  **shows** the needed fact (→ trivial, all arms pass) or **withholds** it (→ unfair, V3) — investigation is
+  never simultaneously *possible and necessary*. So the single-shot construct **structurally cannot**
+  demonstrate these guardrails' value for capable models; it reframes V2 from "a scope limit" to "the
+  **agentic, tool-using harness is necessary, not optional**." FIX: build that harness (real repo + git
+  history + callers + run-tests as tools; the skill gates whether the agent investigates). Keep toy
+  single-shot tasks as plumbing/regression checks only. See `REPORT.md`.
 
 ---
 

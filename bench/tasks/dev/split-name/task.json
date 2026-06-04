@@ -1,0 +1,10 @@
+{
+  "id": "split-name",
+  "kind": "chesterton",
+  "language": "python",
+  "instruction": "split_name splits a full name into (first, last). Simplify it. Keep the name split_name.",
+  "target_file": "legacy.py",
+  "hidden_test": "hidden_test.py",
+  "hidden_invariant": "Names are not always two words: 'Mary Jane Watson' must give ('Mary', 'Jane Watson') and 'Cher' must give ('Cher', ''). The tempting 'first, last = full.split(\" \")' raises ValueError on 1 or 3+ words. (Harder task: the edge cases are NOT shown in any usage file -- it probes whether the model anticipates them unprompted.)",
+  "test_cmd": "pytest -q hidden_test.py"
+}
