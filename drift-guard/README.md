@@ -52,6 +52,10 @@ a helpful but unproven nudge**; **drift-without-checks = backed by real, establi
 - **Code-behavior → `--checks checks.py`**: a Python module `CHECKS = [(name, fn(module_or_None, src)->bool)]`
   (lets you assert behavior, e.g. `is_expired({"ttl":0},1e9) is False`). See `example/checks.py`.
 
+You don't have to hand-write the list: give any LLM `extract_facts_prompt.md` + your document to **draft**
+`facts.txt`, **review it once**, then validate the draft with `gate.py --facts facts.txt --file <doc>` (every
+listed fact should already be present). The gate enforces it forever after; you only curate once.
+
 **2. Gate every rewrite** — pass the **frozen original** as `--baseline` (not the previous pass, or slow drift
 sneaks through), and let `--apply` accept-or-revert automatically:
 ```bash
@@ -63,6 +67,20 @@ python gate.py --facts facts.txt --baseline ORIGINAL.md --candidate candidate.md
 Audit a single file: `python gate.py --facts facts.txt --file doc.md` (exit 1 if any fact missing).
 
 **3. (optional) inject `SKILL.md`** into the editing agent so fewer passes get rejected.
+
+**Automated loop (`guarded_rewrite.py`).** Instead of gating by hand, run the whole edit→gate→accept/revert
+loop, with your LLM as a pluggable rewrite command:
+```bash
+python guarded_rewrite.py --doc live.md --facts facts.txt \
+  --rewrite-cmd "your-llm-cli --condense" --passes 8 --retries 1
+# each pass: <rewrite-cmd> edits a candidate in place -> gate -> ACCEPT (keep) or REVERT (discard, retry).
+# Guarantees: every accepted version still contains every listed fact, over all 8 passes.
+```
+
+## Files
+`gate.py` (the gate, code + prose) · `guarded_rewrite.py` (the auto loop) · `SKILL.md` (Drift Shield, soft
+layer) · `extract_facts_prompt.md` (draft a fact-set with any LLM) · `test_gate.py` (10 tests, in CI) ·
+`example/` (code: `doc.py`/`checks.py`/`degraded.py`; prose: `policy.md`/`policy.facts.txt`/`policy_drifted.md`).
 
 ## Proof (self-test, `example/`)
 ```
