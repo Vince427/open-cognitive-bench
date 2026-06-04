@@ -1,35 +1,37 @@
 # Open Cognitive Bench
 
-> **Does a multi-agent *cognitive-gating workflow* actually beat a strong single-agent + skill at
-> stopping an AI from breaking your code — and is it worth the 5–10× cost?**
-> Nobody has measured it. This repo ships both artifacts *and* the falsifiable benchmark that decides —
-> **negative results included.**
+**What this repo is, honestly (2026-06-04).** It set out to be a falsifiable benchmark for "guardrail" prompts
+that supposedly stop an AI coding agent from breaking your code. The rigorous finding is **mostly negative**,
+and that reshaped the project. It is now two things:
 
-> **Status (2026-06-04, honest):** real-model pilots found the *single-shot* version of this benchmark
-> **can't** measure the guardrails (every arm scores 0 — a floor effect / **construct ceiling**). The
-> measurement is moving to an **agentic, tool-using harness**, whose first prototype already produced the
-> project's first arm separation. Read [`REPORT.md`](REPORT.md) and [`PILOT.md`](PILOT.md) before the pitch below.
+1. **[`drift-guard/`](drift-guard/README.md) — a small tool that actually works** (the clearest positive
+   here). It stops an LLM from silently dropping facts when it re-edits a document over many passes
+   ("broken-telephone" drift). An **executable fact-gate _guarantees_** the facts you list survive every
+   rewrite; a **skill ("Drift Shield") only _reduces_** the loss. The guarantee is the *gate*, not the prompt
+   — and the math says why ([`DRIFT.md`](DRIFT.md)). **Start here if you want something usable.**
+2. **A falsifiable benchmark + an honest methodology** for guardrail claims — including the controls that
+   repeatedly killed our *own* positive results. Useful as "how to (not) benchmark coding-agent guardrails,"
+   **not** as proof that guardrails make agents safer.
 
-Most damage an AI coding agent does to a codebase isn't a *knowledge* failure — it's a **respect**
-failure (silently destroying a hidden invariant) and a **metric-gaming** failure (satisfying the test,
-betraying the intent). The fashionable answer is "drop a clever Markdown rules file." The honest answer
-is: *prove it moved a number on held-out tasks.*
+> **One-paragraph result.** Real-model pilots show a **single-shot** benchmark **can't** measure these
+> guardrails on capable models (every arm scores 0 — a *construct ceiling*). An agentic, tool-using harness
+> *can* produce failures, but the measured "skill effect" is mostly **resisting a misleading instruction**
+> (sycophancy), **not investigation**: with a *neutral* instruction the gap vanishes. Details:
+> [`PAPER.md`](PAPER.md) (arXiv-style, with math), [`REPORT.md`](REPORT.md), [`PILOT.md`](PILOT.md).
 
-Open Cognitive Bench packages the two best-evidenced guardrails — **Chesterton's Shield** (investigate
-*why* code exists before changing it) and **Goodhart Attack** (anticipate how a change games the metric)
-— in **two forms**, and benchmarks them against each other:
+The two guardrails we tried to validate — **Chesterton's Shield** (investigate *why* code exists before
+changing it) and **Goodhart Attack** (anticipate how a change games the metric) — ship as a portable Skill
+(`skills/*/SKILL.md`, cross-tool) and an active multi-agent Workflow (`workflows/`, Claude Code/Antigravity).
+The benchmark below is how we (tried to) test them.
 
-| | What it is | Portable? |
-|---|---|---|
-| **Skill** (`skills/*/SKILL.md`) | A passive `.md` rule injected into a single agent. Cross-tool open standard. | ✅ Claude Code / Antigravity / Cursor / Codex |
-| **Workflow** (`workflows/`) | An *active* multi-agent panel: lens sub-agents investigate in parallel and **gate** the implementer. | ❌ Antigravity + Claude Code only (orchestration isn't portable yet) |
+## The benchmark — what we set out to test (and what we found)
 
-## The open question this benchmark answers
-
-Recent work shows a well-engineered **single agent can match or beat** many multi-agent workflows
-(arXiv:2601.12307), while multi-agent setups add 5–10× cost and real coordination-failure modes
-(arXiv:2601.04748). **No one has tested this for code guardrails.** We do — with a pre-registered,
-execution-based, paired benchmark.
+We set out to ask: does a guardrail **Skill** (and a multi-agent **Workflow**) actually lower the rate at
+which an agent breaks code, net of cost — a question nobody had tested for code guardrails, with a
+pre-registered, execution-based, paired design. **What we found instead:** the single-shot version can't
+discriminate, and the agentic version's apparent effect is instruction-resistance, not investigation (see the
+one-paragraph result above and [`PAPER.md`](PAPER.md)). The design below stands as a *methodology*; treat its
+arms as the apparatus, not as a delivered positive result.
 
 ### Arms
 
@@ -46,9 +48,10 @@ The **D** arm is the falsifier that the incumbents (and even Open Collider's cri
 ruleless brief of comparable length — **if `S` beats `D`, the effect is the rule, not the length.** The
 report prints per-arm input tokens so the S/D length parity is verifiable.
 
-**Primary, pre-registered question:** *does W beat S on the held-out failure rate, and by how much net
-of cost?* The metric is **execution-based**, paired across arms, multi-seed, with McNemar + bootstrap CIs
-and Bonferroni correction. See `bench/`.
+**Pre-registered primary question (what the apparatus targets):** *does W beat S on the held-out failure
+rate, net of cost?* — execution-based, paired across arms, multi-seed, with McNemar + bootstrap CIs and
+Bonferroni. **It is empirically unanswered at scale** (the single-shot pilots floored; see the result above).
+See `bench/`.
 
 **Two guardrail dimensions, two failure modes** (each falsified by execution, reported separately by `stats.py`):
 - **Chesterton tasks** — the agent gets correct-but-ugly code to refactor; *failure = regression* (its edit
@@ -95,8 +98,16 @@ read as "underpowered," and detecting it would need more tasks/seeds. See `bench
 
 ## Quick start
 
-No third-party packages are required for the mock run (pure Python 3.9+ stdlib). `pip install -r
-requirements.txt` only adds the optional model SDKs (for real runs) and `pytest`.
+**drift-guard (the usable tool) — pure stdlib, no key:**
+```bash
+python drift-guard/gate.py --facts drift-guard/example/policy.facts.txt --file drift-guard/example/policy.md
+python drift-guard/gate.py --facts drift-guard/example/policy.facts.txt --file drift-guard/example/policy_drifted.md  # exit 1: facts lost
+python drift-guard/test_gate.py        # 10 tests
+```
+See [`drift-guard/README.md`](drift-guard/README.md) for the guarded-rewrite loop and prose/code fact-sets.
+
+**The benchmark (methodology / mock smoke):** no third-party packages for the mock run (pure Python 3.9+
+stdlib); `pip install -r requirements.txt` only adds optional model SDKs (real runs) and `pytest`.
 
 ```bash
 # 0) Sanity: every task is a valid trap (original passes, naive rewrite breaks the invariant)
@@ -154,6 +165,9 @@ where these guardrails can bite), plus independent held-out authorship and a mul
 [`REPORT.md`](REPORT.md).
 
 ## Docs
+- [`drift-guard/`](drift-guard/README.md) — **the usable deliverable**: executable fact-gate + guarded-rewrite loop + Drift Shield skill.
+- [`PAPER.md`](PAPER.md) — arXiv-style methods + negative-results note (the whole arc + the math). **Read this for the honest result.**
+- [`DRIFT.md`](DRIFT.md) — iterative-rewrite drift: literature, the DPI/decay math, why the gate (not the prompt) guarantees.
 - [`CONCEPTUAL_FOUNDATION.md`](CONCEPTUAL_FOUNDATION.md) — why these guardrails should work (evidence-grounded).
 - [`CONTRIBUTING.md`](CONTRIBUTING.md) — how to author trap tasks (and the held-out independence rule).
 - [`bench/preregistration.md`](bench/preregistration.md) — freeze before the held-out run.
@@ -162,8 +176,6 @@ where these guardrails can bite), plus independent held-out authorship and a mul
 - [`PILOT.md`](PILOT.md) — real-model pilots (DEV, via Claude Code subagents): a floor effect at every model tier.
 - [`REPORT.md`](REPORT.md) — global status report (what's built/tested, the construct-ceiling finding, next steps).
 - [`bench/pilot/`](bench/pilot/README.md) — run a real model with NO API key (subagents); provider choice + limits.
-- [`PAPER.md`](PAPER.md) — arXiv-style methods + negative-results note (the whole experimental arc + math).
-- [`DRIFT.md`](DRIFT.md) — iterative-rewrite drift: literature, the DPI/decay math, and the skill+gate that stop it.
 - [`bench/agentic/`](bench/agentic/README.md) — the agentic tool-using harness (rounds 1–4) + the drift demo.
 - [`KNOWN_ISSUES.md`](KNOWN_ISSUES.md) — QA findings & their status.
 - [`BLOG_POST.md`](BLOG_POST.md) — the rationale post (why benchmark guardrails at all).
