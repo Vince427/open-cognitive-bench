@@ -1,5 +1,0 @@
-task_id,kind,arm,seed,failed,detail,artifact_ok,cost_usd,latency_s,input_tokens,output_tokens
-cache-ttl,chesterton,B,0,False,ok,False,0.0,0.0,0,0
-cache-ttl,chesterton,S,0,False,ok,False,0.0,0.0,0,0
-phantom-money,phantom,B,0,False,ok,False,0.0,0.0,0,0
-phantom-money,phantom,S,0,False,ok,False,0.0,0.0,0,0
