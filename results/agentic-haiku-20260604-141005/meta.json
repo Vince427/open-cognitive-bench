@@ -1,0 +1,17 @@
+{
+  "provider": "claude-code-subagent-agentic:haiku",
+  "arms": [
+    "B",
+    "C",
+    "S"
+  ],
+  "seeds": 2,
+  "note": "Agentic V2 harness: tooled subagents on planted repos; invariant discoverable only by investigation. PROTOTYPE -- single author wrote skill+fixture+judge; not significant.",
+  "fixtures": [
+    "cache-ttl",
+    "merge-none",
+    "safe-divide"
+  ],
+  "missing": [],
+  "n": 18
+}
