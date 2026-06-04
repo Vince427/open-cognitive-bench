@@ -96,6 +96,12 @@ flowchart TD
 ## 6. What is and isn't established
 - **Established:** the single-shot construct cannot measure these guardrails for capable models; an agentic
   construct can produce real failures; the skill, *as measured here*, counteracts a misleading instruction.
+- **Clearest positive (iterative drift, `bench/agentic/` demo).** Re-running a module through "aggressively
+  condense this" N times erodes facts: the bare chain lost the legal-constant rationale (SEC-12) on **pass 1**
+  and degraded code to unreadable lambdas; a maximal **Drift Shield** skill *re-applied every pass* held
+  **5/5 load-bearing facts across 5 passes**. Caveat: n=1 chain/arm, one model, facts hand-picked to match the
+  rule — a demonstration, not a powered result. The only *guarantee* is an executable gate (`drift_check.py`
+  re-run each pass, reverting any lossy pass); the skill is strong *soft* prevention.
 - **Not established (and not close):** that the skill improves *investigation*; any *significant* effect
   (n=12, p≈0.06); that any of this generalizes (one small model, four toy fixtures, single author).
 

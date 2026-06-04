@@ -97,6 +97,38 @@ measured value is **resistance to a "remove this redundant thing" hint (sycophan
 a neutral instruction, this model needs no guardrail on these traps. This is the decisive disambiguation; see
 `PAPER.md` for the full write-up + math + Open Collider comparison.
 
+## Iterative-drift demo — the project's clearest positive (and where the skill DOES help)
+Question: re-running a file through an LLM many times silently erodes facts ("telephone game"). Can the skill
+stop it? Setup (`drift_seed.py`, `drift_check.py`, `drift_shield.md`): a module with **5 load-bearing facts**
+(a legal constant + its SEC-12 rationale, a ttl==0 sentinel/INC-2231, an XSS escape, a public `sep` default,
+an order invariant). N sequential passes of "**aggressively condense this**" (a fresh Haiku subagent per pass,
+out-of-tree). Bare vs **Drift Shield** (the max skill: enumerate every load-bearing element + rationale,
+reproduce verbatim, diff before returning) re-applied each pass.
+
+| pass | bare (facts /5) | + Drift Shield (/5) |
+|---|---|---|
+| v0 | 5 | 5 |
+| v1 | **4** (lost the SEC-12 legal rationale) | 5 |
+| v2–v5 | **4**, and code degrades to unreadable lambdas (`is_expired=lambda e,n:e["ttl"]>0and...`, a SyntaxWarning) | **5**, stays clean + keeps every rationale inline |
+
+**Reading.** Bare drifts on **pass 1** — it strips all comments, so the *why* (SEC-12 legal, INC-2231) is
+gone and never returns; later passes mangle the code. The **Drift Shield holds 5/5 across all passes.** This
+is the clearest place the skill demonstrably helps — *because the failure is "drop the thing you don't
+understand," repeated*, which is exactly what the rule targets.
+
+**Three levels of defense (honest ordering):**
+1. *Bare* → drifts.
+2. *Drift Shield (skill)* → soft prevention; held 5/5 here. **Key:** it is **re-applied every pass** (a standing
+   instruction/hook), so the rule itself doesn't erode. A one-time prompt would.
+3. *Executable gate* → the only **guarantee**: run `drift_check.py` after each pass; reject/revert any pass that
+   drops below 5/5. By construction the bare chain is reverted at pass 1 → stays 5/5. Prompts persuade; checks enforce.
+
+**Caveats (don't over-claim):** single chain per arm (n=1, not statistical); one model; the facts are exactly
+the kinds the Shield enumerates (favorable; single author); bare's loss here was mostly the *rationale*
+(comments) while code behavior mostly survived — a longer run / weaker model could break code too. So: a
+**clean, provable demonstration that the skill prevents rationale/erosion drift in this setup**, not a powered
+general result. Reproduce: `bench/agentic/drift_seed.py` + dispatch condensing subagents per pass + `drift_check.py`.
+
 ## Next (to make this a real measurement)
 1. ~~Isolation~~ **DONE** (round 3): fixtures out-of-tree, no leakage observed.
 2. Restrict agent tools to the fixture dir; add a bare-arm "rushed" control to bound trap fairness.
