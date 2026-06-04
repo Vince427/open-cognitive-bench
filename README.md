@@ -5,6 +5,11 @@
 > Nobody has measured it. This repo ships both artifacts *and* the falsifiable benchmark that decides —
 > **negative results included.**
 
+> **Status (2026-06-04, honest):** real-model pilots found the *single-shot* version of this benchmark
+> **can't** measure the guardrails (every arm scores 0 — a floor effect / **construct ceiling**). The
+> measurement is moving to an **agentic, tool-using harness**, whose first prototype already produced the
+> project's first arm separation. Read [`REPORT.md`](REPORT.md) and [`PILOT.md`](PILOT.md) before the pitch below.
+
 Most damage an AI coding agent does to a codebase isn't a *knowledge* failure — it's a **respect**
 failure (silently destroying a hidden invariant) and a **metric-gaming** failure (satisfying the test,
 betraying the intent). The fashionable answer is "drop a clever Markdown rules file." The honest answer
@@ -129,12 +134,24 @@ after freezing `bench/preregistration.md`.
 /plugin install chestertons-shield@open-cognitive-bench
 ```
 
-## Status
+## Status (2026-06-04)
 
-PoC scaffold with **34 validated trap tasks** (4 dev + 30 held-out, across both guardrail dimensions; all
-pass `bench/selfcheck.py`). The harness runs end-to-end in `--provider mock`. The only remaining step is the
-**real-model run** (set an API key and use `run.ps1` / `run.sh`); for a publishable result, ideally have an
-independent contributor expand or replace the held-out tasks.
+PoC scaffold: **41 validated trap tasks** (11 dev + 30 held-out; **5 kinds** — chesterton + goodhart are
+benchmarked-ready, while hyrum/security/phantom are **experimental, unvalidated**), all pass
+`bench/selfcheck.py`. The harness runs end-to-end on `mock` **and on a real model** via Claude Code subagents
+(`bench/pilot/`, no API key).
+
+**Key finding — the real-model pilots changed the plan (`PILOT.md`).** The **single-shot** version of this
+benchmark **does not discriminate**: Opus-class and Haiku, every arm (B/C/D/S), scored **0 failures** (a
+floor effect) — even a deliberately harder trap. The guardrails target *not investigating large, unfamiliar
+code*, which a single-shot toy task can't induce: it either shows the needed fact (trivial) or withholds it
+(unfair). That is a **construct ceiling** (`KNOWN_ISSUES.md` V5), not a difficulty knob. A same-day
+**agentic, tool-using prototype** (real repo + git history; the agent must investigate) produced the
+project's **first arm separation** (bare 1/2 vs skill 0/2 — illustrative, n=2).
+
+So the real remaining work is **not** "just run the API" — it is the **agentic harness** (the only setting
+where these guardrails can bite), plus independent held-out authorship and a multi-model run. Full picture in
+[`REPORT.md`](REPORT.md).
 
 ## Docs
 - [`CONCEPTUAL_FOUNDATION.md`](CONCEPTUAL_FOUNDATION.md) — why these guardrails should work (evidence-grounded).
