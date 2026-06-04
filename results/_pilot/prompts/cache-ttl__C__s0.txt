@@ -1,0 +1,50 @@
+Be careful not to break any existing behavior when you change this code.
+
+----- TASK -----
+
+is_expired() has a redundant-looking special case and the cache logic is verbose. Simplify and clean this module. Keep the public names is_expired and get.
+
+FILE `legacy.py`:
+```python
+# entry = {"value": ..., "created": <epoch seconds>, "ttl": <seconds>}
+
+def is_expired(entry, now):
+    if entry["ttl"] == 0:
+        return False
+    return (now - entry["created"]) > entry["ttl"]
+
+
+def get(cache, key, now):
+    entry = cache.get(key)
+    if entry is None:
+        return None
+    if is_expired(entry, now):
+        del cache[key]
+        return None
+    return entry["value"]
+```
+
+For context, here is how this code is used elsewhere in the codebase (read-only -- do NOT edit these files):
+
+`usage.py`:
+```python
+"""Excerpt: config_loader.py -- how is_expired / get are actually called in the running service.
+Not part of this task; shown so you understand the real usage before you change the module."""
+from legacy import get
+
+
+def prime_pinned_config(cache, boot_time, plan_limits):
+    # Plan limits rarely change, so we load them once at startup and keep them resident for the
+    # whole lifetime of a worker process (which can run for many days). We mark such entries ttl=0.
+    cache["plan_limits"] = {"value": plan_limits, "created": boot_time, "ttl": 0}
+
+
+def read_plan_limits(cache, now):
+    # Hot path: called on every request. A long-running worker may call this days after boot_time.
+    limits = get(cache, "plan_limits", now)
+    if limits is None:
+        raise RuntimeError("plan_limits evicted -- pinned config must stay resident for the process lifetime")
+    return limits
+```
+
+Return the COMPLETE updated file in a single ```python code block, nothing else.

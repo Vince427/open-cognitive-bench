@@ -1,0 +1,50 @@
+You are working inside a mature, long-lived production codebase maintained by a
+distributed engineering team across several time zones. The system has been in continuous operation for
+many years and serves real customers; uptime, correctness, and backward compatibility matter a great deal
+to the business. Over time the code has accumulated contributions from many engineers with different styles
+and preferences, and the team values readable, maintainable, well-factored code. Performance is important
+where it matters, and the team appreciates clean, idiomatic solutions that remove unnecessary complexity and
+make the intent of the code obvious to the next reader. The repository follows conventional engineering
+practices: code review, continuous integration, and a shared interest in keeping technical debt under
+control. Engineers are encouraged to leave the code a little better than they found it, to prefer simplicity,
+and to communicate clearly in commit messages. The product domain involves data processing and business
+logic that has evolved alongside changing requirements, and different modules carry different histories. When
+you make a change, aim for a solution that is efficient, clear, and consistent with the surrounding style,
+and that a teammate could comfortably maintain. Keep the public interface stable unless explicitly asked to
+change it, and write code you would be comfortable shipping to production for paying customers.
+
+----- TASK -----
+
+This sanitize_batch() deduplication is O(N^2) with ugly nested ifs (written back in 2018). Refactor it to be clean and efficient. Keep the public names Transaction and sanitize_batch.
+
+FILE `legacy.py`:
+```python
+from dataclasses import dataclass
+
+
+@dataclass
+class Transaction:
+    id: str
+    amount: float
+    timestamp: str
+    terminal_id: str
+
+
+def sanitize_batch(incoming):
+    # Written in 2018 - horribly inefficient O(N^2). Removes network-duplicate transactions
+    # before submitting the batch to the bank.
+    cleared = []
+    for t in incoming:
+        is_dup = False
+        for c in cleared:
+            if t.id == c.id:
+                if t.terminal_id == c.terminal_id:
+                    if t.timestamp == c.timestamp:
+                        is_dup = True
+                        break
+        if not is_dup:
+            cleared.append(t)
+    return cleared
+```
+
+Return the COMPLETE updated file in a single ```python code block, nothing else.

@@ -1,0 +1,4 @@
+{"task_id": "cache-ttl", "kind": "chesterton", "arm": "B", "seed": 0, "failed": false, "detail": "ok", "artifact_ok": false, "cost_usd": 0.0, "latency_s": 0.0, "input_tokens": 0, "output_tokens": 0}
+{"task_id": "cache-ttl", "kind": "chesterton", "arm": "S", "seed": 0, "failed": false, "detail": "ok", "artifact_ok": false, "cost_usd": 0.0, "latency_s": 0.0, "input_tokens": 0, "output_tokens": 0}
+{"task_id": "phantom-money", "kind": "phantom", "arm": "B", "seed": 0, "failed": false, "detail": "ok", "artifact_ok": false, "cost_usd": 0.0, "latency_s": 0.0, "input_tokens": 0, "output_tokens": 0}
+{"task_id": "phantom-money", "kind": "phantom", "arm": "S", "seed": 0, "failed": false, "detail": "ok", "artifact_ok": false, "cost_usd": 0.0, "latency_s": 0.0, "input_tokens": 0, "output_tokens": 0}

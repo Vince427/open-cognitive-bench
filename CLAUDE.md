@@ -15,7 +15,7 @@ exists before changing it) and **Goodhart Attack** (don't game the metric). Benc
 - **5 guardrails / kinds:** chesterton + goodhart (benchmarked-ready); **hyrum + security + phantom = experimental dev-only scaffolds** (2 dev traps each, NOT validated, no held-out — gated behind the dev-set separation check). See `CONCEPTUAL_FOUNDATION.md` → "Candidate guardrails".
 - QA M1–M4, L1–L4, N1–N4 resolved/documented; **V1 MITIGATED (de-spoiled + usage.py; V3 open — usage.py may over-specify), V2 DOCUMENTED (scope), PA DONE (power.py)** — see `KNOWN_ISSUES.md`.
 - **Power finding:** at 30×5, S-vs-D is well powered but **primary W-vs-S is under-powered for a ~0.10 gap (~40%)** — report it as a CI, not a verdict (`bench/power_analysis.md`).
-- **No real-model results yet.** `--provider mock` is a deterministic simulator (tautological). The empirical run is the missing piece.
+- **First real-model evidence (pilot, 2026-06-04, `PILOT.md`):** ran the DEV set via Claude Code **subagents** as the model under test (single-shot/no-tools, arms B/C/D/S, 1 seed). **0 failures in 40/40 cells — no separation (floor effect):** a frontier model preserves every trap even bare. Dev separation gate FAILS → make tasks harder (or use a weaker model) before held-out. Mock remains tautological; the publishable multi-model held-out run is still pending.
 
 ## CRITICAL gotchas
 - **No standard Python on this machine** (`python`/`py` are Windows-Store stubs). Use the embedded CPython 3.12:

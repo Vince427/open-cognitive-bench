@@ -104,6 +104,14 @@ checked "does usage.py state the rule," missed).
     caution per kind). Until then the 5 dimensions are a hypothesis about distinct failure modes, not a
     demonstrated one. The 3 new kinds remain **experimental** for all the reasons in the line above (no
     held-out, single author, no real-model evidence).
+- **Empirical update (2026-06-04) — pilot run, see `PILOT.md`.** Ran the dev set for real using Claude Code
+  subagents as the model under test (single-shot/no-tools), arms B/C/D/S, 1 seed. **Result: 0 failures in
+  40/40 cells — no separation at all (a floor effect).** A frontier model preserves every trap even bare
+  (verified: arm B genuinely refactored *and* kept each invariant/control). So the dominant problem at this
+  difficulty is NOT over-specification (V3) but **under-challenge**: the dev tasks are too easy for a strong
+  single-shot model. The **separation gate FAILS** → per `preregistration.md`, do not proceed to held-out;
+  make the tasks harder (or use a weaker model) first. This is the predicted "small effects on frontier
+  models" outcome (`CONCEPTUAL_FOUNDATION.md`), now measured rather than assumed.
 
 ---
 
@@ -145,6 +153,14 @@ the empirical run, which requires AI.
 (skills + 2 dev traps each, harness-wired, `selfcheck` 40/40). This does not change the certification:
 *authoring* more guardrails is always offline-possible, but *validating* any of them (held-out tasks + a
 real-model run + the dev separation gate) still requires AI. They ship as explicitly experimental, unproven.
+
+**Update (2026-06-04) — the "blocked on AI" claim is now partly OUTDATED.** A real-model run does NOT
+strictly need an external API key: Claude Code **subagents are real models**, so the dev pilot was run
+in-session (`PILOT.md`) — replacing the tautological mock with genuine behavior and executing the dev
+separation gate. What still benefits from a key/standard-Python harness: a *multi-model* comparison,
+*many-seed* scale, and the sealed *held-out* scoring. So the corrected status: the empirical gate is
+runnable now (and was run → floor effect); the publishable multi-model held-out result is the remaining
+AI-dependent work.
 
 ## 🟠 Medium
 

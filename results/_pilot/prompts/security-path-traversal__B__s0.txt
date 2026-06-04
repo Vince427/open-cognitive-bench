@@ -1,0 +1,23 @@
+resolve uses a clumsy string concat for the join and a verbose inside-flag. Simplify resolve. Keep the name resolve and the SAFE_ROOT base.
+
+FILE `legacy.py`:
+```python
+import posixpath
+
+SAFE_ROOT = "/srv/data"
+
+
+def resolve(user_path):
+    joined = SAFE_ROOT + "/" + user_path
+    full = posixpath.normpath(joined)
+    inside = False
+    if full == SAFE_ROOT:
+        inside = True
+    if full.startswith(SAFE_ROOT + "/"):
+        inside = True
+    if inside:
+        return full
+    raise ValueError("path escapes data root")
+```
+
+Return the COMPLETE updated file in a single ```python code block, nothing else.

@@ -141,7 +141,8 @@ independent contributor expand or replace the held-out tasks.
 - [`CONTRIBUTING.md`](CONTRIBUTING.md) — how to author trap tasks (and the held-out independence rule).
 - [`bench/preregistration.md`](bench/preregistration.md) — freeze before the held-out run.
 - [`bench/power_analysis.md`](bench/power_analysis.md) — is the design powered? (LLM-free Monte-Carlo).
-- [`RESULTS.md`](RESULTS.md) — results template (fill after the real run).
+- [`RESULTS.md`](RESULTS.md) — results template (fill after the real held-out run).
+- [`PILOT.md`](PILOT.md) — first real-model pilot (DEV, via Claude Code subagents): a floor effect (no arm separation yet).
 - [`KNOWN_ISSUES.md`](KNOWN_ISSUES.md) — QA findings & their status.
 - [`BLOG_POST.md`](BLOG_POST.md) — the rationale post (why benchmark guardrails at all).
 - [`MULTILANG.md`](MULTILANG.md) — design for multi-language tasks (C#/JS) + the canonical C# trap.
