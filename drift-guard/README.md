@@ -14,19 +14,55 @@ for the literature + math). drift-guard ships **two layers**:
 > an unguided rewrite chain can only *lose* information about the source (`../DRIFT.md` §2). Only re-checking
 > against the source — the gate — escapes that. The skill lowers the loss rate; the gate enforces zero loss.
 
+## Does this actually work? (plain language — no math needed)
+Three separate claims, and they are NOT equally solid. Honestly:
+
+1. **"If you don't check, repeated rewriting loses information."** — **Solid.** This rests on a standard,
+   textbook result (the *Data Processing Inequality*): if each version is made only from the previous one,
+   you can never *recover* what an earlier pass dropped. It's not something we invented; it's established and
+   not controversial. Plus the literature measures it (`../DRIFT.md` §1).
+2. **"The gate guarantees the facts you listed survive."** — **Certain, but the reasoning is simple, not deep
+   math.** It's just: *you only keep a new version if it still contains every listed fact; therefore every
+   kept version contains them.* Airtight logic. Two real limits, not math ones: (a) it only protects the
+   facts **you wrote down** (a fact you forgot isn't guarded); (b) a pass can keep getting rejected, so you
+   may retry (a cost, not a failure).
+3. **"The skill (prompt) reduces drift."** — **Observed, NOT proven.** Our demo and the literature show a
+   restrictive prompt *helps* — but the math above says a prompt **cannot** guarantee it (a prompt is still a
+   lossy step). So treat the skill as "helps, fewer rejects," never as a promise.
+
+**Bottom line for you:** the **gate = a real guarantee** (on what you check), by simple logic; the **skill =
+a helpful but unproven nudge**; **drift-without-checks = backed by real, established theory.** So "CI (gate)
++ skill reduces drift" is honest — with the gate doing the *guaranteeing* and the skill doing the *reducing*.
+
+> **A genuine ask (I am stating this honestly):** I am summarizing the math, not delivering a peer-reviewed
+> proof. What would *really* strengthen this: someone qualified formally modeling the quantitative decay and
+> the skill's effect at scale (more models, many seeds, a proper statistical test), and checking my DPI
+> framing. Today it is: **one standard theorem (qualitative) + one trivial-logic guarantee + one small
+> empirical demo (n=1 chain).** Independent validation would be a real help, not a formality.
+
 ## Use it
-1. Write a **fact-set** for your document — a `checks.py` exposing `CHECKS = [(name, fn)]`, where
-   `fn(module_or_None, source_text) -> bool`. Mix *behavior* checks (need the module) and *text/rationale*
-   checks (substring/regex on the source — these are what drift kills first). See `example/checks.py`.
-2. Wrap each LLM edit in the gate (the loop primitive):
-   ```bash
-   # agent rewrites doc.py -> candidate.py, then:
-   python gate.py --checks checks.py --baseline doc.py --candidate candidate.py \
-     && mv candidate.py doc.py          # ACCEPT (exit 0): keep it
-     || echo "REJECT: kept the previous version; retry the pass"   # exit 1: a fact was lost
-   ```
-   Or just audit one file: `python gate.py --checks checks.py --file doc.py` (exit 1 if any fact missing).
-3. Optionally inject `SKILL.md` into the editing agent so fewer passes get rejected.
+**1. Write a fact-set** — the things that must survive. Two ways:
+- **Prose / non-coders → `--facts facts.txt`**: one required fact per line (a literal substring, or `re:` for
+  a regex). Example `example/policy.facts.txt`:
+  ```
+  90 days
+  PRIV-88
+  re:GDPR Art\.?\s*17
+  ```
+- **Code-behavior → `--checks checks.py`**: a Python module `CHECKS = [(name, fn(module_or_None, src)->bool)]`
+  (lets you assert behavior, e.g. `is_expired({"ttl":0},1e9) is False`). See `example/checks.py`.
+
+**2. Gate every rewrite** — pass the **frozen original** as `--baseline` (not the previous pass, or slow drift
+sneaks through), and let `--apply` accept-or-revert automatically:
+```bash
+# your agent rewrote the doc into candidate.md, then:
+python gate.py --facts facts.txt --baseline ORIGINAL.md --candidate candidate.md --apply live.md
+#   ACCEPT (exit 0) -> live.md is overwritten with candidate
+#   REJECT (exit 1) -> live.md is left untouched (the lossy pass is discarded); retry
+```
+Audit a single file: `python gate.py --facts facts.txt --file doc.md` (exit 1 if any fact missing).
+
+**3. (optional) inject `SKILL.md`** into the editing agent so fewer passes get rejected.
 
 ## Proof (self-test, `example/`)
 ```
@@ -39,6 +75,18 @@ REJECT: candidate dropped 2 fact(s) the baseline had: SEC-12; INC-2231 (exit 1)
 ```
 `degraded.py` is a realistic drift: an LLM kept the code but stripped the rationale comments — the *why* is
 gone. Behavior tests still pass; the **text checks catch the lost institutional knowledge**.
+
+Prose works the same (`example/policy.md`, a retention policy):
+```
+$ gate.py --facts example/policy.facts.txt --file example/policy.md
+5/5 facts present                                            (exit 0)
+$ gate.py --facts example/policy.facts.txt --file example/policy_drifted.md
+2/5 facts present | MISSING: 90 days; PRIV-88; GDPR Art 17    (exit 1)
+$ gate.py --facts ... --baseline policy.md --candidate policy_drifted.md --apply live.md
+REJECT: dropped 3 facts | kept previous version              (exit 1; live.md untouched)
+```
+The drifted policy "tightened" 90→60 days and dropped the ticket + the legal "GDPR Art 17" — exactly the
+kind of constraint a rewrite silently loses, and the kind no test suite would ever catch.
 
 ## When this matters (honest scope)
 - **Strong fit:** many-pass iterative pipelines; **prose/specs/contracts/knowledge-bases with no test suite**
