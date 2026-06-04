@@ -1,8 +1,8 @@
 # Iterative-rewrite drift: why re-editing a document with an LLM loses information, and what provably stops it
 
 **Companion note to `PAPER.md`, v0.1 (2026-06-04).** Grounds the project's clearest positive (the
-`bench/agentic/` drift demo) in the literature and gives the math. **Reference IDs are from web search and
-must be re-verified before any public use.**
+`bench/agentic/` drift demo) in the literature and gives the math. The arXiv IDs below were checked against
+arXiv; one prose mention (a translation-chain example) is attributed loosely and marked as such.
 
 ---
 
@@ -18,8 +18,8 @@ Two failure modes are routinely conflated; only the second is ours.
   (paraphrase / rewrite / "condense") and information distorts and disappears. *LLM as a Broken Telephone:
   Iterative Generation Distorts Information* ([arXiv:2502.20258](https://arxiv.org/pdf/2502.20258)); a
   30-iteration, 17-model paraphrase study ([Joshua8.AI](https://joshua8.ai/llm-telephone-game-semantic-drift/));
-  a 50-iteration translation chain that turned a lorry accident into a bus explosion (Mohamed et al., ACL
-  2025). For code specifically: *SCAFFOLD-CEGIS: Preventing Latent Security Degradation in LLM-Driven
+  and (reported in the iterative-translation literature, attribution not independently confirmed) a long
+  translation chain that drifted a news story off-topic. For code specifically: *SCAFFOLD-CEGIS: Preventing Latent Security Degradation in LLM-Driven
   Iterative Code Refinement* ([arXiv:2603.08520](https://arxiv.org/pdf/2603.08520)). **This is exactly our
   case:** a doc/module re-edited pass after pass by an agent.
 
@@ -100,7 +100,7 @@ mostly survived (a longer run / weaker model would erode code too — we already
 fact-set once, (b) re-runs after every LLM pass, (c) **rejects/reverts** any pass that drops a fact. The skill
 keeps the *rationale* alive for humans; the gate keeps the *facts* alive for certain.
 
-## References (re-verify IDs before publication)
+## References (arXiv IDs checked against arxiv.org)
 - Shumailov et al., *The Curse of Recursion* — [arXiv:2305.17493](https://arxiv.org/abs/2305.17493); Nature 2024 — [s41586-024-07566-y](https://www.nature.com/articles/s41586-024-07566-y).
 - *LLM as a Broken Telephone* — [arXiv:2502.20258](https://arxiv.org/pdf/2502.20258).
 - Telephone-game semantic-drift study — [Joshua8.AI](https://joshua8.ai/llm-telephone-game-semantic-drift/).

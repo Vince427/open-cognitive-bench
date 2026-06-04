@@ -38,7 +38,7 @@ freely otherwise.
 Run the behavior-covering / hidden tests + re-read the actual diff. Loop results back to the lenses for a
 post-implementation pass (catch unforeseen interactions). Attach the test output as the verification artifact.
 
-## Cost note (Sherlock-style selective verification, arXiv:2511.00330)
+## Cost note (Sherlock-style selective verification)
 Hard-gate only the lenses that are high-signal for the domain (decide this from the benchmark, not a priori).
 Let the implementer run speculatively while verification proceeds; roll back on failure. Target: pull the
 ~5–10× multi-agent overhead down toward ~2–3×.

@@ -102,17 +102,16 @@ gate), then promote each experimental kind only once it ships its own benchmark 
 highest-value of the three (security stakes + cleanest execution trap).
 
 ## References
-Gathered via literature search; **re-verify exact IDs/claims before any public or published use.**
-- Goodhart formalization (weak/strong): arXiv 2410.09638. Concrete Problems in AI Safety: 1606.06565.
-- Specification gaming / reward hacking: Krakovna et al. (DeepMind) catalog; reasoning-model spec-gaming
-  2502.13295; recontextualization mitigates gaming 2512.19027.
-- Sycophancy in RLHF assistants: 2310.13548.
-- Plan compliance in programming agents (good plan helps; subpar plan hurts): 2604.12147.
-- CoT (un)faithfulness: 2503.08679. Reason-before-coding (CodeChain): 2310.08992.
-- Principle steering: Constitutional AI specific-vs-general 2310.13798; prompt steerability / "personality
-  illusion" 2411.12405.
-- Ideation-execution gap: 2506.20803 (ideation study: 2409.04109).
-- LLM-as-judge biases: MT-Bench/Chatbot Arena 2306.05685; self-preference 2404.13076; length-controlled
-  AlpacaEval 2404.04475.
-- Diversity / mode collapse (why we avoided the ideation angle): RLHF reduces diversity 2310.06452;
-  Artificial Hivemind 2510.22954.
+Verified arXiv IDs are given explicitly; works whose exact ID we could not confirm are cited **by name only**
+(look them up — we do not assert an unverified number).
+- Reward hacking / specification gaming: *Concrete Problems in AI Safety* (Amodei et al., arXiv:1606.06565);
+  Krakovna et al. (DeepMind) specification-gaming catalogue; the Goodhart weak/strong formalization literature.
+- Sycophancy in RLHF assistants: *Towards Understanding Sycophancy in Language Models* (Sharma et al., ICLR
+  2024, arXiv:2310.13548).
+- LLM-as-judge biases (position / verbosity / self-preference): *Judging LLM-as-a-Judge with MT-Bench and
+  Chatbot Arena* (Zheng et al., arXiv:2306.05685); the length-controlled AlpacaEval work.
+- Cited **by name** (exact IDs not asserted here): reason-before-coding / CodeChain; CoT (un)faithfulness;
+  plan-compliance in programming agents (a good plan helps, a subpar plan hurts); Constitutional AI
+  (specific-vs-general principle steering) and prompt-steerability / "personality illusion"; the
+  ideation–execution gap; and the diversity / mode-collapse literature ("Artificial Hivemind").
+- Iterative-rewrite drift + model collapse: see [`DRIFT.md`](DRIFT.md) (verified IDs there).
