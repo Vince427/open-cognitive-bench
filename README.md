@@ -175,6 +175,8 @@ python drift-guard/test_gate.py                # 10 unit tests
 python drift-guard/test_gate_fuzz.py           # the guarantee, fuzzed over 800+ random cases
 ```
 Full guide (drafting a fact-set with an LLM, the DPI math, honest scope): [`drift-guard/README.md`](drift-guard/README.md).
+**Enforce it** in CI, a pre-commit hook, the auto-rewrite loop, or as an MCP tool an agent can call →
+[`drift-guard/integrations/`](drift-guard/integrations/README.md).
 
 ### Mode B: install a guardrail Skill
 

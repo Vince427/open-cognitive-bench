@@ -1,0 +1,15 @@
+# drift-guard CI — Mode 1 (non-bypassable): the build goes red if any protected file dropped a fact.
+# Copy this to .github/workflows/drift-guard.yml in your repo, and add a .driftguard.json at the root
+# (see .driftguard.json.example). Pure stdlib — no `pip install` needed.
+name: drift-guard
+on: [push, pull_request, workflow_dispatch]
+jobs:
+  protected-facts:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Gate protected facts (.driftguard.json)
+        run: python drift-guard/integrations/gate_all.py .driftguard.json

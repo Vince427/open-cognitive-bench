@@ -1,0 +1,13 @@
+#!/bin/sh
+# drift-guard pre-commit hook — Mode 1 (non-bypassable): block the commit if any protected file dropped a
+# load-bearing fact. This is the gate as an enforced STEP (not a tool an agent may skip) -> a real guarantee.
+#
+# Install (plain git hook):
+#   cp drift-guard/integrations/pre-commit .git/hooks/pre-commit && chmod +x .git/hooks/pre-commit
+# Configure: create .driftguard.json at the repo root (see .driftguard.json.example).
+#
+# Env overrides: DRIFT_GUARD_PYTHON (default: python), DRIFT_GUARD_CONFIG (default: .driftguard.json).
+set -e
+PYTHON="${DRIFT_GUARD_PYTHON:-python}"
+CONFIG="${DRIFT_GUARD_CONFIG:-.driftguard.json}"
+exec "$PYTHON" drift-guard/integrations/gate_all.py "$CONFIG"

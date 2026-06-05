@@ -1,0 +1,6 @@
+{
+  "protect": [
+    { "file": "drift-guard/example/policy.md", "facts":  "drift-guard/example/policy.facts.txt" },
+    { "file": "drift-guard/example/doc.py",    "checks": "drift-guard/example/checks.py" }
+  ]
+}

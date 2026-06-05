@@ -1,0 +1,14 @@
+# drift-guard hook for the `pre-commit` framework (https://pre-commit.com).
+# In your repo's .pre-commit-config.yaml:
+#   - repo: https://github.com/Vince427/open-cognitive-bench
+#     rev: main
+#     hooks:
+#       - id: drift-guard
+# Needs a .driftguard.json at the repo root (see .driftguard.json.example).
+- id: drift-guard
+  name: drift-guard (protected facts must survive)
+  description: Reject the commit if any file listed in .driftguard.json dropped a load-bearing fact.
+  entry: python drift-guard/integrations/gate_all.py
+  language: system
+  pass_filenames: false
+  always_run: true

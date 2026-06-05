@@ -30,6 +30,9 @@ jobs:
       - name: Multi-pass drift demo (gated keeps every fact; ungated drifts) — also a living check
         run: python drift-guard/example/multipass_demo.py
 
+      - name: Test drift-guard integrations (gate_all config runner + MCP server + example rewriter)
+        run: python drift-guard/integrations/test_integrations.py
+
       - name: Run the 5-arm benchmark (deterministic mock provider, no API key, no spend)
         run: python bench/run_bench.py --tasks bench/tasks/dev --arms B C D S W --seeds 5 --provider mock
 

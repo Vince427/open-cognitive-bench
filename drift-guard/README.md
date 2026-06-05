@@ -74,6 +74,10 @@ Audit a single file: `python gate.py --facts facts.txt --file doc.md` (exit 1 if
 
 **3. (optional) inject `SKILL.md`** into the editing agent so fewer passes get rejected.
 
+**Where to run the gate** (CI, pre-commit hook, the auto loop, or as an MCP tool an agent can call) →
+[`integrations/`](integrations/README.md). The guarantee comes from running it as a step that **can't be
+skipped** (CI / hook / loop); MCP & the skill make it *callable*, not guaranteed.
+
 **Automated loop (`guarded_rewrite.py`).** Instead of gating by hand, run the whole edit→gate→accept/revert
 loop, with your LLM as a pluggable rewrite command:
 ```bash
