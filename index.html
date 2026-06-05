@@ -37,6 +37,10 @@
   .card{border:1px solid var(--line); border-radius:12px; padding:20px 22px; margin:18px 0}
   .card h3{margin:0 0 6px; font-size:18px}
   .card .when{color:var(--muted); font-size:14px; margin:0 0 14px}
+  .card.plain{background:var(--accent-weak); border-color:#d7e0fb}
+  .eyebrow{font-size:12px; font-weight:700; letter-spacing:.06em; text-transform:uppercase;
+           color:var(--accent); margin:22px 0 4px}
+  .tech{color:var(--fg)}
   pre{background:var(--code-bg); color:var(--code-fg); padding:14px 16px; border-radius:10px;
       overflow:auto; font-size:13.5px; line-height:1.55; margin:0 0 4px}
   pre .c{color:#8b98a5}
@@ -116,9 +120,22 @@ python drift-guard/gate.py --facts facts.txt \
   <div class="wrap">
     <h2>The honest result</h2>
     <p class="lead">Negative results, published on purpose.</p>
-    <p>A <strong>single-shot</strong> benchmark can't measure these guardrails on capable models — every arm
-    scored zero (a construct ceiling). An <strong>agentic, tool-using</strong> harness <em>can</em> produce
-    failures, but the measured "skill effect" is mostly <strong>resisting a misleading instruction</strong>
+
+    <div class="card plain">
+      <h3>In plain words</h3>
+      <p>We wanted to show that telling an AI assistant to "be careful before changing code" makes it break
+      things less often. Tested honestly, it mostly <strong>doesn't</strong>: asked a normal question, a
+      capable model is already careful, so the guardrail adds nothing. It <em>did</em> help in one case — when
+      we deliberately tried to trick the AI ("this bit looks useless, delete it"), the guardrail made it push
+      back. So it's more of a <strong>seatbelt against bad instructions</strong> than a smarter brain. We're
+      publishing it anyway, even though it isn't the exciting result we hoped for — a benchmark that only
+      reports wins isn't worth much.</p>
+    </div>
+
+    <p class="eyebrow">The technical version</p>
+    <p class="tech">A <strong>single-shot</strong> benchmark can't measure these guardrails on capable models —
+    every arm scored zero (a construct ceiling). An <strong>agentic, tool-using</strong> harness <em>can</em>
+    produce failures, but the measured "skill effect" is mostly <strong>resisting a misleading instruction</strong>
     (sycophancy), <strong>not investigation</strong>: under a neutral instruction the gap vanishes
     (bare 0/12 = skill 0/12, n=12, not significant). The benchmark stands as a <em>method</em>, not as proof
     that guardrails make agents safer.</p>
