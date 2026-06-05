@@ -83,8 +83,8 @@ Candidate details (each must keep the project's bar: a documented failure mode, 
   **The strongest next addition** — highest real-world stakes, cleanest execution trap, fully orthogonal.
 - **Phantom Check ("No Ghost APIs")** — anchor: code/package hallucination ("slopsquatting"). Targets
   invented functions/flags/signatures. Trap: a stub/library context where the tempting helper does not
-  exist; the naive edit calls it ⇒ NameError/AttributeError/ImportError at execution. (A *verification*-
-  discipline failure — "did you check the surface you were handed" — rather than a pure knowledge failure.)
+  exist; the naive edit calls it ⇒ NameError/AttributeError/ImportError at execution. (A
+  *verification*-discipline failure — "did you check the surface you were handed" — rather than a pure knowledge failure.)
 
 Not worth a separate rule (they collapse into the above):
 - *Refuse-the-false-premise* (sycophancy, 2310.13548) — already the **mechanism** Chesterton's traps exploit

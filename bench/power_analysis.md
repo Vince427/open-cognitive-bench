@@ -38,6 +38,8 @@ With NO true effect (mX = mY), the rule should declare a significant difference 
 
 Stays at/below the 0.01 target across heterogeneity levels (±MC noise) — the conservative task-clustered bootstrap in the AND-rule absorbs the McNemar pooling's anticonservatism, so the pre-registered procedure does not inflate false positives under clustering.
 
+> The table above uses the default `--sigmas 0 1`. Calibration was also checked at **σ=1.5** (`power.py --sigmas 0 1 1.5`): FPR stays ≤0.01 there too — this is the "σ up to 1.5" cited in `preregistration.md`.
+
 ## How to read this
 
 - A power below ~80% for a scenario means: *if* the true gap were that size, we'd often FAIL to call it significant -- the run would be underpowered for that effect.

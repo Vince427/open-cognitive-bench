@@ -150,7 +150,6 @@ setx ANTHROPIC_API_KEY "sk-ant-..."   # or OPENAI_API_KEY; reopen the terminal a
 `run.ps1` / `run.sh` just chain `run_bench → judge → stats`. **Before** touching the held-out set, freeze
 `bench/preregistration.md` (commit it), then run **once** with `-Tasks bench\tasks\heldout`.
 
-Then set `ANTHROPIC_API_KEY` / `OPENAI_API_KEY` and swap `--provider anthropic` (or `openai`).
 **Iterate only on `bench/tasks/dev/`.** Keep `bench/tasks/heldout/` sealed; score it **once** at the end,
 after freezing `bench/preregistration.md`.
 

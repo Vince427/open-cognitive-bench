@@ -28,8 +28,8 @@ Three separate claims, and they are NOT equally solid. Honestly:
    may retry (a cost, not a failure); (c) **`--facts` checks string *presence*, not *meaning*** — a rewrite
    that keeps the words but negates them (e.g. "data is **NOT** retained for 90 days") still passes, because
    the substring "90 days" is present. So `--facts` guards *the phrase survives*, not *the claim stays true*.
-   For semantic-critical invariants use the **`--checks.py`** path instead (it asserts behavior, e.g.
-   `is_expired(...) is False`, which a negation cannot satisfy).
+   For semantic-critical invariants use the **`--checks`** path instead (a `checks.py` module that asserts
+   behavior, e.g. `is_expired(...) is False`, which a negation cannot satisfy).
 3. **"The skill (prompt) reduces drift."** — **Observed, NOT proven.** Our demo and the literature show a
    restrictive prompt *helps* — but the math above says a prompt **cannot** guarantee it (a prompt is still a
    lossy step). So treat the skill as "helps, fewer rejects," never as a promise.
