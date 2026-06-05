@@ -22,7 +22,8 @@
   a{color:var(--accent); text-decoration:none}
   a:hover{text-decoration:underline}
   code,pre{font-family:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace}
-  header{padding:64px 0 28px; border-bottom:1px solid var(--line)}
+  header{padding:40px 0 28px; border-bottom:1px solid var(--line)}
+  .banner{display:block; width:100%; height:auto; margin:0 0 30px; border:1px solid var(--line); border-radius:14px}
   h1{font-size:34px; line-height:1.15; margin:0 0 10px; letter-spacing:-.02em}
   .tag{font-size:18px; color:var(--muted); margin:0 0 24px}
   .nav{display:flex; flex-wrap:wrap; gap:10px}
@@ -61,6 +62,7 @@
 <body>
 <header>
   <div class="wrap">
+    <img class="banner" src="assets/banner.svg" alt="Open Cognitive Bench — guardrails for AI coding agents, with a check that actually runs">
     <h1>Open Cognitive Bench</h1>
     <p class="tag">Guardrails for AI coding agents — shipped with a <em>falsifiable</em> benchmark, and an honest result.</p>
     <nav class="nav">
