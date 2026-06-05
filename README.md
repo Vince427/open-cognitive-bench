@@ -1,6 +1,7 @@
 # Open Cognitive Bench
 
 > **Just want to use it?** → [`QUICKSTART.md`](QUICKSTART.md) — the plain, no-theory guide (install + copy-paste examples). The rest of this page is the *why* and the evidence.
+> **Landing page:** [vince427.github.io/open-cognitive-bench](https://vince427.github.io/open-cognitive-bench/)
 
 **What this repo is, honestly (2026-06-05).** It set out to be a falsifiable benchmark for "guardrail" prompts
 that supposedly stop an AI coding agent from breaking your code. The rigorous finding is **mostly negative**,
