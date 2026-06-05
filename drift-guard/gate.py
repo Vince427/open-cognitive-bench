@@ -7,10 +7,13 @@ invariant of the rewrite loop. Pure stdlib; works for code (.py) and for prose.
 Define the fact-set EITHER as:
   --checks checks.py   a Python module exposing CHECKS = [(name, fn(module_or_None, source_text)->bool)]
                        (use for code-behavior facts; the doc module is imported and passed in).
-  --facts facts.txt    a plain declarative list (use for prose / non-coders), one required fact per line:
-                         100 requests/minute        # literal substring that must be present
-                         re:\\bMAX_RPM\\s*=\\s*100\\b  # a regex (prefix 're:')
-                       blank lines and lines starting with '#' are ignored.
+  --facts facts.txt    a plain declarative list (use for prose / non-coders), one constraint per line:
+                         100 requests/minute        # literal substring that must be PRESENT
+                         re:\\bMAX_RPM\\s*=\\s*100\\b  # a regex that must MATCH (prefix 're:')
+                         not:retention is optional  # an ANTI-FACT: this substring must be ABSENT
+                         not re:\\b60\\s*days\\b      # a regex that must NOT match (prefix 'not re:')
+                       blank lines and lines starting with '#' are ignored. (Anti-facts catch a negated or
+                       forbidden phrase; all four kinds are deterministic, so they stay inside the guarantee.)
 
 Modes:
   gate.py --facts F --file doc.md                         audit one file; exit 1 if any fact missing.
@@ -37,13 +40,25 @@ def load_checks_py(path):
 
 
 def load_facts_txt(path):
-    """Build CHECKS from a declarative fact list (literal substrings, or 're:' regexes)."""
+    """Build CHECKS from a declarative fact list. Each non-blank, non-'#' line is one constraint:
+        FOO            FOO must be PRESENT (literal substring)
+        re:BAR         a regex that must MATCH (be present)
+        not:FOO        FOO must be ABSENT (an "anti-fact" — catches a negated/forbidden phrase)
+        not re:BAR     a regex that must NOT match
+    A check returns True when its constraint holds. All four kinds are deterministic and pure-stdlib, so they
+    stay inside the *guarantee* (no model, no embeddings)."""
     checks = []
     for raw in Path(path).read_text(encoding="utf-8").splitlines():
         line = raw.strip()
         if not line or line.startswith("#"):
             continue
-        if line.startswith("re:"):
+        if line.startswith("not re:"):
+            pat = re.compile(line[7:])
+            checks.append((line, (lambda p: (lambda mod, src: p.search(src) is None))(pat)))
+        elif line.startswith("not:"):
+            needle = line[4:]
+            checks.append((line, (lambda n: (lambda mod, src: n not in src))(needle)))
+        elif line.startswith("re:"):
             pat = re.compile(line[3:])
             checks.append((line, (lambda p: (lambda mod, src: p.search(src) is not None))(pat)))
         else:

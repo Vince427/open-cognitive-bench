@@ -122,6 +122,22 @@ def test_driver_accepts_a_safe_pass():
     assert "<!-- tidied -->" in doc.read_text(encoding="utf-8")
 
 
+def test_anti_fact_catches_a_negation():
+    """The presence-only gap, and its deterministic fix: an anti-fact (`not:`) that must be ABSENT."""
+    with tempfile.TemporaryDirectory() as d:
+        doc = Path(d) / "policy.txt"
+        doc.write_text("Personal data is NOT retained for 90 days.\n", encoding="utf-8")
+        # the gap: a negated sentence still CONTAINS "90 days", so a present-only fact passes (limit c)
+        present_only = Path(d) / "f1.txt"
+        present_only.write_text("90 days\n", encoding="utf-8")
+        assert _missing(doc, gate.load_facts_txt(present_only)) == []
+        # the fix: an anti-fact catches the forbidden phrase — still deterministic, still a guarantee
+        anti = Path(d) / "f2.txt"
+        anti.write_text("90 days\nnot:NOT retained\nnot re:is\\s+NOT\\s+retained\n", encoding="utf-8")
+        miss = _missing(doc, gate.load_facts_txt(anti))
+        assert "not:NOT retained" in miss and any(m.startswith("not re:") for m in miss)
+
+
 if __name__ == "__main__":
     g = dict(globals())
     tests = sorted((k, v) for k, v in g.items() if k.startswith("test_") and callable(v))

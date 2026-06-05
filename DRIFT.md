@@ -92,6 +92,12 @@ Our marginal contribution is modest but real: (i) framing drift via the **DPI** 
 re-injection/verification escapes it); (ii) a concrete **executable fact-gate** for arbitrary docs/code, with
 a falsifiable check; (iii) an honest measurement showing the **skill delays, the gate guarantees**.
 
+For the *tooling* neighbours (Vale's required-terms linting, OPA/Conftest policy-as-code, and the semantic
+faithfulness frontier — SummaC/AlignScore/GenAudit/ContractNLI) and exactly what drift-guard reuses vs.
+deliberately does not attempt, see [`drift-guard/README.md` → "Prior art & where this sits"](drift-guard/README.md).
+The short version: the deterministic, ML-free judges (substring/regex/anti-fact and behavioural `--checks`)
+stay inside the *guarantee*; an ML/NLI meaning-judge is DPI-bound and can only *reduce*, like the skill.
+
 ## 6. Honest limits & what to build
 n=1 chain per arm, one model (Haiku), facts hand-picked to match the rule, single author — a **clean
 demonstration, not a powered study**. The bare loss here was mostly the *rationale* (comments); code behavior

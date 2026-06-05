@@ -88,8 +88,10 @@ claude mcp add drift-guard -- python /abs/path/drift-guard/integrations/mcp_serv
   draft it — see `drift-guard/extract_facts_prompt.md`).
 
 **Honest limit:** the gate checks a phrase is *present*, not that its *meaning* held — a rewrite that keeps
-the words but negates them would pass. For meaning-level guarantees on **code**, use a behavioral checks
-module (the `"checks"` key instead of `"facts"`). Details + all four enforcement modes:
+the words but negates them would pass. Two deterministic fixes that keep the guarantee: add an **anti-fact**
+(a `not:phrase` line that must be ABSENT, e.g. `not:not retained`) to catch the specific negation; or, for
+**code**, use a behavioral checks module (the `"checks"` key instead of `"facts"`). Verifying *arbitrary*
+meaning needs an ML judge, which can only reduce, never guarantee. Details + all four enforcement modes:
 [`drift-guard/integrations/`](drift-guard/integrations/README.md).
 
 ---

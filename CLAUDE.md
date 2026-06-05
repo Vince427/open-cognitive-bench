@@ -14,9 +14,9 @@ exists before changing it) and **Goodhart Attack** (don't game the metric). Benc
 `drift-guard/` (a working tool against iterative-rewrite drift) + the methodology/negative-results. See Status.
 
 ## Status (2026-06-04) — full picture in `REPORT.md` / `PAPER.md`
-- `main`, pushed to **public** GitHub (synced). **selfcheck 41/41, harness 21/21, drift-guard 10/10 unit + 4 fuzz suites (800+ random cases) + multipass demo.** CI = pure stdlib + drift-guard tests.
+- `main`, pushed to **public** GitHub (synced). **selfcheck 41/41, harness 21/21, drift-guard 11/11 unit + 4 fuzz suites (800+ random cases) + multipass demo + integrations 12/12.** CI = pure stdlib + drift-guard tests.
 - **The honest result (the guardrail thesis did NOT pan out — `PAPER.md`):** a **single-shot** benchmark **can't** measure these guardrails on capable models (Opus & Haiku, every arm **0/40** — V5 *construct ceiling*). An **agentic, tool-using** harness (`bench/agentic/`, rounds 1–4) CAN produce failures, but the measured "skill" effect is **instruction-resistance (sycophancy), NOT investigation**: with a *neutral* instruction the gap **vanishes** (round 4: B 0/12 = S 0/12).
-- **FLAGSHIP DELIVERABLE = `drift-guard/`** (the project's clearest positive). Stops iterative-rewrite drift ("broken telephone"): an executable **fact-gate GUARANTEES** the facts you list survive every rewrite; the **skill only REDUCES** (a prompt can't guarantee — Data-Processing-Inequality, see `DRIFT.md`). Works on code + prose; ships `gate.py`, `guarded_rewrite.py` (auto loop), `SKILL.md`, `extract_facts_prompt.md`, `test_gate.py` (10 unit tests), `test_gate_fuzz.py` (4 property suites / 800+ random cases — the guarantee, fuzzed), `example/multipass_demo.py` (offline many-passes gated-vs-ungated demo) — all in CI.
+- **FLAGSHIP DELIVERABLE = `drift-guard/`** (the project's clearest positive). Stops iterative-rewrite drift ("broken telephone"): an executable **fact-gate GUARANTEES** the facts you list survive every rewrite; the **skill only REDUCES** (a prompt can't guarantee — Data-Processing-Inequality, see `DRIFT.md`). Works on code + prose; ships `gate.py`, `guarded_rewrite.py` (auto loop), `SKILL.md`, `extract_facts_prompt.md`, `test_gate.py` (11 unit tests, incl. anti-fact), `test_gate_fuzz.py` (4 property suites / 800+ random cases — the guarantee, fuzzed), `example/multipass_demo.py` (offline many-passes gated-vs-ungated demo), `integrations/` (CI/hook/loop/MCP, 12 tests) — all in CI.
 - 41 trap tasks (11 dev + 30 held-out). 5 guardrails: chesterton+goodhart (benchmarked-ready), **hyrum/security/phantom = EXPERIMENTAL, unvalidated**. QA findings **V1–V5** + power + calibration in `KNOWN_ISSUES.md`.
 - **Public-readiness: GREEN.** No secrets/PII (only a placeholder `sk-ant-...` in README). **Citations verified 2026-06-04** — only **7 arXiv IDs** repo-wide, all confirmed (1606.06565, 2305.17493, 2306.05685, 2310.13548, 2410.21012, 2502.20258, 2603.08520) + Nature 2024; unverified ones removed. Honest (negative results, single-author, Open Collider credited). **Made public 2026-06-05.**
 
@@ -44,7 +44,7 @@ $py = "C:\Program Files\LibreOffice\program\python.exe"
 & $py bench/judge.py --run results/latest
 & $py bench/stats.py --run results/latest
 & $py bench/power.py --quick                                                  # design power (LLM-free; ~30s)
-& $py drift-guard/test_gate.py                                                # 10 drift-guard unit tests
+& $py drift-guard/test_gate.py                                                # 11 drift-guard unit tests (incl. anti-fact)
 & $py drift-guard/test_gate_fuzz.py                                           # 4 property suites, 800+ random cases (the guarantee, fuzzed)
 & $py drift-guard/example/multipass_demo.py                                   # offline gated-vs-ungated multi-pass drift demo
 & $py drift-guard/gate.py --facts drift-guard/example/policy.facts.txt --file drift-guard/example/policy.md
@@ -53,7 +53,7 @@ Real run (needs a standard Python + key): `pip install ".[providers]"`, set `ANT
 `.\run.ps1 -Provider anthropic -Model claude-sonnet-4-5 -Tasks bench\tasks\dev -Seeds 5` (README → "Run with a real model").
 
 ## Map
-- **`drift-guard/`** — FLAGSHIP standalone tool: `gate.py` (executable fact-gate, code+prose), `guarded_rewrite.py` (auto edit→gate→accept/revert loop), `SKILL.md` (Drift Shield), `extract_facts_prompt.md`, `test_gate.py` (10 tests) + `test_gate_fuzz.py` (4 property suites/800+ cases) + `example/multipass_demo.py` (offline drift demo), all in CI; `example/`. See its `README.md`.
+- **`drift-guard/`** — FLAGSHIP standalone tool: `gate.py` (executable fact-gate, code+prose), `guarded_rewrite.py` (auto edit→gate→accept/revert loop), `SKILL.md` (Drift Shield), `extract_facts_prompt.md`, `test_gate.py` (11 tests) + `test_gate_fuzz.py` (4 property suites/800+ cases) + `example/multipass_demo.py` (offline drift demo) + `integrations/` (CI/hook/loop/MCP, 12 tests), all in CI; `example/`. See its `README.md`.
 - **`bench/agentic/`** — the V2 tool-using harness (real repo + git history; rounds 1–4 + the drift demo): `build.sh` (out-of-tree fixtures), `score.py`, `drift_seed.py`/`drift_check.py`/`drift_shield.md`, `README.md`.
 - **`bench/pilot/`** — run a real model with NO API key (Claude Code subagents): `gen.py`, `assemble_model.py`, `README.md`.
 - top-level docs: **`PAPER.md`** (arXiv-style, the math + the honest arc), **`DRIFT.md`** (drift literature + DPI/decay math), **`REPORT.md`** (global status), **`PILOT.md`** (real-model pilots).

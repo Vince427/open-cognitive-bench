@@ -44,8 +44,9 @@ TOOL = {
             "facts": {
                 "type": "array",
                 "items": {"type": "string"},
-                "description": "Facts that must be present. A plain string = required literal substring; "
-                               "a string starting with 're:' = a regex that must match.",
+                "description": "Constraints. A plain string = a required literal substring; 're:'+regex = "
+                               "must match; 'not:'+string = an anti-fact that must be ABSENT (catches a "
+                               "negated/forbidden phrase); 'not re:'+regex = must NOT match.",
             },
             "text": {"type": "string", "description": "The document text to check (use this OR file)."},
             "file": {"type": "string", "description": "Path to a file to check (use this OR text)."},

@@ -185,8 +185,9 @@ benchmark runs and `pytest`.)
 The usable tool: an executable fact-gate so repeated LLM rewrites can't silently drop a fact you care about.
 Nothing to install beyond Python — run it in place or copy the `drift-guard/` folder into your project.
 
-**A1 · Prose / specs / policies / contracts** (a fact = a literal substring, or `re:` for a regex). Here
-`policy.md` is *your own* document — or try the shipped example, which already runs:
+**A1 · Prose / specs / policies / contracts** (a fact = a literal substring, `re:` for a regex, or `not:` for
+a phrase that must be *absent*). Here `policy.md` is *your own* document — or try the shipped example, which
+already runs:
 ```bash
 # try it now on the shipped example (5 facts, all present):
 python drift-guard/gate.py --facts drift-guard/example/policy.facts.txt --file drift-guard/example/policy.md
@@ -216,7 +217,7 @@ python drift-guard/guarded_rewrite.py --doc live.md --facts facts.txt \
 **See it work, zero setup:**
 ```bash
 python drift-guard/example/multipass_demo.py   # one doc, 6 passes: UNGATED drifts 5->2 facts, GATED holds 5/5
-python drift-guard/test_gate.py                # 10 unit tests
+python drift-guard/test_gate.py                # 11 unit tests (incl. the anti-fact / negation case)
 python drift-guard/test_gate_fuzz.py           # the guarantee, fuzzed over 800+ random cases
 ```
 Full guide (drafting a fact-set with an LLM, the DPI math, honest scope): [`drift-guard/README.md`](drift-guard/README.md).
@@ -301,7 +302,7 @@ open-cognitive-bench/
 ├── drift-guard/          the usable tool — an executable fact-gate (gate.py) + guarded-rewrite loop
 │   ├── integrations/     4 ways to run it: CI, pre-commit hook, the loop, an MCP server (+ tests)
 │   ├── example/          runnable examples + multipass_demo.py (the before/after above)
-│   └── test_gate*.py     10 unit tests + 800+ fuzzed cases (the guarantee, checked)
+│   └── test_gate*.py     11 unit tests + 800+ fuzzed cases (the guarantee, checked)
 ├── skills/               the guardrail Skills: chestertons-shield, goodhart-attack (+ 3 experimental)
 ├── workflows/            the multi-agent gating workflow (benchmark arm W)
 ├── bench/                the falsifiable benchmark: arms B/C/D/S/W, judge, stats (forest plot), tasks

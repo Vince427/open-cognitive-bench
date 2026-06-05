@@ -28,8 +28,12 @@ Three separate claims, and they are NOT equally solid. Honestly:
    may retry (a cost, not a failure); (c) **`--facts` checks string *presence*, not *meaning*** — a rewrite
    that keeps the words but negates them (e.g. "data is **NOT** retained for 90 days") still passes, because
    the substring "90 days" is present. So `--facts` guards *the phrase survives*, not *the claim stays true*.
-   For semantic-critical invariants use the **`--checks`** path instead (a `checks.py` module that asserts
-   behavior, e.g. `is_expired(...) is False`, which a negation cannot satisfy).
+   Two deterministic (guarantee-preserving) fixes: (i) for code, use the **`--checks`** path (a `checks.py`
+   module that asserts behavior, e.g. `is_expired(...) is False`, which a negation cannot satisfy); (ii) for
+   prose, add an **anti-fact** — a `not:` line for a phrase that must be ABSENT (e.g. `not:NOT retained`, or
+   `not re:` for a regex) — which catches the specific negation. What you *cannot* do deterministically is
+   verify arbitrary meaning-preservation; that needs an ML judge, which can only *reduce* (it is non-
+   deterministic and DPI-bound, exactly like the skill — never a guarantee). See "Prior art" below.
 3. **"The skill (prompt) reduces drift."** — **Observed, NOT proven.** Our demo and the literature show a
    restrictive prompt *helps* — but the math above says a prompt **cannot** guarantee it (a prompt is still a
    lossy step). So treat the skill as "helps, fewer rejects," never as a promise.
@@ -46,8 +50,9 @@ a helpful but unproven nudge**; **drift-without-checks = backed by real, establi
 
 ## Use it
 **1. Write a fact-set** — the things that must survive. Two ways:
-- **Prose / non-coders → `--facts facts.txt`**: one required fact per line (a literal substring, or `re:` for
-  a regex). Example `example/policy.facts.txt` (5 facts):
+- **Prose / non-coders → `--facts facts.txt`**: one constraint per line — a literal substring (must be
+  PRESENT), `re:` for a regex, or `not:` / `not re:` for an **anti-fact** that must be ABSENT (catches a
+  negated or forbidden phrase). Example `example/policy.facts.txt` (5 facts):
   ```
   90 days
   PRIV-88
@@ -89,7 +94,7 @@ python guarded_rewrite.py --doc live.md --facts facts.txt \
 
 ## Files
 `gate.py` (the gate, code + prose) · `guarded_rewrite.py` (the auto loop) · `SKILL.md` (Drift Shield, soft
-layer) · `extract_facts_prompt.md` (draft a fact-set with any LLM) · `test_gate.py` (10 unit tests, in CI) ·
+layer) · `extract_facts_prompt.md` (draft a fact-set with any LLM) · `test_gate.py` (11 unit tests, in CI) ·
 `test_gate_fuzz.py` (4 property suites, 800+ randomized cases — the guarantee, fuzzed; in CI) ·
 `example/` (code: `doc.py`/`checks.py`/`degraded.py`; prose: `policy.md`/`policy.facts.txt`/`policy_drifted.md`;
 `multipass_demo.py` — the offline many-passes gated-vs-ungated demo, in CI).
@@ -127,6 +132,24 @@ model's drift rate (that needs the powered run, `../REPORT.md`).
 **The guarantee, fuzzed:** `python test_gate_fuzz.py` checks the gate against an independent oracle over 800+
 random documents/fact-sets/rewrites — the decision rule is sound *and* complete, CLI exit codes match, and the
 loop **never loses a fact that was present at the start**, no matter the passes (a sabotaged gate is caught).
+
+## Prior art & where this sits
+
+**In plain words:** drift-guard is *not* a new detection algorithm. Checking "this exact phrase must be in the
+file" is old (every linter does it). What's new here is the **framing and the packaging**: making
+"these listed facts survive every rewrite" an *enforced, executable guarantee*, wrapped in one
+zero-dependency file, with an honest line about what a prompt can and can't promise. If you already know these
+tools, here's exactly where drift-guard fits — and what it deliberately does *not* try to be:
+
+| Neighbour | What it does | drift-guard's relation |
+|---|---|---|
+| **Vale** (prose linter) | required/forbidden terms & style rules for docs, in CI | Same "required substring in CI" idea — but single-file/no-config-engine, aimed at *iterative-rewrite drift* and adding the **baseline→candidate regression** mode + the guarded loop. |
+| **OPA / Conftest / policy-as-code** | an executable gate that *rejects* configs violating an invariant | Same "a check that runs and rejects = a guarantee" philosophy, applied to **facts in a document** (code *or* prose) and to the rewrite loop. |
+| **SummaC · AlignScore · GenAudit · ContractNLI** (semantic frontier) | ML/NLI models that judge *meaning*-preservation / faithfulness | The thing drift-guard **deliberately does NOT do.** A model judge is non-deterministic and DPI-bound — it can only *reduce*, never *guarantee* (same status as the skill). Keeping the gate dumb-but-deterministic is the whole point. |
+
+**The contribution is therefore the DPI framing + a zero-dep single-file artifact + honest scope (including
+negative results on the skill)** — not a novel detection method. We don't claim to beat the semantic tools;
+we claim a different, deterministic guarantee they can't make.
 
 ## When this matters (honest scope)
 - **Strong fit:** many-pass iterative pipelines; **prose/specs/contracts/knowledge-bases with no test suite**
