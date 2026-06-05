@@ -105,6 +105,32 @@ Or in any MCP client, spawn `python drift-guard/integrations/mcp_server.py` over
 
 ---
 
+## Edge cases & FAQ
+
+**First, the thing people worry about most:** *"won't it block on some other file that happens to contain the
+same text?"* — **No.** The gate is scoped to the `(file → facts)` pairs you declare in `.driftguard.json`. It
+only ever checks the files you list, each against its own list. A different file with the same words is never
+looked at. There is no repo-wide text scan.
+
+| Twisted case | What happens | What to do |
+|---|---|---|
+| A protected fact must **legitimately change** (e.g. `90 days` → `60 days`) | the gate blocks | Update that line in the `*.facts.txt` **in the same commit/PR**. The list is versioned and reviewed, so the change is explicit — that's the point, not a bug. |
+| **Whitespace / formatting** drift (`GDPR Art. 17` → `GDPR  Art.17`, or a line break) | a literal match breaks | Use a tolerant regex: `re:GDPR\s*Art\.?\s*17`. |
+| **Over-match** (`90 days` also matches inside `190 days`) | false "present" | Use word boundaries: `re:\b90 days\b`. |
+| Content **moves to another file** | the original file lost it → blocks (even though nothing was lost overall) | The gate is per-file by design. Point `.driftguard.json` at the new file (same PR). "Must exist *somewhere* in the repo" is deliberately out of scope. |
+| Protected file **renamed / deleted** | `gate_all` reports `file is missing` → blocks | Intended (don't silently drop a protected doc). If deliberate, update the mapping. |
+| A fact that is **too generic** (`data`, `API`) | present everywhere → passes trivially (false safety) | List distinctive phrases (a ticket id, a constant, a clause). |
+| A fact **moves *within* the same file** (real line deleted, but the string still appears elsewhere in that file) | passes (string present, just relocated) | "presence, not position." For structural guarantees use a behavioral `--checks` module (assert the section/predicate holds), not a word list. |
+
+**The principle that resolves every case** — two clean rules:
+1. The gate knows **only** the `(file → facts)` pairs you declare; nothing else in the repo exists for it.
+2. When a protected fact legitimately changes or moves, you **update the declared list in the same commit** —
+   and the reviewer sees it.
+
+Because it is **deterministic**, there is never a mysterious block: the output names exactly which fact in
+which file is missing (`FAIL contract.md | dropped: 90 days`). Every "false block" is really a *real change to
+a protected fact* surfaced for review — which is exactly what you wanted.
+
 ## Tests
 
 ```bash

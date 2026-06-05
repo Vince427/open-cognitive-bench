@@ -134,6 +134,23 @@ python drift-guard/gate.py --facts facts.txt \
 
 <section>
   <div class="wrap">
+    <h2>Won't it block the wrong thing?</h2>
+    <p class="lead">No mysterious blocks — you control exactly what it checks.</p>
+    <p>The gate is <strong>scoped per file</strong>: <code>.driftguard.json</code> maps a specific file to a
+    specific list, and it only ever checks the files you list against their own lists. A <em>different</em>
+    file that happens to contain the same words is never looked at — there's no repo-wide text scan.</p>
+    <p>So the only thing it ever "blocks" is a <strong>real change to a protected fact</strong> — surfaced for
+    review, which is the point. Two tips for the tricky cases: use a regex for whitespace or word boundaries
+    (<code>re:\b90 days\b</code>) so formatting drift or <code>190 days</code> don't fool it; and if a fact
+    legitimately changes or moves, update its line in the list in the same commit. Because it's
+    <strong>deterministic</strong>, the output always names exactly which fact in which file is missing
+    (<code>FAIL contract.md | dropped: 90 days</code>) — never a guess. Full edge-case table:
+    <a href="https://github.com/Vince427/open-cognitive-bench/blob/main/drift-guard/integrations/README.md">integrations guide</a>.</p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
     <h2>The honest result</h2>
     <p class="lead">Negative results, published on purpose.</p>
 
