@@ -1,7 +1,7 @@
 # Do "guardrail" prompts stop coding agents from breaking code? A falsifiable benchmark, and why the obvious design fails
 
 **Preprint / methods + negative-results note — v0.1, 2026-06-04.**
-Author: Vince427 (single author — see Limitations). Code: `github.com/Vince427/open-cognitive-bench` (private).
+Author: Vince427 (single author — see Limitations). Code: `github.com/Vince427/open-cognitive-bench`.
 Status: **PRELIMINARY. Not a publishable positive result.** This documents a methodology and a chain of
 *negative / cautionary* findings, each obtained by controls that were designed to catch self-deception.
 

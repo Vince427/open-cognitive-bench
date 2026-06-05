@@ -1,8 +1,8 @@
 # CLAUDE.md — Open Cognitive Bench (read this first)
 
-Project memory for a fresh Claude Code session. Pushed to a **PRIVATE** GitHub remote
-`github.com/Vince427/open-cognitive-bench` (origin/main, synced). `gh` is installed at
-`C:\Program Files\GitHub CLI\gh.exe` and authed as `Vince427` (token scopes: repo, workflow). **Not yet public.**
+Project memory for a fresh Claude Code session. Pushed to a **PUBLIC** GitHub remote
+`github.com/Vince427/open-cognitive-bench` (origin/main, synced; made public 2026-06-05). `gh` is installed at
+`C:\Program Files\GitHub CLI\gh.exe` and authed as `Vince427` (token scopes: repo, workflow).
 
 ## What this is
 Evidence-backed **guardrails for AI coding agents**, shipped as a portable **Skill** *and* an active
@@ -14,11 +14,11 @@ exists before changing it) and **Goodhart Attack** (don't game the metric). Benc
 `drift-guard/` (a working tool against iterative-rewrite drift) + the methodology/negative-results. See Status.
 
 ## Status (2026-06-04) — full picture in `REPORT.md` / `PAPER.md`
-- `main`, pushed to private GitHub (synced). **selfcheck 41/41, harness 21/21, drift-guard 10/10 unit + 4 fuzz suites (800+ random cases) + multipass demo.** CI = pure stdlib + drift-guard tests.
+- `main`, pushed to **public** GitHub (synced). **selfcheck 41/41, harness 21/21, drift-guard 10/10 unit + 4 fuzz suites (800+ random cases) + multipass demo.** CI = pure stdlib + drift-guard tests.
 - **The honest result (the guardrail thesis did NOT pan out — `PAPER.md`):** a **single-shot** benchmark **can't** measure these guardrails on capable models (Opus & Haiku, every arm **0/40** — V5 *construct ceiling*). An **agentic, tool-using** harness (`bench/agentic/`, rounds 1–4) CAN produce failures, but the measured "skill" effect is **instruction-resistance (sycophancy), NOT investigation**: with a *neutral* instruction the gap **vanishes** (round 4: B 0/12 = S 0/12).
 - **FLAGSHIP DELIVERABLE = `drift-guard/`** (the project's clearest positive). Stops iterative-rewrite drift ("broken telephone"): an executable **fact-gate GUARANTEES** the facts you list survive every rewrite; the **skill only REDUCES** (a prompt can't guarantee — Data-Processing-Inequality, see `DRIFT.md`). Works on code + prose; ships `gate.py`, `guarded_rewrite.py` (auto loop), `SKILL.md`, `extract_facts_prompt.md`, `test_gate.py` (10 unit tests), `test_gate_fuzz.py` (4 property suites / 800+ random cases — the guarantee, fuzzed), `example/multipass_demo.py` (offline many-passes gated-vs-ungated demo) — all in CI.
 - 41 trap tasks (11 dev + 30 held-out). 5 guardrails: chesterton+goodhart (benchmarked-ready), **hyrum/security/phantom = EXPERIMENTAL, unvalidated**. QA findings **V1–V5** + power + calibration in `KNOWN_ISSUES.md`.
-- **Public-readiness: GREEN.** No secrets/PII (only a placeholder `sk-ant-...` in README). **Citations verified 2026-06-04** — only **7 arXiv IDs** repo-wide, all confirmed (1606.06565, 2305.17493, 2306.05685, 2310.13548, 2410.21012, 2502.20258, 2603.08520) + Nature 2024; unverified ones removed. Honest (negative results, single-author, Open Collider credited). **Not yet made public — user decision.**
+- **Public-readiness: GREEN.** No secrets/PII (only a placeholder `sk-ant-...` in README). **Citations verified 2026-06-04** — only **7 arXiv IDs** repo-wide, all confirmed (1606.06565, 2305.17493, 2306.05685, 2310.13548, 2410.21012, 2502.20258, 2603.08520) + Nature 2024; unverified ones removed. Honest (negative results, single-author, Open Collider credited). **Made public 2026-06-05.**
 
 ## Resume / session state (to continue WITHOUT loss)
 - **Remote & branches:** `gh` installed + authed (Vince427, repo+workflow). Go public when ready:
@@ -67,8 +67,8 @@ Real run (needs a standard Python + key): `pip install ".[providers]"`, set `ANT
 ## Next work (priority; detail in REPORT.md / KNOWN_ISSUES.md)
 DONE this arc: V1/V2/PA, the agentic harness (rounds 1–4), the iterative-drift demo, **drift-guard v2**
 (gate + loop + extraction + CI tests), reframed README around drift-guard, **citations verified**, pushed to
-private GitHub. All offline high-value work is complete.
-1. **Decide & act (yours):** make the repo **public** (command in Resume section); delete the merged branches.
+**public** GitHub, added `QUICKSTART.md`. All offline high-value work is complete.
+1. **Decide & act (yours):** repo is **public** (done 2026-06-05); optionally delete the merged branches.
 2. **Independent validation** (the credibility blocker — needs a 3rd party): independent author for held-out /
    agentic fixtures; independent review of the **DPI math** in `DRIFT.md`.
 3. **Powered run** (needs API budget): ≥2 models × dozens of seeds/fixtures on the agentic harness → `RESULTS.md`.
