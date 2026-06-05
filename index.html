@@ -99,6 +99,24 @@
 
 <section>
   <div class="wrap">
+    <h2>Why this matters for AI agent tooling</h2>
+    <div class="card plain">
+      <p>The most transferable lesson here — bigger than drift-guard itself. Across the field, "make the agent
+      reliable" is mostly attempted with <em>prompts</em> (system prompts, CLAUDE.md, memory, "always… /
+      never…"). Our benchmark shows, <strong>with evidence</strong>, that on capable models those are largely
+      <strong>placebo</strong>. A prompt can only <em>reduce</em>; only an executable check, in a spot it can't
+      be skipped, can <em>guarantee</em>.</p>
+      <p style="font-size:19px; color:#1c2024; margin:18px 0"><strong>For anything that must hold, gate it —
+      don't prompt it. And measure every guardrail you can't gate, because many don't do what you think.</strong></p>
+      <p>Platforms already do this for code (tests, CI, hooks). The gap is everything no test catches —
+      rationale, policy, prose specs, and the agent's own memory files, which drift silently. drift-guard is
+      one tiny, dependency-free proof of the principle for <em>facts</em>; the principle is the point.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
     <h2>Two things you can actually use</h2>
     <p class="lead">Pick the one that matches your problem.</p>
 

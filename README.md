@@ -113,6 +113,21 @@ gate run in CI **guarantees** the drop can't land — for the facts you listed, 
 position that can't be skipped. Use both. (You can even point the gate at `CLAUDE.md` itself — it drifts like
 any document.)
 
+## Why this matters for AI agent tooling
+
+This may be the most transferable lesson here — bigger than drift-guard itself. Across the field, "make the
+agent safe / reliable" is mostly attempted with *prompts*: system prompts, `CLAUDE.md`, memory, "always… /
+never…" rules. Our benchmark says, **with evidence**, that on capable models those are largely **placebo**
+(the measured effect is instruction-resistance, not real behaviour change). A prompt can only *reduce*; only
+an executable check in a position that can't be skipped can *guarantee* (the DPI argument, [`DRIFT.md`](DRIFT.md)).
+
+> **For anything that must hold, gate it — don't prompt it. And measure every guardrail you can't gate, because many of them don't do what you think.**
+
+Agent platforms already do this for *code* (tests, build, lint, CI hooks). The gap is everything no test
+catches — rationale, policy/legal constraints, prose specs, and the agent's own memory/instruction files,
+which drift silently. drift-guard is one tiny, dependency-free proof of the principle for *facts*; **the
+principle is the point.**
+
 ## The benchmark — what we set out to test (and what we found)
 
 We set out to ask: does a guardrail **Skill** (and a multi-agent **Workflow**) actually lower the rate at
