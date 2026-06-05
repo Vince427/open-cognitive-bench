@@ -1,5 +1,7 @@
 # Open Cognitive Bench
 
+**An executable check that stops an AI silently dropping facts when it re-edits your documents — plus an honest, falsifiable benchmark for coding-agent guardrails.**
+
 > **Just want to use it?** → [`QUICKSTART.md`](QUICKSTART.md) — the plain, no-theory guide (install + copy-paste examples). The rest of this page is the *why* and the evidence.
 > **Landing page:** [vince427.github.io/open-cognitive-bench](https://vince427.github.io/open-cognitive-bench/)
 
@@ -46,6 +48,45 @@ Pick the row that matches your problem — each has a copy-paste example below.
 **Which is which:** drift-guard is the **tool that actually works** (a real guarantee). The skill is a **useful
 nudge with honestly-limited measured value** (read the note in Mode B). The benchmark is a **method**, not a
 positive result. If you only want something usable today, do **Mode A**.
+
+## The problem drift-guard solves
+
+Run a document through an LLM a few times — "condense this", "tidy it up", an agent refactoring a file — and
+it quietly erodes. Each pass drops whatever the model judged unimportant, and the *why* (the rationale, the
+ticket reference, the legal clause) goes first. No error, no diff you'd flag, no test to catch it — the
+constraint is simply **gone**. This is iterative-rewrite drift, the "broken-telephone" of LLM editing. A
+careful prompt *slows* it; only a **check that runs after every pass** can stop it.
+
+## Concrete example
+
+One retention-policy document, put through six LLM-style "condense" passes. Same passes, two ways
+(reproduce it: `python drift-guard/example/multipass_demo.py`):
+
+| pass | Without a gate — facts kept /5 | With drift-guard — /5 |
+|---|---|---|
+| start | 5 | 5 |
+| 1 | 5 | 5 |
+| 2 | 4 &nbsp;← lost "90 days" | 5 &nbsp;(lossy pass reverted) |
+| 4 | 3 &nbsp;← lost "PRIV-88" | 5 |
+| 6 | **2** &nbsp;← lost "GDPR Art. 17" | **5** |
+
+Without the gate, three load-bearing facts silently vanished. With it, **every one survived** — the harmless
+edits were kept, only the lossy passes were reverted.
+
+## How drift-guard works
+
+```
+  facts.txt  ───────────┐
+  (what must survive)    │      ┌──────────────┐   all facts present?   ┌────────────────────────────┐
+                         ├────► │  GATE (code) │ ── yes ──────────────► │ ACCEPT — keep the rewrite  │
+  rewritten document ────┘      │   gate.py    │ ── no  ──────────────► │ REVERT — keep the old file │
+                                └──────────────┘                        └────────────────────────────┘
+```
+
+The gate re-checks every rewrite against the **frozen** fact-set, so "all facts preserved" becomes an
+invariant of the loop — by simple logic, not by trusting the model. That's the *guarantee* (a prompt can't
+make one — see [`DRIFT.md`](DRIFT.md)). Run it as a CI check, a git hook, the auto-rewrite loop, or an MCP
+tool an agent calls → [`drift-guard/integrations/`](drift-guard/integrations/README.md).
 
 ## How the pieces run: gate (guarantee) vs skill (nudge)
 Two **opposite** mechanisms — don't confuse them:
@@ -248,6 +289,25 @@ caution 3/12 > skill 0/12), but under a **neutral** instruction the gap **vanish
 So the real remaining work is **not** "just run the API" — it is the **agentic harness** (the only setting
 where these guardrails can bite), plus independent held-out authorship and a multi-model run. Full picture in
 [`REPORT.md`](REPORT.md).
+
+## Project structure
+
+```
+open-cognitive-bench/
+├── drift-guard/          the usable tool — an executable fact-gate (gate.py) + guarded-rewrite loop
+│   ├── integrations/     4 ways to run it: CI, pre-commit hook, the loop, an MCP server (+ tests)
+│   ├── example/          runnable examples + multipass_demo.py (the before/after above)
+│   └── test_gate*.py     10 unit tests + 800+ fuzzed cases (the guarantee, checked)
+├── skills/               the guardrail Skills: chestertons-shield, goodhart-attack (+ 3 experimental)
+├── workflows/            the multi-agent gating workflow (benchmark arm W)
+├── bench/                the falsifiable benchmark: arms B/C/D/S/W, judge, stats (forest plot), tasks
+│   ├── agentic/          the tool-using harness (the rounds 1–4 result)
+│   ├── pilot/            run a real model with NO API key (Claude Code subagents)
+│   └── preregistration.md  freeze before the sealed held-out run
+├── QUICKSTART.md         the plain, no-theory usage guide
+├── PAPER.md · DRIFT.md   the write-up + the drift/DPI math
+└── REPORT.md · KNOWN_ISSUES.md  status + QA findings
+```
 
 ## Docs
 - [`drift-guard/`](drift-guard/README.md) — **the usable deliverable**: executable fact-gate + guarded-rewrite loop + Drift Shield skill.
