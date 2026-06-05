@@ -123,13 +123,17 @@ python drift-guard/gate.py --facts facts.txt \
 
     <div class="card plain">
       <h3>In plain words</h3>
-      <p>We wanted to show that telling an AI assistant to "be careful before changing code" makes it break
-      things less often. Tested honestly, it mostly <strong>doesn't</strong>: asked a normal question, a
-      capable model is already careful, so the guardrail adds nothing. It <em>did</em> help in one case — when
-      we deliberately tried to trick the AI ("this bit looks useless, delete it"), the guardrail made it push
-      back. So it's more of a <strong>seatbelt against bad instructions</strong> than a smarter brain. We're
-      publishing it anyway, even though it isn't the exciting result we hoped for — a benchmark that only
-      reports wins isn't worth much.</p>
+      <p>There are two different things here, and they are <strong>not</strong> equally strong — so don't read
+      "the benchmark was negative" as "nothing works":</p>
+      <p>✅ <strong>The tool (drift-guard) works.</strong> You list the facts that must not disappear; it
+      checks every AI rewrite and <em>rejects</em> any version that dropped one. That's a real guarantee — a
+      check that actually runs, not a hope. (You enforce it in CI, a git hook, the auto-rewrite loop, or as an
+      MCP tool the AI calls.)</p>
+      <p>🟡 <strong>The skill (telling the AI "be careful") mostly doesn't move the needle.</strong> Asked a
+      normal question, a capable model is already careful, so the reminder adds nothing. It only helped when we
+      deliberately tried to trick the AI ("this bit looks useless, delete it") — then it pushed back. A
+      seatbelt against bad instructions, not a smarter brain.</p>
+      <p>We publish the negative half too, on purpose — a benchmark that only reports wins isn't worth much.</p>
     </div>
 
     <p class="eyebrow">The technical version</p>
@@ -138,7 +142,8 @@ python drift-guard/gate.py --facts facts.txt \
     produce failures, but the measured "skill effect" is mostly <strong>resisting a misleading instruction</strong>
     (sycophancy), <strong>not investigation</strong>: under a neutral instruction the gap vanishes
     (bare 0/12 = skill 0/12, n=12, not significant). The benchmark stands as a <em>method</em>, not as proof
-    that guardrails make agents safer.</p>
+    that guardrails make agents safer. This negative is about the <em>skill</em>; drift-guard's gate is a
+    separate, executable guarantee that holds.</p>
     <p>Full write-up with the statistics and the drift math:
     <a href="https://github.com/Vince427/open-cognitive-bench/blob/main/PAPER.md">PAPER.md</a> ·
     <a href="https://github.com/Vince427/open-cognitive-bench/blob/main/DRIFT.md">DRIFT.md</a>.
