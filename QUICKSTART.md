@@ -46,6 +46,52 @@ python drift-guard/guarded_rewrite.py --doc mydoc.md --facts facts.txt \
 That's it. More options (checking code *behavior*, not just text; drafting the fact list with an AI) are in
 [`drift-guard/README.md`](drift-guard/README.md).
 
+### Recipe: lock specific words/phrases to a file, and enforce it across the team
+
+Three small files, then one install — after that, **any change that drops a listed phrase is rejected
+automatically**, by code, with no human in the loop.
+
+**1. The list** — `contract.facts.txt` (one phrase per line; prefix `re:` for a regex):
+```
+90 days
+PRIV-88
+GDPR Art. 17
+```
+
+**2. The mapping** — `.driftguard.json` at your repo root (file → its list; add as many files as you want):
+```json
+{ "protect": [
+    { "file": "contract.md", "facts": "contract.facts.txt" }
+] }
+```
+
+**3. The enforcer** — pick one (or several):
+```bash
+# local only: block the commit
+cp drift-guard/integrations/pre-commit .git/hooks/pre-commit && chmod +x .git/hooks/pre-commit
+
+# whole team: block every push / PR — copy this workflow into your repo
+cp drift-guard/integrations/github-actions.yml .github/workflows/drift-guard.yml
+
+# AI agent self-check (MCP): the agent calls the gate before proposing a change
+claude mcp add drift-guard -- python /abs/path/drift-guard/integrations/mcp_server.py
+```
+
+**Industrialize it for a team:**
+- **Commit `.driftguard.json` and the `*.facts.txt` files into the repo** — the protected list is versioned
+  and reviewed like any other code.
+- **Use the CI workflow, not just the local hook.** Hooks aren't shared between clones and can be skipped
+  with `git commit --no-verify`; CI runs for everyone and can't be bypassed. Every PR then shows a red build
+  the instant a protected phrase disappears, and reviewers see exactly which one (`dropped: 90 days; …`).
+- **To protect a new file, add one entry to `.driftguard.json`** — no code to write.
+- Keep each `*.facts.txt` next to the doc it guards; let a domain owner approve the list once (an LLM can
+  draft it — see `drift-guard/extract_facts_prompt.md`).
+
+**Honest limit:** the gate checks a phrase is *present*, not that its *meaning* held — a rewrite that keeps
+the words but negates them would pass. For meaning-level guarantees on **code**, use a behavioral checks
+module (the `"checks"` key instead of `"facts"`). Details + all four enforcement modes:
+[`drift-guard/integrations/`](drift-guard/integrations/README.md).
+
 ---
 
 ## 2. The Chesterton's Shield skill — make your AI coding agent look before it deletes
