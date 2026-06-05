@@ -102,6 +102,17 @@ Two **opposite** mechanisms — don't confuse them:
 - They compose: the skill lowers how often the gate must reject; the gate (and CI) provide the guarantee.
   *A CI for code is a fact-gate for a document — the same idea at two levels.*
 
+### "But I already put it in CLAUDE.md / memory / a system prompt"
+
+That's the most common way people try to stop an AI dropping something — and it's the **skill tier**: a
+*prompt*. It biases the model but can't guarantee. The model can ignore it, run out of context and forget it,
+or be argued out of it — and those files quietly **drift themselves** (you condense `CLAUDE.md`, an entry
+vanishes). A gate is different *in kind*: it doesn't ask the model to behave, it **inspects the result and
+rejects it** if a listed fact is gone. So `CLAUDE.md`/memory **reduce** how often something gets dropped; a
+gate run in CI **guarantees** the drop can't land — for the facts you listed, as a present-string check, in a
+position that can't be skipped. Use both. (You can even point the gate at `CLAUDE.md` itself — it drifts like
+any document.)
+
 ## The benchmark — what we set out to test (and what we found)
 
 We set out to ask: does a guardrail **Skill** (and a multi-agent **Workflow**) actually lower the rate at

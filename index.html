@@ -85,6 +85,20 @@
 
 <section>
   <div class="wrap">
+    <h2>“But I already put it in CLAUDE.md / a system prompt”</h2>
+    <p class="lead">The most common fix — and why it can't guarantee.</p>
+    <p>Telling the AI "don't drop this" in <code>CLAUDE.md</code>, memory, or a system prompt is a
+    <strong>prompt</strong>: it biases the model but can't promise. It can be ignored, forgotten when the
+    context fills up, or argued away — and those files quietly drift themselves. A gate is different <em>in
+    kind</em>: it doesn't ask the model to behave, it <strong>inspects the result and rejects it</strong> if a
+    listed fact is gone. So <code>CLAUDE.md</code> <em>reduces</em> how often something gets dropped; a gate
+    run in CI <em>guarantees</em> the drop can't land — for the facts you listed, as a present-string check, in
+    a spot that can't be skipped. Use both.</p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
     <h2>Two things you can actually use</h2>
     <p class="lead">Pick the one that matches your problem.</p>
 
