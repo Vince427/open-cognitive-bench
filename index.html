@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Open Cognitive Bench — guardrails for AI coding agents, with a falsifiable benchmark</title>
+<meta name="description" content="An executable fact-gate that stops LLMs silently dropping facts when they re-edit a document, plus an honest, falsifiable benchmark for coding-agent guardrails.">
+<style>
+  :root{
+    --bg:#ffffff; --fg:#1c2024; --muted:#5b636c; --line:#e6e8eb;
+    --accent:#2f5fe0; --accent-weak:#eef2fd; --code-bg:#0f1419; --code-fg:#e7edf3;
+    --ok:#1a7f4b; --warn:#9a6700;
+    --maxw:760px;
+  }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    margin:0; background:var(--bg); color:var(--fg);
+    font:16px/1.65 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  }
+  .wrap{max-width:var(--maxw); margin:0 auto; padding:0 20px}
+  a{color:var(--accent); text-decoration:none}
+  a:hover{text-decoration:underline}
+  code,pre{font-family:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace}
+  header{padding:64px 0 28px; border-bottom:1px solid var(--line)}
+  h1{font-size:34px; line-height:1.15; margin:0 0 10px; letter-spacing:-.02em}
+  .tag{font-size:18px; color:var(--muted); margin:0 0 24px}
+  .nav{display:flex; flex-wrap:wrap; gap:10px}
+  .btn{display:inline-block; padding:9px 16px; border-radius:8px; font-size:15px; font-weight:600;
+       border:1px solid var(--line); color:var(--fg); background:#fff}
+  .btn:hover{border-color:var(--accent); text-decoration:none}
+  .btn.primary{background:var(--accent); color:#fff; border-color:var(--accent)}
+  .btn.primary:hover{background:#244ec0}
+  section{padding:40px 0; border-bottom:1px solid var(--line)}
+  h2{font-size:22px; margin:0 0 6px; letter-spacing:-.01em}
+  .lead{color:var(--muted); margin:0 0 22px}
+  .card{border:1px solid var(--line); border-radius:12px; padding:20px 22px; margin:18px 0}
+  .card h3{margin:0 0 6px; font-size:18px}
+  .card .when{color:var(--muted); font-size:14px; margin:0 0 14px}
+  pre{background:var(--code-bg); color:var(--code-fg); padding:14px 16px; border-radius:10px;
+      overflow:auto; font-size:13.5px; line-height:1.55; margin:0 0 4px}
+  pre .c{color:#8b98a5}
+  .pill{display:inline-block; font-size:12px; font-weight:700; padding:2px 9px; border-radius:999px;
+        background:var(--accent-weak); color:var(--accent); vertical-align:middle; margin-left:8px}
+  .pill.ok{background:#e7f6ee; color:var(--ok)}
+  .note{background:#fffaf0; border:1px solid #f2e6c9; border-radius:10px; padding:12px 15px;
+        color:#5b4b22; font-size:14.5px; margin-top:14px}
+  .grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:10px; margin-top:6px}
+  .stat{border:1px solid var(--line); border-radius:10px; padding:12px 14px; text-align:center}
+  .stat b{display:block; font-size:18px}
+  .stat span{font-size:13px; color:var(--muted)}
+  footer{padding:34px 0 60px; color:var(--muted); font-size:14px}
+  footer a{color:var(--muted); text-decoration:underline}
+  @media (max-width:560px){ header{padding-top:44px} h1{font-size:28px} }
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <h1>Open Cognitive Bench</h1>
+    <p class="tag">Guardrails for AI coding agents — shipped with a <em>falsifiable</em> benchmark, and an honest result.</p>
+    <nav class="nav">
+      <a class="btn primary" href="https://github.com/Vince427/open-cognitive-bench/blob/main/QUICKSTART.md">Quickstart</a>
+      <a class="btn" href="https://github.com/Vince427/open-cognitive-bench/tree/main/drift-guard">drift-guard</a>
+      <a class="btn" href="https://github.com/Vince427/open-cognitive-bench/blob/main/PAPER.md">The paper</a>
+      <a class="btn" href="https://github.com/Vince427/open-cognitive-bench">GitHub repo</a>
+    </nav>
+  </div>
+</header>
+
+<section>
+  <div class="wrap">
+    <p>This project set out to test a simple claim: do "guardrail" prompts actually stop an AI coding agent
+    from breaking your code? Measured rigorously, the answer was <strong>mostly no</strong> — so the project
+    leads instead with the one piece that <em>does</em> hold up: a small, executable tool, plus the honest
+    methodology and negative results. Two things here are usable today.</p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Two things you can actually use</h2>
+    <p class="lead">Pick the one that matches your problem.</p>
+
+    <div class="card">
+      <h3>1 · drift-guard <span class="pill ok">a real guarantee</span></h3>
+      <p class="when">When you re-run a document through an LLM (condense / reword / refactor) and it silently
+      drops a fact, a constraint, or the <em>why</em>. Pure Python, no dependencies, no API key.</p>
+<pre><span class="c"># list the facts that MUST survive, then gate every rewrite:</span>
+printf '90 days\nPRIV-88\nGDPR Art. 17\n' &gt; facts.txt
+python drift-guard/gate.py --facts facts.txt \
+  --baseline doc.md --candidate rewritten.md --apply doc.md
+<span class="c"># ACCEPT only if every fact survived, else keep the old file. That's the guarantee.</span></pre>
+      <p style="margin:14px 0 0">See it on a real example (no setup):
+      <code>python drift-guard/example/multipass_demo.py</code> — one doc, 6 passes: ungated drifts 5→2 facts,
+      gated holds 5/5. → <a href="https://github.com/Vince427/open-cognitive-bench/blob/main/drift-guard/README.md">drift-guard guide</a></p>
+    </div>
+
+    <div class="card">
+      <h3>2 · Chesterton's Shield skill <span class="pill">a useful nudge</span></h3>
+      <p class="when">When your AI coding assistant "simplifies" or deletes legacy code that turns out to be
+      load-bearing. It makes the agent investigate <em>why</em> the code exists (git history, callers, tests)
+      before changing it.</p>
+<pre><span class="c"># Claude Code:</span>
+/plugin marketplace add Vince427/open-cognitive-bench
+/plugin install chestertons-shield@open-cognitive-bench
+<span class="c"># Any other tool: copy skills/chestertons-shield/SKILL.md into your agent's instructions.</span></pre>
+      <div class="note"><strong>Honest expectation:</strong> on capable models this mostly buys
+      <em>resistance to a misleading "this is redundant, remove it" instruction</em>, not magic investigation —
+      a good model already investigates when simply asked to refactor. Treat it as a safety net.</div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>The honest result</h2>
+    <p class="lead">Negative results, published on purpose.</p>
+    <p>A <strong>single-shot</strong> benchmark can't measure these guardrails on capable models — every arm
+    scored zero (a construct ceiling). An <strong>agentic, tool-using</strong> harness <em>can</em> produce
+    failures, but the measured "skill effect" is mostly <strong>resisting a misleading instruction</strong>
+    (sycophancy), <strong>not investigation</strong>: under a neutral instruction the gap vanishes
+    (bare 0/12 = skill 0/12, n=12, not significant). The benchmark stands as a <em>method</em>, not as proof
+    that guardrails make agents safer.</p>
+    <p>Full write-up with the statistics and the drift math:
+    <a href="https://github.com/Vince427/open-cognitive-bench/blob/main/PAPER.md">PAPER.md</a> ·
+    <a href="https://github.com/Vince427/open-cognitive-bench/blob/main/DRIFT.md">DRIFT.md</a>.
+    Inspired by <a href="https://github.com/CL-ML/open-collider">Open Collider</a> (ship the artifact <em>and</em>
+    a falsifiable benchmark; publish negatives).</p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Verify it yourself</h2>
+    <p class="lead">Pure stdlib — clone and run, no install, no key.</p>
+    <div class="grid">
+      <div class="stat"><b>21/21</b><span>harness tests</span></div>
+      <div class="stat"><b>41/41</b><span>traps validated</span></div>
+      <div class="stat"><b>10/10</b><span>drift-guard tests</span></div>
+      <div class="stat"><b>800+</b><span>fuzzed gate cases</span></div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    MIT (code) · benchmark data CC BY 4.0 · single author —
+    <a href="https://github.com/Vince427/open-cognitive-bench">github.com/Vince427/open-cognitive-bench</a>
+  </div>
+</footer>
+</body>
+</html>
