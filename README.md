@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="assets/banner.svg" alt="Open Cognitive Bench — guardrails for AI coding agents, with a check that actually runs" width="100%">
+</p>
+
 # Open Cognitive Bench
 
 **An executable check that stops an AI silently dropping facts when it re-edits your documents — plus an honest, falsifiable benchmark for coding-agent guardrails.**

@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 340" role="img"
+     aria-label="Open Cognitive Bench — guardrails for AI coding agents, with a check that actually runs.">
+  <!-- pure SVG: shapes + text only, no raster, no script, inline attributes for GitHub compatibility -->
+  <rect x="1" y="1" width="1198" height="338" rx="18" fill="#ffffff" stroke="#e6e8eb" stroke-width="2"/>
+  <rect x="1" y="1" width="10" height="338" rx="5" fill="#2f5fe0"/>
+
+  <g font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif">
+    <!-- title + tagline -->
+    <text x="72" y="118" font-size="54" font-weight="700" fill="#1c2024" letter-spacing="-0.5">Open Cognitive Bench</text>
+    <text x="74" y="166" font-size="25" fill="#5b636c">Guardrails for AI coding agents — with a check that <tspan fill="#2f5fe0" font-weight="600">actually runs</tspan>.</text>
+
+    <!-- meta pills -->
+    <g font-size="14" font-weight="600" fill="#2f5fe0" text-anchor="middle">
+      <rect x="74"  y="196" width="108" height="30" rx="15" fill="#eef2fd"/><text x="128" y="216">pure stdlib</text>
+      <rect x="190" y="196" width="108" height="30" rx="15" fill="#eef2fd"/><text x="244" y="216">no API key</text>
+      <rect x="306" y="196" width="62"  height="30" rx="15" fill="#eef2fd"/><text x="337" y="216">MIT</text>
+      <rect x="376" y="196" width="142" height="30" rx="15" fill="#eef2fd"/><text x="447" y="216">honest results</text>
+    </g>
+
+    <!-- gate flow: facts -> GATE -> keep / revert -->
+    <g font-size="15" text-anchor="middle">
+      <rect x="74" y="264" width="128" height="44" rx="10" fill="#f7f9fc" stroke="#e6e8eb"/>
+      <text x="138" y="291" fill="#1c2024">facts.txt</text>
+
+      <line x1="206" y1="286" x2="232" y2="286" stroke="#9aa3ad" stroke-width="2"/>
+      <polygon points="232,281 242,286 232,291" fill="#9aa3ad"/>
+
+      <rect x="246" y="264" width="104" height="44" rx="10" fill="#2f5fe0"/>
+      <text x="298" y="291" fill="#ffffff" font-weight="700">GATE</text>
+
+      <line x1="354" y1="286" x2="380" y2="286" stroke="#9aa3ad" stroke-width="2"/>
+      <polygon points="380,281 390,286 380,291" fill="#9aa3ad"/>
+
+      <rect x="394" y="264" width="176" height="44" rx="10" fill="#e7f6ee" stroke="#1a7f4b"/>
+      <text x="482" y="291" fill="#1a7f4b" font-weight="600">✓ keep rewrite</text>
+
+      <rect x="584" y="264" width="178" height="44" rx="10" fill="#f7f9fc" stroke="#e6e8eb"/>
+      <text x="673" y="291" fill="#5b636c">✗ revert lossy pass</text>
+
+      <text x="786" y="291" text-anchor="start" font-size="16" font-style="italic" fill="#5b636c">→ every listed fact survives, by construction.</text>
+    </g>
+  </g>
+</svg>
