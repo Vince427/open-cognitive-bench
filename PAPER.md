@@ -114,7 +114,7 @@ flowchart TD
 | Headline visual | **forest plot** over 12 projects (A vs B/C/D) | per-arm/per-fixture failure matrix + ASCII forest plot |
 | Headline result | **strong positive**: A vs B 12/12, p=0.0002; A ~4–13× C | **negative/cautionary**: no significant skill effect; the apparent one is instruction-resistance |
 | Why the difference | ideation has no ground truth → preference judging is *appropriate* and the effect is large | reliability has ground truth → execution is *required*; LLM-judge would be circular; effects are small on capable models |
-| Scale | 12 projects, 3 judges, large N | 4 dev + 30 held-out tasks; pilots only; **single author** |
+| Scale | 12 projects, 3 judges, large N | 4 agentic fixtures + 11 dev / 30 held-out single-shot tasks; pilots only; **single author** |
 
 Takeaway: Open Collider can show a big effect partly because its metric (human/LLM preference of *ideas*) and
 domain reward the intervention; our domain forbids that metric (we need execution), and on execution the

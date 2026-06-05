@@ -1,6 +1,6 @@
 # Open Cognitive Bench
 
-**What this repo is, honestly (2026-06-04).** It set out to be a falsifiable benchmark for "guardrail" prompts
+**What this repo is, honestly (2026-06-05).** It set out to be a falsifiable benchmark for "guardrail" prompts
 that supposedly stop an AI coding agent from breaking your code. The rigorous finding is **mostly negative**,
 and that reshaped the project. It is now two things:
 
@@ -29,6 +29,20 @@ artifact *and* a falsifiable benchmark, publish negative results — and its pre
 falsifier-control arms), but apply it to **reliability** (judged by **execution**: a test passes or fails)
 instead of **ideation** (judged by **LLM preference**). Open Collider reports a strong *positive* in its
 domain; we report a mostly-negative methodological result in ours. Honest head-to-head in [`PAPER.md` §7](PAPER.md).
+
+## Who is this for? (and exactly what to install)
+
+Pick the row that matches your problem — each has a copy-paste example below.
+
+| Your problem | What you install | What you get | Example |
+|---|---|---|---|
+| *"I re-run a document through an LLM (condense / refactor / summarize) and it silently drops facts, constraints, or the rationale."* | **`drift-guard/`** — pure-stdlib Python, no deps, no API key | A **guarantee** that every fact you list survives every rewrite (revert-on-loss). | [Mode A](#mode-a-drift-guard) |
+| *"My coding agent breaks legacy code when it 'cleans it up' or deletes a guard that looked redundant."* | the **`chestertons-shield` Skill** into your agent | The agent must investigate (git blame, callers, tests) and push back on "this is redundant, remove it" before editing. | [Mode B](#mode-b-install-a-guardrail-skill) |
+| *"I built my own guardrail/skill — does it actually help, or is it placebo?"* | clone the repo; add your skill + trap tasks | A **falsifiable, execution-based verdict** (arms B/C/D/S/W, McNemar + bootstrap). | [Mode C](#mode-c-benchmark-your-own-guardrail) |
+
+**Which is which:** drift-guard is the **tool that actually works** (a real guarantee). The skill is a **useful
+nudge with honestly-limited measured value** (read the note in Mode B). The benchmark is a **method**, not a
+positive result. If you only want something usable today, do **Mode A**.
 
 ## How the pieces run: gate (guarantee) vs skill (nudge)
 Two **opposite** mechanisms — don't confuse them:
@@ -114,16 +128,79 @@ read as "underpowered," and detecting it would need more tasks/seeds. See `bench
 
 ## Quick start
 
-**drift-guard (the usable tool) — pure stdlib, no key:**
-```bash
-python drift-guard/gate.py --facts drift-guard/example/policy.facts.txt --file drift-guard/example/policy.md
-python drift-guard/gate.py --facts drift-guard/example/policy.facts.txt --file drift-guard/example/policy_drifted.md  # exit 1: facts lost
-python drift-guard/test_gate.py        # 10 tests
-```
-See [`drift-guard/README.md`](drift-guard/README.md) for the guarded-rewrite loop and prose/code fact-sets.
+All Python here is **pure stdlib** for the parts that matter (drift-guard, the mock benchmark, every test) —
+**no install, no API key**. (Optional: `pip install -r requirements.txt` only adds model SDKs for *real*
+benchmark runs and `pytest`.)
 
-**The benchmark (methodology / mock smoke):** no third-party packages for the mock run (pure Python 3.9+
-stdlib); `pip install -r requirements.txt` only adds optional model SDKs (real runs) and `pytest`.
+### Mode A: drift-guard
+
+The usable tool: an executable fact-gate so repeated LLM rewrites can't silently drop a fact you care about.
+Nothing to install beyond Python — run it in place or copy the `drift-guard/` folder into your project.
+
+**A1 · Prose / specs / policies / contracts** (a fact = a literal substring, or `re:` for a regex). Here
+`policy.md` is *your own* document — or try the shipped example, which already runs:
+```bash
+# try it now on the shipped example (5 facts, all present):
+python drift-guard/gate.py --facts drift-guard/example/policy.facts.txt --file drift-guard/example/policy.md
+
+# on your own doc:
+# 1) list the facts that MUST survive — one per line
+printf '90 days\nPRIV-88\nre:GDPR Art\\.?\\s*17\n' > facts.txt
+# 2) audit a file:  exit 0 = all present, exit 1 = something was lost
+python drift-guard/gate.py --facts facts.txt --file policy.md
+# 3) gate a rewrite: overwrite policy.md ONLY if the candidate kept every fact, else keep the old file
+python drift-guard/gate.py --facts facts.txt --baseline policy.md --candidate rewritten.md --apply policy.md
+```
+
+**A2 · Code behavior** (assert behavior, not just text — a negated sentence can't fool this):
+```bash
+# checks.py exposes CHECKS = [(name, fn(module, src) -> bool)]; see drift-guard/example/checks.py
+python drift-guard/gate.py --checks drift-guard/example/checks.py --file drift-guard/example/doc.py       # 7/7, exit 0
+python drift-guard/gate.py --checks drift-guard/example/checks.py --file drift-guard/example/degraded.py  # exit 1: rationale lost
+```
+
+**A3 · Automated multi-pass loop** (plug in your own LLM as the rewriter; the gate accepts/reverts each pass):
+```bash
+python drift-guard/guarded_rewrite.py --doc live.md --facts facts.txt \
+  --rewrite-cmd "your-llm-cli --condense" --passes 8 --retries 1
+```
+
+**See it work, zero setup:**
+```bash
+python drift-guard/example/multipass_demo.py   # one doc, 6 passes: UNGATED drifts 5->2 facts, GATED holds 5/5
+python drift-guard/test_gate.py                # 10 unit tests
+python drift-guard/test_gate_fuzz.py           # the guarantee, fuzzed over 800+ random cases
+```
+Full guide (drafting a fact-set with an LLM, the DPI math, honest scope): [`drift-guard/README.md`](drift-guard/README.md).
+
+### Mode B: install a guardrail Skill
+
+Make a coding agent investigate *why* code exists before "simplifying" it.
+
+**Claude Code (plugin):**
+```
+/plugin marketplace add Vince427/open-cognitive-bench
+/plugin install chestertons-shield@open-cognitive-bench    # or: goodhart-attack@open-cognitive-bench
+```
+**Any other agent / tool** — the skills are plain Markdown; drop the file where your agent reads instructions
+(a Claude Code project skill at `.claude/skills/chestertons-shield/SKILL.md`, a Cursor/Windsurf rule, a
+system-prompt preamble):
+```
+skills/chestertons-shield/SKILL.md   # "investigate why before changing" -> forces a cited Fence Report
+skills/goodhart-attack/SKILL.md      # "don't game the test/metric"
+```
+It triggers on *refactor / simplify / clean up / remove dead code* and requires a cited **Fence Report**
+(git blame, callers, tests) before any edit.
+
+> **Honest expectation — read this before you rely on it.** On capable models, this skill's *measured* value
+> is mostly **resistance to a misleading "this is redundant, remove it" instruction** (sycophancy-resistance),
+> **not** superior investigation: under a *neutral* instruction a good model already investigates and the
+> skill adds nothing (B ≈ S in our agentic run). Install it for the push-back; don't expect magic. Full
+> evidence in [`PAPER.md`](PAPER.md).
+
+### Mode C: benchmark your own guardrail
+
+Test whether a guardrail actually helps (Open-Collider style: execution-judged, paired, falsifier-controlled).
 
 ```bash
 # 0) Sanity: every task is a valid trap (original passes, naive rewrite breaks the invariant)
@@ -131,36 +208,23 @@ python bench/selfcheck.py
 # 1) Smoke-test the whole harness with NO API key and NO spend (deterministic mock provider):
 python bench/run_bench.py --tasks bench/tasks/dev --arms B C D S W --seeds 5 --provider mock
 python bench/judge.py     --run results/latest
-python bench/stats.py     --run results/latest
+python bench/stats.py     --run results/latest    # per-arm failure rates, McNemar + bootstrap, ASCII forest plot
 ```
+Add your own guardrail as `skills/<your-skill>/SKILL.md` and your own traps under `bench/tasks/dev/` (see
+[`CONTRIBUTING.md`](CONTRIBUTING.md)), then re-run. The **mock provider is plumbing only — never a result.**
 
-### Run with a real model (when you have a standard Python install)
-
-`python`/`py` is not bundled with Windows — install Python 3.11+ from python.org (tick "Add to PATH"),
-then:
-
+**Run with a real model** (`python`/`py` is not bundled with Windows — install Python 3.11+ from python.org,
+tick "Add to PATH"):
 ```powershell
 pip install anthropic openai          # only needed for real runs; pytest is optional
 setx ANTHROPIC_API_KEY "sk-ant-..."   # or OPENAI_API_KEY; reopen the terminal afterwards
-# Iterate on the DEV set first:
 .\run.ps1 -Provider anthropic -Model claude-sonnet-4-5 -Tasks bench\tasks\dev -Seeds 5
 # Linux/macOS: ./run.sh anthropic claude-sonnet-4-5 bench/tasks/dev 5
 ```
+`run.ps1` / `run.sh` just chain `run_bench → judge → stats`. **Iterate only on `bench/tasks/dev/`;** keep
+`bench/tasks/heldout/` sealed and score it **once** at the end, after freezing `bench/preregistration.md`.
 
-`run.ps1` / `run.sh` just chain `run_bench → judge → stats`. **Before** touching the held-out set, freeze
-`bench/preregistration.md` (commit it), then run **once** with `-Tasks bench\tasks\heldout`.
-
-**Iterate only on `bench/tasks/dev/`.** Keep `bench/tasks/heldout/` sealed; score it **once** at the end,
-after freezing `bench/preregistration.md`.
-
-## Install as a skill (cross-tool)
-
-```
-/plugin marketplace add Vince427/open-cognitive-bench
-/plugin install chestertons-shield@open-cognitive-bench
-```
-
-## Status (2026-06-04)
+## Status (2026-06-05)
 
 PoC scaffold: **41 validated trap tasks** (11 dev + 30 held-out; **5 kinds** — chesterton + goodhart are
 benchmarked-ready, while hyrum/security/phantom are **experimental, unvalidated**), all pass
@@ -171,9 +235,10 @@ benchmarked-ready, while hyrum/security/phantom are **experimental, unvalidated*
 benchmark **does not discriminate**: Opus-class and Haiku, every arm (B/C/D/S), scored **0 failures** (a
 floor effect) — even a deliberately harder trap. The guardrails target *not investigating large, unfamiliar
 code*, which a single-shot toy task can't induce: it either shows the needed fact (trivial) or withholds it
-(unfair). That is a **construct ceiling** (`KNOWN_ISSUES.md` V5), not a difficulty knob. A same-day
-**agentic, tool-using prototype** (real repo + git history; the agent must investigate) produced the
-project's **first arm separation** (bare 1/2 vs skill 0/2 — illustrative, n=2).
+(unfair). That is a **construct ceiling** (`KNOWN_ISSUES.md` V5), not a difficulty knob. The agentic,
+tool-using harness *can* produce failures: a misleading-instruction round separated the arms (bare 5/12 >
+caution 3/12 > skill 0/12), but under a **neutral** instruction the gap **vanished** (bare 0/12 = skill 0/12)
+— so the measured effect is **instruction-resistance, not investigation** (n=12, not significant; `PAPER.md`).
 
 So the real remaining work is **not** "just run the API" — it is the **agentic harness** (the only setting
 where these guardrails can bite), plus independent held-out authorship and a multi-model run. Full picture in

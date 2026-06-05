@@ -47,10 +47,12 @@ a helpful but unproven nudge**; **drift-without-checks = backed by real, establi
 ## Use it
 **1. Write a fact-set** — the things that must survive. Two ways:
 - **Prose / non-coders → `--facts facts.txt`**: one required fact per line (a literal substring, or `re:` for
-  a regex). Example `example/policy.facts.txt`:
+  a regex). Example `example/policy.facts.txt` (5 facts):
   ```
   90 days
   PRIV-88
+  35 days
+  auditor
   re:GDPR Art\.?\s*17
   ```
 - **Code-behavior → `--checks checks.py`**: a Python module `CHECKS = [(name, fn(module_or_None, src)->bool)]`
@@ -93,9 +95,9 @@ layer) · `extract_facts_prompt.md` (draft a fact-set with any LLM) · `test_gat
 $ gate.py --checks example/checks.py --file example/doc.py
 7/7 facts present in example/doc.py                          (exit 0)
 $ gate.py --checks example/checks.py --file example/degraded.py
-5/7 facts present | MISSING: rationale: SEC-12; rationale: INC-2231   (exit 1)
+5/7 facts present in example/degraded.py  | MISSING: rationale: SEC-12 present; rationale: INC-2231 present   (exit 1)
 $ gate.py --checks example/checks.py --baseline example/doc.py --candidate example/degraded.py
-REJECT: candidate dropped 2 fact(s) the baseline had: SEC-12; INC-2231 (exit 1)
+REJECT: candidate dropped 2 fact(s) the baseline had: rationale: SEC-12 present; rationale: INC-2231 present (exit 1)
 ```
 `degraded.py` is a realistic drift: an LLM kept the code but stripped the rationale comments — the *why* is
 gone. Behavior tests still pass; the **text checks catch the lost institutional knowledge**.
@@ -105,9 +107,9 @@ Prose works the same (`example/policy.md`, a retention policy):
 $ gate.py --facts example/policy.facts.txt --file example/policy.md
 5/5 facts present                                            (exit 0)
 $ gate.py --facts example/policy.facts.txt --file example/policy_drifted.md
-2/5 facts present | MISSING: 90 days; PRIV-88; GDPR Art 17    (exit 1)
-$ gate.py --facts ... --baseline policy.md --candidate policy_drifted.md --apply live.md
-REJECT: dropped 3 facts | kept previous version              (exit 1; live.md untouched)
+2/5 facts present in example/policy_drifted.md  | MISSING: 90 days; PRIV-88; re:GDPR Art\.?\s*17   (exit 1)
+$ gate.py --facts example/policy.facts.txt --baseline example/policy.md --candidate example/policy_drifted.md --apply live.md
+REJECT: candidate dropped 3 fact(s) the baseline had: 90 days; PRIV-88; re:GDPR Art\.?\s*17  | kept previous version (exit 1; live.md untouched)
 ```
 The drifted policy "tightened" 90→60 days and dropped the ticket + the legal "GDPR Art 17" — exactly the
 kind of constraint a rewrite silently loses, and the kind no test suite would ever catch.
