@@ -1,0 +1,33 @@
+name: reproducibility
+
+# Falsifiability has a prerequisite: the analysis must reproduce. This gate runs the
+# deterministic mock pipeline (bench -> judge -> stats) TWICE on a pinned environment and
+# asserts the scientifically meaningful outputs are byte-identical (verdicts, costs, tokens,
+# and every McNemar/bootstrap statistic) -- after stripping the two legitimately volatile
+# fields (measured `latency_s` and the run-id timestamp). It does NOT touch real-model runs
+# (bench/pilot), which are stochastic by nature and must never gate CI.
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  reproducibility:
+    runs-on: ubuntu-latest
+    env:
+      # Pin the sources of "ambient" non-determinism so "deterministic" is reproducible
+      # across machines, not just within one process.
+      PYTHONHASHSEED: "0"      # stabilize set/dict hash ordering
+      LC_ALL: "C"              # locale-stable number/text formatting
+      TZ: "UTC"                # stable timestamps/formatting
+      PYTHONUTF8: "1"          # stable text encoding regardless of runner locale
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      # The mock pipeline is pure stdlib (same as ci.yml) -- no install needed.
+      - name: Reproducibility gate (run the mock pipeline twice and diff the meaningful outputs)
+        run: python bench/repro_check.py
