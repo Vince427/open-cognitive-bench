@@ -9,6 +9,14 @@ smoke test cannot surface (the mock always emits clean, ` ```python `-fenced out
 never calls a real API, so it hides M1/L1/L2). None block the mock pipeline. M1–M4 should be fixed **before**
 drawing conclusions from a real-model run.
 
+> **Reconciliation note (2026-06-05).** This file is a dated QA log; some figures below are historical
+> snapshots, not the current state. (1) **Task/selfcheck count:** entries cite `selfcheck` **34/34**
+> (2026-06-01/02) and **40/40** (V4) — these are point-in-time; the **current count is 41/41** (11 dev + 30
+> held-out, 5 kinds), grown 34 → 40 (+3 experimental kinds) → 41. (2) **Superseded micro-pilot:** the V5 note
+> below reports an n=2 agentic pilot as "B 1/2, S 0/2"; the scored artifact shows **B 0/2, S 0/2** — treat
+> "1/2" as anecdotal scratch. The reproduced agentic separation is the round-1–4 result in `PAPER.md`/`REPORT.md`
+> (misleading B 5/12 > C 3/12 > S 0/12; **neutral B 0/12 = S 0/12** → effect = instruction-resistance).
+
 ---
 
 ## Resolution log — 2026-06-02 (all addressed)

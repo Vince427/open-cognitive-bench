@@ -57,18 +57,31 @@ Single author (skills + all tasks + harness); toy/likely-memorized tasks; single
 (V2/V5); experimental kinds unvalidated; W is a single-pass stub (M4). A publishable claim needs independent
 held-out authorship + a tool-using harness + multi-model runs.
 
-## 7. Next, in priority order
-1. **Scale the agentic, tool-using harness (V2) — PROTOTYPE BUILT and it discriminates.**
-   `bench/pilot/agentic_v2_fixture.sh` plants a real repo + git history where the invariant is discoverable
-   only by investigation. Tooled subagents (Haiku, 1 task, n=2/arm): **bare B failed 1/2, skill S 0/2** — the
-   first non-zero failure / first arm separation in the project. Now scale it (seeds/tasks/models + the real
-   McNemar/bootstrap stats) and add hyrum/security/phantom fixtures. This is where the guardrails get measured.
-2. Independent held-out authorship; then a multi-model API run → fill `RESULTS.md`.
-3. Validate (or retire) the 3 experimental kinds once a discriminating harness exists.
+## 7. The agentic follow-up (V2) — built AND run; the result is a caution (`PAPER.md`)
+The single-shot ceiling (§4) said the construct had to be agentic, so the tool-using harness was built
+(`bench/agentic/`, real repo + git history; fixtures moved out-of-tree after a leakage fix) and run over
+rounds 1–4:
+- **Misleading-instruction round** ("this is redundant, remove it"): a clean monotonic separation — bare
+  **B 5/12**, caution **C 3/12**, skill **S 0/12** (the project's first real arm separation). But p≈0.06 and
+  the gap sits on the *null control*, so it is **not significant**.
+- **Neutral-instruction round (the decisive control):** the separation **vanishes** — **B 0/12 = S 0/12**.
+  Bare agents refactored genuinely and kept every trap.
+- **Conclusion:** the skill's measured value is **resistance to a misleading instruction
+  (sycophancy-resistance), NOT superior investigation.** With a neutral ask there is no effect.
+
+Still open, in priority order:
+1. A *neutral* investigation trap (pressure without the sycophancy confound) + independent fixture/skill
+   authorship, ≥2 models, dozens of seeds + the real McNemar/bootstrap stats → fill `RESULTS.md`.
+2. Independent held-out authorship for any single-shot regression checks.
+3. Validate (or retire) the 3 experimental kinds once a discriminating, neutral harness exists.
 4. Keep toy single-shot tasks as plumbing/regression checks only.
 
-> Bottom line: the apparatus is sound and now produces *real* evidence. That evidence says the single-shot
-> toy design can't measure the thing we care about — but a same-day **agentic V2 prototype** (real repo + git
-> history + tools) produced the project's **first arm separation** (bare 1/2 vs skill 0/2). So the redirect is
-> not just a critique; the replacement construct is sketched and working. Published per the negative-results-
-> too policy — including the part where the original design was the wrong one.
+> **Superseded note:** an early n=2 Haiku micro-pilot was once described as "bare B 1/2 vs skill S 0/2." The
+> scored artifact (`results/pilot-20260604-094001/judgments.jsonl`) shows **B 0/2, S 0/2** — treat the "1/2"
+> as anecdotal scratch, not a reproduced result. The reproduced agentic numbers are the round-1–4 ones above.
+
+> Bottom line: the apparatus is sound and produces *real* evidence. That evidence says the single-shot toy
+> design can't measure the target construct (§4); the agentic harness *can* produce failures, but the measured
+> "skill" effect is **instruction-resistance, not investigation** — under a neutral instruction the gap
+> vanishes (B 0/12 = S 0/12). Published per the negative-results-too policy, including the part where the
+> original design was the wrong one.

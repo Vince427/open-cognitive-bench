@@ -23,9 +23,13 @@ Three separate claims, and they are NOT equally solid. Honestly:
    not controversial. Plus the literature measures it (`../DRIFT.md` §1).
 2. **"The gate guarantees the facts you listed survive."** — **Certain, but the reasoning is simple, not deep
    math.** It's just: *you only keep a new version if it still contains every listed fact; therefore every
-   kept version contains them.* Airtight logic. Two real limits, not math ones: (a) it only protects the
+   kept version contains them.* Airtight logic. Three real limits, not math ones: (a) it only protects the
    facts **you wrote down** (a fact you forgot isn't guarded); (b) a pass can keep getting rejected, so you
-   may retry (a cost, not a failure).
+   may retry (a cost, not a failure); (c) **`--facts` checks string *presence*, not *meaning*** — a rewrite
+   that keeps the words but negates them (e.g. "data is **NOT** retained for 90 days") still passes, because
+   the substring "90 days" is present. So `--facts` guards *the phrase survives*, not *the claim stays true*.
+   For semantic-critical invariants use the **`--checks.py`** path instead (it asserts behavior, e.g.
+   `is_expired(...) is False`, which a negation cannot satisfy).
 3. **"The skill (prompt) reduces drift."** — **Observed, NOT proven.** Our demo and the literature show a
    restrictive prompt *helps* — but the math above says a prompt **cannot** guarantee it (a prompt is still a
    lossy step). So treat the skill as "helps, fewer rejects," never as a promise.
