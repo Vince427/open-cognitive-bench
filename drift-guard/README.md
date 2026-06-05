@@ -83,8 +83,10 @@ python guarded_rewrite.py --doc live.md --facts facts.txt \
 
 ## Files
 `gate.py` (the gate, code + prose) · `guarded_rewrite.py` (the auto loop) · `SKILL.md` (Drift Shield, soft
-layer) · `extract_facts_prompt.md` (draft a fact-set with any LLM) · `test_gate.py` (10 tests, in CI) ·
-`example/` (code: `doc.py`/`checks.py`/`degraded.py`; prose: `policy.md`/`policy.facts.txt`/`policy_drifted.md`).
+layer) · `extract_facts_prompt.md` (draft a fact-set with any LLM) · `test_gate.py` (10 unit tests, in CI) ·
+`test_gate_fuzz.py` (4 property suites, 800+ randomized cases — the guarantee, fuzzed; in CI) ·
+`example/` (code: `doc.py`/`checks.py`/`degraded.py`; prose: `policy.md`/`policy.facts.txt`/`policy_drifted.md`;
+`multipass_demo.py` — the offline many-passes gated-vs-ungated demo, in CI).
 
 ## Proof (self-test, `example/`)
 ```
@@ -109,6 +111,16 @@ REJECT: dropped 3 facts | kept previous version              (exit 1; live.md un
 ```
 The drifted policy "tightened" 90→60 days and dropped the ticket + the legal "GDPR Art 17" — exactly the
 kind of constraint a rewrite silently loses, and the kind no test suite would ever catch.
+
+**Many-passes demo (the literal "edit the same doc repeatedly" case):**
+`python example/multipass_demo.py` runs one document through 6 condense passes two ways — **ungated drifts**
+(5→2 facts), **gated holds** (5/5, the harmless tidy passes kept, the lossy ones reverted). The rewriter is a
+deterministic *simulator*, so this demonstrates the loop/gate **mechanism** over many passes, not a real
+model's drift rate (that needs the powered run, `../REPORT.md`).
+
+**The guarantee, fuzzed:** `python test_gate_fuzz.py` checks the gate against an independent oracle over 800+
+random documents/fact-sets/rewrites — the decision rule is sound *and* complete, CLI exit codes match, and the
+loop **never loses a fact that was present at the start**, no matter the passes (a sabotaged gate is caught).
 
 ## When this matters (honest scope)
 - **Strong fit:** many-pass iterative pipelines; **prose/specs/contracts/knowledge-bases with no test suite**

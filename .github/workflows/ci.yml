@@ -24,6 +24,12 @@ jobs:
       - name: Test drift-guard (fact-gate + guarded-rewrite driver; pure stdlib)
         run: python drift-guard/test_gate.py
 
+      - name: Property/fuzz-test the gate guarantee (800+ randomized cases)
+        run: python drift-guard/test_gate_fuzz.py
+
+      - name: Multi-pass drift demo (gated keeps every fact; ungated drifts) — also a living check
+        run: python drift-guard/example/multipass_demo.py
+
       - name: Run the 5-arm benchmark (deterministic mock provider, no API key, no spend)
         run: python bench/run_bench.py --tasks bench/tasks/dev --arms B C D S W --seeds 5 --provider mock
 
